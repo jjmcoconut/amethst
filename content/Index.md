@@ -1,7 +1,8 @@
 ---
-title: Hi
+title: Homepage
 ---
 1. First Installation
+
 	[[Obsidian]]
 	[[Quartz]]
 	[[Connecting Obsidian-Quartz]]
