@@ -1,1 +1,1 @@
-How to initiate Quartz
+How to initiate Obsidian
