@@ -16,4 +16,9 @@ The rest of it is calculated by $\textbf{h}_i =f_i(W_i\textbf{h}_{i-1})$, $outpu
 ![[Pasted image 20231209233938.png|500]]
 A simple neural network with features explained above()
 
+[[Training Neural Network]]
+
+
 [[Convolutional Neural Networks]]
+- Type of artificial neural network designed for visual data processing, using specialized layers to automatically learn and identify hierarchical patterns, such as edges and textures, enabling effective image recognition and classification.
+
