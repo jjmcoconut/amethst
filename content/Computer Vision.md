@@ -1,0 +1,2 @@
+[[Random Sample Consensus(RANSAC)]]
+[[Generalization Error]]

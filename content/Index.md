@@ -6,3 +6,5 @@ title: Homepage
 	[[Obsidian]]
 	[[Quartz]]
 	[[Connecting Obsidian-Quartz]]
+
+2. [[Computer Vision]]
