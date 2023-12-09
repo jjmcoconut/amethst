@@ -23,12 +23,12 @@ For example,
 As explained above, SVMs are used to classify two classes. In order to classify multiple classes. There are 2 simple methods to do this.
 
 **1. One vs Others**
-	- Train: learn an SVM for each class vs rest
-	- Test: apply SVM for class and assign the class that returns the highest decision value
+- Train: learn an SVM for each class vs rest
+- Test: apply SVM for class and assign the class that returns the highest decision value
 
 **2. One vs One**
-	- Train: learn SVM for each pair
-	- Test: Each learned SVM votes for a class(Class with most votes?)
+- Train: learn SVM for each pair
+- Test: Each learned SVM votes for a class(Class with most votes?)
 
 ### Pros and Cons
 
