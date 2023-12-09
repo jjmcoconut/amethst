@@ -1,6 +1,3 @@
----
-title: Homepage
----
 1. First Installation
 
 	[[Obsidian]]
