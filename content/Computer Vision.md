@@ -1,2 +1,3 @@
-[[Random Sample Consensus(RANSAC)]]
-[[Generalization Error]]
+- [[Random Sample Consensus(RANSAC)]]
+- [[Generalization Error]]
+- [[Classification]]
