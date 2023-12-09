@@ -1,9 +1,11 @@
 #### Bias 
 $$ y_i - E[\hat{y_i}] $$
+
 Difference between the expected prediction of our model & true value
 
 #### Variance
 $$ (y_i - E[\hat{y_i}])^2 $$
+
 Amount that the estimate of the target function will change if different training data was used
 
 ![[Pasted image 20231209144757.png|400]]
