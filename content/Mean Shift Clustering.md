@@ -15,7 +15,7 @@ $$m(\textbf{x})=\frac{\sum^n_{i=1}\textbf{x}_ig(\frac{||\textbf{x}-\textbf{x}_i|
 	- Repeat until convergence
 3. Assign points that lead to nearby modes to the same cluster
 
-### Mean Clustering vs K-mean Clustering
+### Mean Clustering vs [[K-mean Clustering]]
 
 
 | | Mean Shift | K-mean |  

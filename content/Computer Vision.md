@@ -5,4 +5,4 @@ All information is from **Introduction to Computer Vision** lectured by Prof. Ki
 |  | Supervised | Unsupervised |  
 | -------- | -------- | -------- |  
 | Discrete | [[Classification]] | [[Clustering]] |  
-| Continuous | Regression | Dimensionality Reduction |
+| Continuous | Regression | [[Dimensionality Reduction]] |

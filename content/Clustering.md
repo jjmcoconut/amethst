@@ -9,3 +9,4 @@ A discrete unsupervised learning technique
 1. [[Region Growing]]
 2. [[K-Mean Clustering]]
 3. [[Mean Shift Clustering]]
+4. [[Minimum Graph Cut]]
