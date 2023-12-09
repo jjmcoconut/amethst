@@ -47,12 +47,6 @@ def get_bag_of_words(img_paths,feature):
 ```
 
 - This function returns the histogram of features splitted by vocabulary for each image.
-```
-[[histogram of first image],
-[histogram of second image],
-...
-[histogram of last image]]  
-```
 
 3. Classify using [[SVM]]
 ```py
