@@ -6,3 +6,7 @@ All information is from **Introduction to Computer Vision** lectured by Prof. Ki
 | -------- | -------- | -------- |  
 | Discrete | [[Classification]] | [[Clustering]] |  
 | Continuous | Regression | [[Dimensionality Reduction]] |
+
+[[Bag of Features]]
+
+[[Neural Networks]]
