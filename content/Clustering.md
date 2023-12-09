@@ -7,3 +7,4 @@ A discrete unsupervised learning technique
 	- $\forall i \neq j, P(S_i \cup S_j) = false$ 
 
 1. [[Region Growing]]
+2. [[K-Mean Clustering]]
