@@ -15,10 +15,10 @@ We fit the model twice in one iteration
 3. Number of sample iterations **N**
 
 ### Pros and Cons
-##### 1. Pros
- - Simple & General
- - Applicable to many problems
-##### 2. Cons
- - Lots of parameter (s,t,N)
- - Low inlier ratio -> does not work well
+**1. Pros**
+	 - Simple & General
+	 - Applicable to many problems
+**2. Cons**
+	 - Lots of parameter (s,t,N)
+	 - Low inlier ratio -> does not work well
 

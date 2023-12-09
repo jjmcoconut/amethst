@@ -11,15 +11,15 @@ Amount that the estimate of the target function will change if different trainin
 ![[Pasted image 20231209144757.png|400]]
 
 #### Generalization Error Effects
-##### Underfitting
- - model is too simple to represent all the relevant class characteristics
- - High bias, Low variance
- - High training error, High test error
+**1. Underfitting**
+	 - model is too simple to represent all the relevant class characteristics
+	 - High bias, Low variance
+	 - High training error, High test error
 
-##### Overfitting
- - model is to complex & fits irrelevant characteristics in data
- - Low bias, High variance
- - Low training error, High test error
+**2. Overfitting**
+	 - model is to complex & fits irrelevant characteristics in data
+	 - Low bias, High variance
+	 - Low training error, High test error
 
 #### Bias-Variance Trade-off
 $$ MSE = \frac{1}{N} \sum^{N}_{i=1}(y_{i} - \hat{y_{i}})^2  \frac{1}{N} \sum^{N}_{i=1}  (y_{i} - E[\hat{y_{i}}]+E\hat{[y_{i}}]-\hat{y_{i}})^2 $$ 

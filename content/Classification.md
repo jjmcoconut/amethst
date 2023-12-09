@@ -8,5 +8,5 @@ There is no optimal algorithm that works for every case
 	 - Boosted Decision Trees
 ### Generative
  - Represent data + boundary (Can make use of conditional independence, priors)
-	 - Naive Bayes Classifier
+	 - [[Naive Bayes Classifier]]
 	 - Bayesian Network
