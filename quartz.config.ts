@@ -9,7 +9,7 @@ const config: QuartzConfig = {
     analytics: {
       provider: "plausible",
     },
-    baseUrl: "jjmcoconut.github.io/amethyst",
+    baseUrl: "jjmcoconut.github.io/amethyst/CartoInsight",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     theme: {
