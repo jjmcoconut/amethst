@@ -4,3 +4,5 @@
 	[[Connecting Obsidian-Quartz]]
 
 2. [[Computer Vision]]
+
+3. [[Kaggle Competition]]
