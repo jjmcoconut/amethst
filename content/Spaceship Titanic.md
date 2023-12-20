@@ -59,3 +59,4 @@ imputer = KNNImputer(n_neighbors=1)
 df_imputed = pd.DataFrame(imputer.fit_transform(df_encoded), columns=df.columns)
 ```
 (Still finding the optimum n_neighbors)
+-> Found out that these parameters does not matter. The best result from tuning parameters returned a worse percentage than the first one.
