@@ -106,3 +106,19 @@
 			 Var(X_t) &= \sigma_x^2 = \frac{\sigma^2}{1-\phi} \\
 			 Cov(X_t,X_{t-1}) &= \phi\sigma_x^2
 		 }$$
+		 - For $|\phi|<1$ the Wold decomposition of AR(1) is $X_t = \mu+\sum_{j=0}^{\infty}\phi^j\eta_{t-j}$ 
+			 - if $0<\phi<1$ AR(1) is exponential mean-reversion to $\mu$
+			 - if $-1 <\phi<0$ AR(1) is oscillating exponential mean-reversion to $\mu$
+		 - For $\phi = 1$ The Wold decomposition does not exit(just a simple random walk)
+		 - For $\phi>1$ the AR(1) is explosive
+		 - Examples
+			 - Interest rates
+			 - Real exchange rate
+			 - Valuation ratios
+	 - Yule Walker Equations for AR(p) Processes
+		From $X_t - \mu =\phi_1(X_{t-1}-\mu)+\phi_2(X_{t-2}-\mu)+\cdots+\phi_p(X_{t-p}-\mu)+\eta_t$ we can write __Yule-Walker Equations__ $$\eqalign{
+		E[(X_t-\mu)(X_{t-j}-\mu)] &= \phi_1E[(X_{t-1}-\mu)(X_{t-j}-\mu)]+\phi_2E[(X_{t-2}-\mu)(X_{t-j}-\mu)]+\\
+		& \space \cdots +\phi_pE[(X_{t-p}-\mu)(X_{t-j}-\mu)]+ E[\eta_t(X_{t-p}-\mu)]\\
+		\gamma(j) &=\phi_1\gamma(j-1)+\phi_2\gamma(j-2)+\cdots+\phi_p\gamma(j-p)+\delta_0\sigma^2
+		}$$
+		
