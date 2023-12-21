@@ -11,7 +11,6 @@
 	for all finite collections of time indexes
 	$$\{(t_1,t_2,\cdots,t_m),m<\infty\}$$
 - __Definition__: A time series is __Strictly Stationary__ if (Invariance under time translation)
-	
 	$$p(t_1+\tau,t_2+\tau,\cdots,t_m+\tau)=p(t_1,t_2,\cdots,t_m) \space \forall\tau,\forall m, \forall(t_1,t_2,\cdots,t_m)$$
 - __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)1
 
