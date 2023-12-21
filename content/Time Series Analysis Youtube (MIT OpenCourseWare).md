@@ -11,6 +11,7 @@
 	for all finite collections of time indexes
 	$$\{(t_1,t_2,\cdots,t_m),m<\infty\}$$
 - __Definition__: A time series is __Strictly Stationary__ if (Invariance under time translation)
+	
 	$$p(t_1+\tau,t_2+\tau,\cdots,t_m+\tau)=p(t_1,t_2,\cdots,t_m) \space \forall\tau,\forall m, \forall(t_1,t_2,\cdots,t_m)$$
 - __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)
 	$$\eqalign{
@@ -55,6 +56,7 @@
 		\end{bmatrix}
 		$$
 		- Apply OLS to specify the projection:
+		
 		$$\eqalign{
 		\hat{\textbf{y}} &=\textbf{Z}(\textbf{Z}^T\textbf{Z})^{-1}\textbf{Z}\textbf{y}\\
 		&= \hat{P}(Y_t|Y_{t-1},Y_{t-2},\cdots,Y_{t-p}) \\
@@ -71,6 +73,7 @@
 	Applying the operator recursively$$L^k(X_t) = X_{t-k}$$
 	Inverse of these operators $$L^{-n}(X_t) = X_{t+n}$$
 	- Wold Representation with Lag Operators 
+		
 		$$\eqalign{
 		X_t &= \sum_{i=0}^{\infty} \psi_i\eta_{t-i} + V_t \\
 		&= \sum_{i=0}^{\infty} \psi_iL^i(\eta_n)+V_t \\
@@ -85,27 +88,39 @@
 		$$X_t=\sum_{i=0}^{\infty}\psi_i^*X_{t-i}+\eta_y$$
 
 ### __3. ARMA(p,q) Models__
-- Time series $\{ X_t \}$ follows ARMA(p,q) Model with auto-regressive order p, moving-average order q i
+- Time series $\{ X_t \}$ follows ARMA(p,q) Model with auto-regressive order p, moving-average order q 
+	
 	$$X_t = \mu +\phi_1(X_{t-1}-\mu)+\phi_2(X_{t-2}-\mu)+\cdots+\phi_p(X_{t-p}-\mu)+\eta_t+\theta_1\eta_{t-1}+\cdots+\theta_q\eta_{t-q}$$
+	
 	Where $\{\eta_t\}$ is $WN(0,\sigma^2)$, __White Noise__ with 
+	
 	$$\eqalign{
 	E(\eta_t) &= 0, &\forall t\\
 	E(\eta_t^2) &= \sigma^2<\infty, &\forall t, \space and \space E(\eta_t\eta_s) = 0, \forall t \neq s
-	}$$ With lag operators 
+	}$$ 
+	With lag operators 
+	
 	$$\eqalign{
 	\phi(L) &= (1-\phi_1L-\phi_2L^2-\cdots-\phi_pL^p)\\
 	\theta(L) &=(1+\theta_1L+\theta_2L^2+\cdots+\theta_qL^q)
 	}$$
+	
 	We can write 
+	
 	$$\phi(L)(X_t-\mu) = \theta(L)\eta_t$$
+	
 	and the Wold decomposition is 
+	
 	$$X_t=\mu+\psi(L)\eta_t, \space where \space \psi(L)=[\psi^{-1}(L)]\theta(L)$$
+	
 - __Order-p Auto-Regression Model: AR(p)__ 
 	$\psi(L)(X_t-\mu)=\eta_t$ where $\{ \eta_t \}$ is $WN(0,\sigma^2)$ and $\psi(L)=1-\psi_1L-\cdots\phi_pL^p$ 
 	- $X_t = \mu\phi(1)+\sum_{j=1}^p\phi_jX_{t-j}+\eta_t$
 	- Stationary Conditions:
 		let $\lambda_1,\cdots \lambda_p$ be roots of $\phi(z)=0$ ($z$: complex variable) Then 
+		
 		$$\phi(L)=(1-\frac{1}{\lambda_1}L)(1-\frac{1}{\lambda_2}L)\cdots(1-\frac{1}{\lambda_p}L)$$
+
 	 - Claim: covariance stationary iff roots of $\phi(z)=0$ lie inside $\{ z:|z|\leq1 \}$ or $\{ |\lambda_i|>1 \}$ 
 		 - for complex $\lambda: |\lambda|>1,$ $(1-\frac{1}{\lambda}L)^{-1} = \sum_{i=0}^\infty (\frac{1}{\lambda})^iL^i$ 
 		 - $\phi^{-1}(L)=\prod_{j=1}^p[(1-\frac{1}{\lambda_j}L)^{-1}]$  
@@ -113,7 +128,8 @@
 		 $X_t-\mu = \phi(X_{t-1}-\mu)+\eta_t$
 		 - The characteristic equation for AR(1) is $(1-\phi z) = 0$ with root $\lambda = \frac{1}{\phi}$
 		 - AR(1) is stationary if $|\phi|<1$ ($|\lambda|>1$)
-		 - $$\eqalign{
+			
+		$$\eqalign{
 			 E(X_t) &= \mu \\
 			 Var(X_t) &= \sigma_x^2 = \frac{\sigma^2}{1-\phi} \\
 			 Cov(X_t,X_{t-1}) &= \phi\sigma_x^2
@@ -129,11 +145,13 @@
 			 - Valuation ratios
 	 - Yule Walker Equations for AR(p) Processes
 		From $X_t - \mu =\phi_1(X_{t-1}-\mu)+\phi_2(X_{t-2}-\mu)+\cdots+\phi_p(X_{t-p}-\mu)+\eta_t$ we can write __Yule-Walker Equations__ 
+		
 		$$\eqalign{
 		E[(X_t-\mu)(X_{t-j}-\mu)] &= \phi_1E[(X_{t-1}-\mu)(X_{t-j}-\mu)]+\phi_2E[(X_{t-2}-\mu)(X_{t-j}-\mu)]+\\
 		& \space \cdots +\phi_pE[(X_{t-p}-\mu)(X_{t-j}-\mu)]+ E[\eta_t(X_{t-p}-\mu)]\\
 		\gamma(j) &=\phi_1\gamma(j-1)+\phi_2\gamma(j-2)+\cdots+\phi_p\gamma(j-p)+\delta_0\sigma^2
 		}$$
+		
 		$$
 		\begin{pmatrix}
 		\gamma(1)\\
@@ -155,12 +173,14 @@
 		\phi_p
 		\end{pmatrix}
 		$$
+		
 		Since $\gamma()$ is covariance $\gamma(i)=\gamma(-i)$ the middle matrix is symmetric
 
 - __Order-q Moving Average Model: MA(q)__
 	$X_t-\mu = \theta(L)\eta_t$, where $\theta(L) = 1+\theta_1L+\cdots+\theta_qL^q$ 
 	- Process $\{ X_t \}$ is invertible if all roots of $\theta(z)=0$ are outsize unit circle
-	- $$\eqalign{
+
+		$$\eqalign{
 		E(X_t) &= \mu \\
 		Var(X_t) &= \gamma(0) = \sigma^2(1+\theta_1^2+\cdots+\theta_q^2) \\
 		Cov(X_t,X_{t+j}) &= \begin{cases}
@@ -171,7 +191,8 @@
 ### 3. Accommodating Non-stationarity by Differencing
 - Many economic time series exhibit non-stationary behavior consistent with random walks.
 - __Differencing Operators:__ 
-- $$\eqalign{
+
+	$$\eqalign{
 	\Delta &= 1-L \\
 	\Delta^2 &= (1-L)^2 \\
 	\Delta^k &= (1-L)^k
@@ -179,10 +200,12 @@
 - Example: Linear Trend Reversion Model
 	Suppose $X_t=TD_t+\eta_t$ where 
 	- $TD_t = a+bt$, a deterministic linear trend
-	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2$
-	- $$\eqalign{
+	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2)$
+	- 
+		$$\eqalign{
 		\Delta X_t &= b+\eta_t \\
 		&= b+(\eta_t-\eta_{t-1})\\
 		&= b+ (1-L)\eta_t
 	}$$
+	
 	
