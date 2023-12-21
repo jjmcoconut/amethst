@@ -22,10 +22,12 @@
 	$$
 	
 	The __auto-correlation function__ of $\{ X_t \}$ is
-	$$\eqalign{
+	$$
+	\begin{aligned}
 	\rho(\tau) &= \frac{Cov(X_t,X_{t+\tau})}{\sqrt{Var(X_t)Var(X_{t+\tau})}}\\
 	&= \frac {\gamma(\tau)}{\gamma(0)}
-	}$$
+	\end{aligned}
+	$$
 - __Wold Representation Theorem__
 	Any zero-mean covariance stationary time series $\{ X_t \}$ can be decomposed as $X_t = V_t +S_t$ where
 	- $\{ V_t \}$ is a linearly deterministic process i.e. a  linear combination of past values of $V_t$ with constant coefficients. (past values can perfectly predict)
@@ -58,11 +60,13 @@
 		\end{bmatrix}
 		$$
 		- Apply OLS to specify the projection:
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		\hat{\textbf{y}} &=\textbf{Z}(\textbf{Z}^T\textbf{Z})^{-1}\textbf{Z}\textbf{y}\\
 		&= \hat{P}(Y_t|Y_{t-1},Y_{t-2},\cdots,Y_{t-p}) \\
 		&= \hat{\textbf{y}}^{(p)}
-		}$$
+		\end{aligned}
+		$$
 	- Compute the projection residual$$\hat{\epsilon}^{(p)} = \textbf{y}=\hat{\textbf{y}}^{(p)}$$
 	- Specify moving average model: $\epsilon_t^{(p)}=\sum_{i=0}^{\infty}\psi_j\eta_{t-i}$ 
 	- Case analysis
@@ -75,11 +79,13 @@
 	Inverse of these operators $$L^{-n}(X_t) = X_{t+n}$$
 	- Wold Representation with Lag Operators 
 		
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		X_t &= \sum_{i=0}^{\infty} \psi_i\eta_{t-i} + V_t \\
 		&= \sum_{i=0}^{\infty} \psi_iL^i(\eta_n)+V_t \\
 		&= \psi(L)\eta_t+V_t \space \space(\psi(L)=\sum_{i=0}^{\infty}\psi_iL^i)
-		}$$
+		\end{aligned}
+		$$
 		Suppose $\psi^{-1}(L)$ is invertible, and assume $V_t=0\space(X_t^*=X_t-V_t)$. Then 
 		$$\eqalign{
 		X_t &=\psi(L)\eta_t \\
@@ -95,16 +101,20 @@
 	
 	Where $\{\eta_t\}$ is $WN(0,\sigma^2)$, __White Noise__ with 
 	
-	$$\eqalign{
+	$$
+	\begin{aligned}
 	E(\eta_t) &= 0, &\forall t\\
 	E(\eta_t^2) &= \sigma^2<\infty, &\forall t, \space and \space E(\eta_t\eta_s) = 0, \forall t \neq s
-	}$$ 
+	\end{aligned}
+	$$ 
 	With lag operators 
 	
-	$$\eqalign{
+	$$
+	\begin{aligned}
 	\phi(L) &= (1-\phi_1L-\phi_2L^2-\cdots-\phi_pL^p)\\
 	\theta(L) &=(1+\theta_1L+\theta_2L^2+\cdots+\theta_qL^q)
-	}$$
+	\end{aligned}
+	$$
 	
 	We can write 
 	
@@ -129,12 +139,13 @@
 		 $X_t-\mu = \phi(X_{t-1}-\mu)+\eta_t$
 		 - The characteristic equation for AR(1) is $(1-\phi z) = 0$ with root $\lambda = \frac{1}{\phi}$
 		 - AR(1) is stationary if $|\phi|<1$ ($|\lambda|>1$)
-			
-		$$\eqalign{
-			 E(X_t) &= \mu \\
-			 Var(X_t) &= \sigma_x^2 = \frac{\sigma^2}{1-\phi} \\
-			 Cov(X_t,X_{t-1}) &= \phi\sigma_x^2
-		 }$$
+		$$
+		\begin{aligned}
+		 E(X_t) &= \mu \\
+		 Var(X_t) &= \sigma_x^2 = \frac{\sigma^2}{1-\phi} \\
+		 Cov(X_t,X_{t-1}) &= \phi\sigma_x^2
+		 \end{aligned}
+		 $$
 		 
 		 - For $|\phi|<1$ the Wold decomposition of AR(1) is $X_t = \mu+\sum_{j=0}^{\infty}\phi^j\eta_{t-j}$ 
 			 - if $0<\phi<1$ AR(1) is exponential mean-reversion to $\mu$
@@ -148,11 +159,13 @@
 	 - Yule Walker Equations for AR(p) Processes
 		From $X_t - \mu =\phi_1(X_{t-1}-\mu)+\phi_2(X_{t-2}-\mu)+\cdots+\phi_p(X_{t-p}-\mu)+\eta_t$ we can write __Yule-Walker Equations__ 
 		
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		E[(X_t-\mu)(X_{t-j}-\mu)] &= \phi_1E[(X_{t-1}-\mu)(X_{t-j}-\mu)]+\phi_2E[(X_{t-2}-\mu)(X_{t-j}-\mu)]+\\
 		& \space \cdots +\phi_pE[(X_{t-p}-\mu)(X_{t-j}-\mu)]+ E[\eta_t(X_{t-p}-\mu)]\\
 		\gamma(j) &=\phi_1\gamma(j-1)+\phi_2\gamma(j-2)+\cdots+\phi_p\gamma(j-p)+\delta_0\sigma^2
-		}$$
+		\end{aligned}
+		$$
 		
 		$$
 		\begin{pmatrix}
@@ -182,32 +195,39 @@
 	$X_t-\mu = \theta(L)\eta_t$, where $\theta(L) = 1+\theta_1L+\cdots+\theta_qL^q$ 
 	- Process $\{ X_t \}$ is invertible if all roots of $\theta(z)=0$ are outsize unit circle
 
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		E(X_t) &= \mu \\
 		Var(X_t) &= \gamma(0) = \sigma^2(1+\theta_1^2+\cdots+\theta_q^2) \\
-		Cov(X_t,X_{t+j}) &= \begin{cases}
+		Cov(X_t,X_{t+j}) &= 
+		\begin{cases}
 		0 & j>q \\
 		\sigma^2(\theta_j+\theta_{j+1}\theta+\cdots+\theta_q\theta_{q-j}) & 1<j\leq q
 		\end{cases}
-	}$$
+		\end{aligned}
+		$$
 ### 3. Accommodating Non-stationarity by Differencing
 - Many economic time series exhibit non-stationary behavior consistent with random walks.
 - __Differencing Operators:__ 
 
-	$$\eqalign{
+	$$
+	\begin{aligned}
 	\Delta &= 1-L \\
 	\Delta^2 &= (1-L)^2 \\
 	\Delta^k &= (1-L)^k
-}$$
+	\end{aligned}
+	$$
 - Example: Linear Trend Reversion Model
 	Suppose $X_t=TD_t+\eta_t$ where 
 	- $TD_t = a+bt$, a deterministic linear trend
 	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2)$
 	- 
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		\Delta X_t &= b+\eta_t \\
 		&= b+(\eta_t-\eta_{t-1})\\
 		&= b+ (1-L)\eta_t
-	}$$
+		\end{aligned}
+		$$
 	
 	
