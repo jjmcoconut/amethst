@@ -249,9 +249,8 @@
 	- Choose $p,q$ to minimize one of 
 		- Akaike Information Criterion
 		  $AIC(p,q) = log(\tilde{\sigma}^2(p,q))+2\frac{p+q}{n}$
-		  - Bayes Information Criterion
+		- Bayes Information Criterion
 		    $BIC(p,q) = log(\tilde{\sigma}^2(p,q))+log(n)\frac{p+q}{n}$
-		    - Hannan-Quinn Criterion
-		      $HQ(p,q) = log(\tilde{\sigma}^2(p,q))+2log(log(n))\frac{p+q}{n}$
-		      
+		- Hannan-Quinn Criterion
+		      $HQ(p,q) = log(\tilde{\sigma}^2(p,q))+2log(log(n))\frac{p+q}{}$
 	
