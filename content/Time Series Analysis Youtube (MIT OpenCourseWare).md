@@ -1,7 +1,7 @@
 [Video link](https://www.youtube.com/watch?v=uBeM1FUk4Ps)
 
 ### __1. [[Likelihood function]]__
-	Given a probability density or mass function $x \mapsto f(x|\theta)$ the likelihood function is $\theta \mapsto f(x|\theta)$ 
+- Given a probability density or mass function $x \mapsto f(x|\theta)$ the likelihood function is $\theta \mapsto f(x|\theta)$ 
 	
 ### __2. Stationarity and Wold Representation Theorem__
 - Stochastic process{$\cdots, X_{t-1}, X_t,X_{t+1},\cdots$} consisting of random variables indexed by time index t is a __time series__
@@ -63,6 +63,7 @@
 	- Case analysis
 		- $\hat{\epsilon}^{(p)}$ should be orthogonal to $Y_{t-s}, s>p$. If not, increase p and start again
 		- Evaluate the consistency of $\hat{\eta}_t$ with the white noise assumptions. If not, change the specification of moving average model(add additional lags, deterministic variables)
+
 - __Lag Operator__
 	Lag operator __L()__ shifts a time series back by one time increment $L(X_t) = X_{t-1}$
 	Applying the operator recursively$$L^k(X_t) = X_{t-k}$$
@@ -121,4 +122,54 @@
 		& \space \cdots +\phi_pE[(X_{t-p}-\mu)(X_{t-j}-\mu)]+ E[\eta_t(X_{t-p}-\mu)]\\
 		\gamma(j) &=\phi_1\gamma(j-1)+\phi_2\gamma(j-2)+\cdots+\phi_p\gamma(j-p)+\delta_0\sigma^2
 		}$$
-		
+		$$
+		\begin{pmatrix}
+		\gamma(1)\\
+		\gamma(2)\\
+		\vdots \\
+		\gamma(p)
+		\end{pmatrix}
+		 =
+		\begin{bmatrix}
+		\gamma(0) & \gamma(1) &\cdots &\gamma(-(p-1))\\
+		\gamma(1)& \gamma(0) &\cdots &\gamma(-(p-2))\\
+		\vdots & \vdots & \ddots &\vdots \\
+		\gamma(p-1)& \gamma(p-2) &\cdots &\gamma(0)
+		\end{bmatrix}
+		\begin{pmatrix}
+		\phi_1\\
+		\phi_2\\
+		\vdots \\
+		\phi_p
+		\end{pmatrix}
+		$$
+		Since $\gamma()$ is covariance $\gamma(i)=\gamma(-i)$ the middle matrix is symmetric
+
+- __Order-q Moving Average Model: MA(q)__
+	$X_t-\mu = \theta(L)\eta_t$, where $\theta(L) = 1+\theta_1L+\cdots+\theta_qL^q$ 
+	- Process $\{ X_t \}$ is invertible if all roots of $\theta(z)=0$ are outsize unit circle
+	- $$\eqalign{
+		E(X_t) &= \mu \\
+		Var(X_t) &= \gamma(0) = \sigma^2(1+\theta_1^2+\cdots+\theta_q^2) \\
+		Cov(X_t,X_{t+j}) &= \begin{cases}
+		0 & j>q \\
+		\sigma^2(\theta_j+\theta_{j+1}\theta+\cdots+\theta_q\theta_{q-j}) & 1<j\leq q
+		\end{cases}
+	}$$
+### 3. Accommodating Non-stationarity by Differencing
+- Many economic time series exhibit non-stationary behavior consistent with random walks.
+- __Differencing Operators:__ $$\eqalign{
+	\Delta &= 1-L \\
+	\Delta^2 &= (1-L)^2 \\
+	\Delta^k &= (1-L)^k
+}$$
+- Example: Linear Trend Reversion Model
+	Suppose $X_t=TD_t+\eta_t$ where 
+	- $TD_t = a+bt$, a deterministic linear trend
+	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2$
+	- $$\eqalign{
+		\Delta X_t &= b+\eta_t \\
+		&= b+(\eta_t-\eta_{t-1})\\
+		&= b+ (1-L)\eta_t
+	}$$
+	
