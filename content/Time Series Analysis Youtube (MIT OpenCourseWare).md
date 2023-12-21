@@ -15,7 +15,8 @@
 - __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)1
 
 	$$
-	\eqalign{
+	\eqalign
+	{
 	E(X_t) &= \mu \\
 	Var(X_t) &= \sigma_X^2\\
 	Cov(X_t,X_{t+\tau}) &=\gamma(\tau)
