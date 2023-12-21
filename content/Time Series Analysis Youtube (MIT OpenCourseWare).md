@@ -78,7 +78,6 @@
 	Applying the operator recursively$$L^k(X_t) = X_{t-k}$$
 	Inverse of these operators $$L^{-n}(X_t) = X_{t+n}$$
 	- Wold Representation with Lag Operators 
-		
 		$$
 		\begin{aligned}
 		X_t &= \sum_{i=0}^{\infty} \psi_i\eta_{t-i} + V_t \\
@@ -87,10 +86,12 @@
 		\end{aligned}
 		$$
 		Suppose $\psi^{-1}(L)$ is invertible, and assume $V_t=0\space(X_t^*=X_t-V_t)$. Then 
-		$$\eqalign{
+		$$
+		\begin{aligned}
 		X_t &=\psi(L)\eta_t \\
 		\psi^{-1}(L)X_t &= \eta_t
-		}$$
+		\end{aligned}
+		$$
 		When $\psi^{-1}(L)$ exists, the time series $\{ X_t \}$ is __Invertible__ and has auto-regressive representation: 
 		$$X_t=\sum_{i=0}^{\infty}\psi_i^*X_{t-i}+\eta_y$$
 
