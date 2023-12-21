@@ -14,11 +14,11 @@
 	
 	$$p(t_1+\tau,t_2+\tau,\cdots,t_m+\tau)=p(t_1,t_2,\cdots,t_m) \space \forall\tau,\forall m, \forall(t_1,t_2,\cdots,t_m)$$
 - __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)
-	$$\displaylines{
+	$$\begin{align}
 	E(X_t) &= \mu\\
 	Var(X_t) &= \sigma_X^2\\
 	Cov(X_t,X_{t+\tau}) &=\gamma(\tau)\\
-	}$$
+	\end{align}$$
 	The __auto-correlation function__ of $\{ X_t \}$ is
 	$$\eqalign{
 	\rho(\tau) &= \frac{Cov(X_t,X_{t+\tau})}{\sqrt{Var(X_t)Var(X_{t+\tau})}}\\
@@ -134,6 +134,7 @@
 			 Var(X_t) &= \sigma_x^2 = \frac{\sigma^2}{1-\phi} \\
 			 Cov(X_t,X_{t-1}) &= \phi\sigma_x^2
 		 }$$
+		 
 		 - For $|\phi|<1$ the Wold decomposition of AR(1) is $X_t = \mu+\sum_{j=0}^{\infty}\phi^j\eta_{t-j}$ 
 			 - if $0<\phi<1$ AR(1) is exponential mean-reversion to $\mu$
 			 - if $-1 <\phi<0$ AR(1) is oscillating exponential mean-reversion to $\mu$
