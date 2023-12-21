@@ -13,13 +13,13 @@
 - __Definition__: A time series is __Strictly Stationary__ if (Invariance under time translation)
 	
 	$$p(t_1+\tau,t_2+\tau,\cdots,t_m+\tau)=p(t_1,t_2,\cdots,t_m) \space \forall\tau,\forall m, \forall(t_1,t_2,\cdots,t_m)$$
-- __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)
+- __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)1
 
-	$$\begin{align*}
+	$$\begin{gather}
 	E(X_t) &= \mu\\
 	Var(X_t) &= \sigma_X^2\\
-	Cov(X_t,X_{t+\tau}) &=\gamma(\tau) 1\\
-	\end{align*}$$
+	Cov(X_t,X_{t+\tau}) &=\gamma(\tau)\\
+	\end{gather}$$
 	
 	The __auto-correlation function__ of $\{ X_t \}$ is
 	$$\eqalign{
@@ -31,8 +31,8 @@
 	- $\{ V_t \}$ is a linearly deterministic process i.e. a  linear combination of past values of $V_t$ with constant coefficients. (past values can perfectly predict)
 	- $S_t=\sum_{i=0}^{\infty}\psi_i\eta_{t-i}$(weighted average of $\eta_i$(white noise)) is an infinite moving average process of error terms where
 		- $\psi_0 =1,\space\sum_{i=0}^{\infty}\psi_i^2<\infty$ 
-		- $\{ \eta_i \}$ is linearly unpredictable white noise i.e. $E(\eta_i)=0,E(\eta_i^2)=\sigma^2,E(\eta_i\eta_j)=0 \space \forall i,\forall j \neq i$ 
-			and ${\eta_i}$ is uncorrelated with $\{ V_j \}: E(\eta_iV_j)=0, \forall i,j$  
+		- $\{ \eta_i \}$ is linearly unpredictable white noise i.e. 
+		  $E(\eta_i)=0,E(\eta_i^2)=\sigma^2,E(\eta_i\eta_j)=0 \space \forall i,\forall j \neq i$  and ${\eta_i}$ is uncorrelated with $\{ V_j \}: E(\eta_iV_j)=0, \forall i,j$  
 
 - Intuitive Application of Wold Representation Theorem
 	Suppose we want to specify a covariance stationary time series $\{ X_t \}$ to model actual data from real time series $\{x_t,t=0,1,\cdots,T\}$
