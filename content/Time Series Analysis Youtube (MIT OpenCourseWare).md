@@ -221,14 +221,37 @@
 - Example: Linear Trend Reversion Model
 	Suppose $X_t=TD_t+\eta_t$ where 
 	- $TD_t = a+bt$, a deterministic linear trend
-	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2)$
-	- 
-		$$
+	- $\eta_t \sim AR(1)$ ($\eta_t = \phi\eta_{t-1}+\xi_t$ where$|\phi|<1$ and $\xi_t$ is $WN(0,\sigma^2)$ 
+	- $$
 		\begin{aligned}
 		\Delta X_t &= b+\eta_t \\
 		&= b+(\eta_t-\eta_{t-1})\\
 		&= b+ (1-L)\eta_t
 		\end{aligned}
 		$$
-	
+- ARIMA(p,d,q)(Integrated ARMA) Models
+	- If $\{ \Delta^dX_t \}$ is stationary and follows an ARMA(p,q) model.
+
+### 4. Estimation of ARMA Models
+- Maximum likelihood estimation
+	- Assume that $\{ \eta_t \}$ are iid $N(0,\sigma^2)$
+	- Express ARMA(p,q) in state-space form
+	- Prediction error decomposition of log-likelihood function
+	- Apply either or both
+		- Limited Information Maximum Likelihood (LIML) Method
+			- Condition on the first p values of $\{ X_t \}$
+			- Assume that first q values $\{ \eta_t \}$ are 0.
+		- Full Information Maximum Likelihood(FIML) Method
+			- Use the stationary distribution of the first p values to specify the exact likelihood.
+- Model Selection (Way to select orders p,q of ARMA)
+	- Fit all $ARMA(p,q)$ with all available values: $0 \leq p \leq p_{max}$, $0 \leq q \leq q_{max}$ 
+	- Let $\tilde{\sigma}^2(p,q)$ be MLE of $\sigma^2 = Var(\eta_t)$
+	- Choose $p,q$ to minimize one of 
+		- Akaike Information Criterion
+		  $AIC(p,q) = log(\tilde{\sigma}^2(p,q))+2\frac{p+q}{n}$
+		  - Bayes Information Criterion
+		    $BIC(p,q) = log(\tilde{\sigma}^2(p,q))+log(n)\frac{p+q}{n}$
+		    - Hannan-Quinn Criterion
+		      $HQ(p,q) = log(\tilde{\sigma}^2(p,q))+2log(log(n))\frac{p+q}{n}$
+		      
 	
