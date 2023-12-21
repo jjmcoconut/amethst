@@ -15,11 +15,11 @@
 	$$p(t_1+\tau,t_2+\tau,\cdots,t_m+\tau)=p(t_1,t_2,\cdots,t_m) \space \forall\tau,\forall m, \forall(t_1,t_2,\cdots,t_m)$$
 - __Definition__: A time series $\{ X_t \}$ is __Covariance Stationary__ if (for all constant time t)
 
-	$$\begin{align}
+	$$\begin{split}
 	E(X_t) &= \mu\\
 	Var(X_t) &= \sigma_X^2\\
 	Cov(X_t,X_{t+\tau}) &=\gamma(\tau)\\
-	\end{align}$$
+	\end{split}$$
 	
 	The __auto-correlation function__ of $\{ X_t \}$ is
 	$$\eqalign{
@@ -58,7 +58,6 @@
 		\end{bmatrix}
 		$$
 		- Apply OLS to specify the projection:
-		
 		$$\eqalign{
 		\hat{\textbf{y}} &=\textbf{Z}(\textbf{Z}^T\textbf{Z})^{-1}\textbf{Z}\textbf{y}\\
 		&= \hat{P}(Y_t|Y_{t-1},Y_{t-2},\cdots,Y_{t-p}) \\
