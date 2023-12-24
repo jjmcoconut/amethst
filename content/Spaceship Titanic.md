@@ -60,3 +60,27 @@ df_imputed = pd.DataFrame(imputer.fit_transform(df_encoded), columns=df.columns)
 ```
 (Still finding the optimum n_neighbors)
 -> Found out that these parameters does not matter. The best result from tuning parameters returned a worse percentage than the first one.
+
+### Splitting Cabin data into 3 (deck/num/side)
+
+The cabin data has 3 values that represent some part of the ship, which can be useful for doing the regression. However, without dividing it into 3 we almost have no information because they are all divided into one rooms each.
+We need to divide them into 3 categories to extract the maximum information.
+We can do this by
+```py
+df[['Deck', 'Num', 'Side']] = df['Cabin'].str.split('/', expand=True)
+df = df.drop('Cabin', axis=1)
+```
+### Without test_train_split
+
+Since the data is from the same spaceship + random forest does not overfit well, It is worth a try to not evaluate the result using the leftover results. It may be better to use all the information. - It did not work out well.
+
+### Vote the best value
+
+This method makes 3(odd) results, and take the one that dominates the other. It may make the same result as increasing the size of the random forest.
+The simple way is to use the mode technique
+```py
+from statistics import mode 
+data = [ [True, False, False, True], [True, True, True, True], [False, False, False, True], ] 
+result = [mode(column) for column in zip(*data)] print(result)
+```
+Then it will return [True, False, False, True]

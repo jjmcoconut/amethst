@@ -93,6 +93,7 @@
 		\end{aligned}
 		$$
 		When $\psi^{-1}(L)$ exists, the time series $\{ X_t \}$ is __Invertible__ and has auto-regressive representation: 
+		
 		$$X_t=\sum_{i=0}^{\infty}\psi_i^*X_{t-i}+\eta_y$$
 
 ### __3. ARMA(p,q) Models__
@@ -117,9 +118,7 @@
 	\end{aligned}
 	$$
 	
-	We can write 
-	
-	$$\phi(L)(X_t-\mu) = \theta(L)\eta_t$$
+	We can write $\phi(L)(X_t-\mu) = \theta(L)\eta_t$
 	
 	and the Wold decomposition is 
 	
