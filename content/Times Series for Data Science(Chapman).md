@@ -13,7 +13,9 @@ __Covariance Stationary__
 	- $\sigma_{X_t}^2 = \\sigma^2 <\infty$
 	- $\gamma_{X_{t_1}X_{t_2}}$ and $\rho_{X_{t_1}X_{t_2}}$  depend only on $t_2-t_1$
 - Example)
+  
   ![[Pasted image 20231224181459.png|300]]
+  
   This is not covariant stationary because the correlation, covariance is not dependent only with $t_2-t_1$ 
 
 __White Noise Process__
@@ -23,8 +25,10 @@ __White Noise Process__
 
 __Auto-correlation Plots__
 - Original data
+  
    ![[Pasted image 20231224181916.png|400]]
 - Auto-correlation plots
+  
   ![[Pasted image 20231224182049.png|400]]   
 
 __Spectrum, Spectral Density__
