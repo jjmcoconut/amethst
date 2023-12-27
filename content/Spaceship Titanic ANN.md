@@ -33,9 +33,9 @@ train_df = get_csv('../data/train.csv')
 train_df = train_df.drop(columns=['PassengerId','Name','Transported'])
 test_df = get_csv('../data/test.csv')
 test_df = test_df.drop(columns=['PassengerId','Name'])
-
-# Attach the two dataframes
 df = train_df._append(test_df, ignore_index=True)
+
+# Organize 'Cabin' column
 df[['Cabin_Type', 'Cabin_Number', 'Cabin_Location']] = df['Cabin'].str.split('/', expand=True)
 
 # Dropping the original "Cabin" column
@@ -188,5 +188,57 @@ if not train:
 	make_submission(boolean_list)
 ```
 
-### Filling missing values
-Use [[KNNImpute]] same as the usual spaceship titanic
+### Data Preprocessing
+#### Choose training or making result
+```py
+train = False
+```
+
+#### Decide to use Cuda(GPU)
+```py
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+```
+
+#### Dataframe to input format for pytorch
+```py
+class CustomDataset(Dataset):
+	def __init__(self, features, labels):
+		self.features = torch.tensor(features, dtype=torch.float32)
+		self.labels = torch.tensor(labels, dtype=torch.float32)
+  
+	def __len__(self):
+		return len(self.features)
+	
+	def __getitem__(self, idx):
+		return self.features[idx], self.labels[idx]
+```
+
+#### Get dataframe from file
+```py
+train_df = get_csv('../data/train.csv')
+train_df = train_df.drop(columns=['PassengerId','Name','Transported'])
+test_df = get_csv('../data/test.csv')
+test_df = test_df.drop(columns=['PassengerId','Name'])
+df = train_df._append(test_df, ignore_index=True)
+```
+
+#### Make 'Cabin' column useful
+```py
+df[['Cabin_Type', 'Cabin_Number', 'Cabin_Location']] = df['Cabin'].str.split('/', expand=True)
+df = df.drop('Cabin', axis=1)
+```
+
+#### Organize 'Destination' column
+```py
+allowed_destinations = ['TRAPPIST-1e', '55 Cancri e']
+df['Destination'] = df['Destination'].apply(lambda x: x if x in allowed_destinations else 'Other Destination')
+```
+
+#### Fill the missing values and divide it to original datasets
+```py
+df_imputed = fill_null_KNN(df)
+train = df_imputed.head(train_df.shape[0])
+test = df_imputed.tail(test_df.shape[0])
+```
+
