@@ -1,5 +1,3 @@
-
-
 ```py
 import torch
 import torch.nn as nn
@@ -152,7 +150,6 @@ if train:
 				
 			torch.save(checkpoint, '../result/best_model.pth')
 	
-	train_accuracies[0] = 0.78
 	plt.plot(range(1, len(train_accuracies) + 1), train_accuracies, label='Train Accuracy')
 	plt.plot(range(1, len(test_accuracies) + 1), test_accuracies, label='Test Accuracy')
 	plt.xlabel('Iteration')
@@ -242,3 +239,153 @@ train = df_imputed.head(train_df.shape[0])
 test = df_imputed.tail(test_df.shape[0])
 ```
 
+#### Data Splitting
+```py
+y = get_csv('../data/train.csv')['Transported'] # The dependent variable
+y = 1*list(y)
+X_train, X_test, y_train, y_test = train_test_split(train ,y, test_size=0.2, random_state=42, stratify=y)
+```
+
+#### Normalizing Data
+```py
+scaler = StandardScaler()
+X_train_normalized = scaler.fit_transform(X_train)
+X_test_normalized = scaler.transform(X_test)
+```
+
+### Making Model
+#### Transforming dataframe into trainable data
+```py
+train_dataset = CustomDataset(X_train_normalized, y_train)
+test_dataset = CustomDataset(X_test_normalized, y_test)
+
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+```
+
+#### Define network model
+```py
+class NeuralNetwork(nn.Module):
+	def __init__(self, input_size):
+		super(NeuralNetwork, self).__init__()
+		self.relu = nn.ReLU()
+		self.fc1 = nn.Linear(input_size, 128)
+		self.fc2 = nn.Linear(128, 64)
+		self.fc3 = nn.Linear(64, 32)
+		self.fc4 = nn.Linear(32, 1)
+		self.bn1 = nn.BatchNorm1d(128)
+		self.bn2 = nn.BatchNorm1d(64)
+		self.bn3 = nn.BatchNorm1d(32)
+		self.dropout = nn.Dropout(0.5) # Added dropout for regularization
+	  
+	def forward(self, x):
+		x = self.relu(self.bn1(self.fc1(x)))
+		x = self.dropout(x)
+		x = self.relu(self.bn2(self.fc2(x)))
+		x = self.relu(self.bn3(self.fc3(x)))
+		x = self.dropout(x)
+		x = torch.sigmoid(self.fc4(x))
+		return x
+```
+
+#### Instantiate the model
+```py
+input_size = X_train_normalized.shape[1]
+model = NeuralNetwork(input_size)
+```
+#### Choose parameters & Define storing variables
+```py
+criterion = nn.BCELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+num_epochs = 1000
+train_accuracies = [] # To store training accuracies
+test_accuracies = [] # To store test accuracies
+best_model = None
+best_acc = 0
+```
+
+### Training process
+#### Training weights by using results
+```py
+for epoch in range(num_epochs):
+	model.train()
+	correct_train = 0
+	total_train = 0
+	for inputs, labels in train_loader:
+		optimizer.zero_grad()
+		outputs = model(inputs)
+		predicted = (outputs > 0.5).float()
+		correct_train += (predicted == labels.view(-1, 1)).sum().item()
+		total_train += labels.size(0)
+	
+	loss = criterion(outputs, labels.view(-1, 1))
+	loss.backward()
+	optimizer.step()
+	
+	train_accuracy = correct_train / total_train
+	train_accuracies.append(train_accuracy)
+```
+
+#### Evaluating the results for each epoch
+```py
+	model.eval()
+	with torch.no_grad():
+		correct_test = 0
+		total_test = 0
+		for inputs, labels in test_loader:
+			outputs = model(inputs)
+			predicted = (outputs > 0.5).float()
+			correct_test += (predicted == labels.view(-1, 1)).sum().item()
+			total_test += labels.size(0)
+		
+		test_accuracy = correct_test / total_test
+		test_accuracies.append(test_accuracy)
+		
+		print(f'Epoch {epoch + 1}, Test Accuracy: {test_accuracy}')
+		if epoch>5 and np.sum(test_accuracies[-5:]) > best_acc:
+			# Save the current model
+			checkpoint = {
+				'epoch': epoch,
+				'model_state_dict': model.state_dict(),
+				'optimizer_state_dict': optimizer.state_dict(),
+				'best_accuracy': best_acc,
+			}
+			
+		torch.save(checkpoint, '../result/best_model.pth')
+```
+
+#### Draw the resulting values after training
+```py
+plt.plot(range(1, len(train_accuracies) + 1), train_accuracies, label='Train Accuracy')
+plt.plot(range(1, len(test_accuracies) + 1), test_accuracies, label='Test Accuracy')
+plt.xlabel('Iteration')
+plt.ylabel('Loss')
+plt.legend()
+plt.savefig('../result/error_graph.png')
+```
+
+### Evaluating using the saved model
+
+#### Load the saved checkpoint
+```py
+checkpoint = torch.load('../result/best_model.pth')
+model.load_state_dict(checkpoint['model_state_dict'])
+optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+```
+
+#### Set the model and evaluate by using it
+```py
+data = test.values
+tensor_data = torch.tensor(data, dtype = torch.float32)
+tensor_data_normalized = (tensor_data - tensor_data.mean()) / tensor_data.std()
+model.eval() # Set the model to evaluation mode
+with torch.no_grad():
+	outputs = model(tensor_data_normalized)
+
+predicted = (outputs > 0.5).float()
+result = predicted.tolist()
+flattened_list = np.array(result).flatten().tolist()
+boolean_list = [bool(element) for element in flattened_list]
+
+make_submission(boolean_list)
+```
