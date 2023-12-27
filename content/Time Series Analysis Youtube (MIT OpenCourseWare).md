@@ -29,6 +29,7 @@
 	\end{aligned}
 	$$
 - __Wold Representation Theorem__
+	
 	Any zero-mean covariance stationary time series $\{ X_t \}$ can be decomposed as $X_t = V_t +S_t$ where
 	- $\{ V_t \}$ is a linearly deterministic process i.e. a  linear combination of past values of $V_t$ with constant coefficients. (past values can perfectly predict)
 	- $S_t=\sum_{i=0}^{\infty}\psi_i\eta_{t-i}$(weighted average of $\eta_i$(white noise)) is an infinite moving average process of error terms where
@@ -62,12 +63,12 @@
 		- Apply OLS to specify the projection:
 		$$
 		\begin{aligned}
-		\hat{\textbf{y}} &=\textbf{Z}(\textbf{Z}^T\textbf{Z})^{-1}\textbf{Z}\textbf{y}\\
+		\hat{\textbf{y}} &=\textbf{Z}(\textbf{Z}^T\textbf{Z})^{-1}\textbf{Z}^T\textbf{y}\\
 		&= \hat{P}(Y_t|Y_{t-1},Y_{t-2},\cdots,Y_{t-p}) \\
 		&= \hat{\textbf{y}}^{(p)}
 		\end{aligned}
 		$$
-	- Compute the projection residual$$\hat{\epsilon}^{(p)} = \textbf{y}=\hat{\textbf{y}}^{(p)}$$
+	- Compute the projection residual$$\hat{\epsilon}^{(p)} = \textbf{y}-\hat{\textbf{y}}^{(p)}$$
 	- Specify moving average model: $\epsilon_t^{(p)}=\sum_{i=0}^{\infty}\psi_j\eta_{t-i}$ 
 	- Case analysis
 		- $\hat{\epsilon}^{(p)}$ should be orthogonal to $Y_{t-s}, s>p$. If not, increase p and start again

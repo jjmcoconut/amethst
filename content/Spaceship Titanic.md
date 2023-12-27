@@ -83,4 +83,4 @@ from statistics import mode
 data = [ [True, False, False, True], [True, True, True, True], [False, False, False, True], ] 
 result = [mode(column) for column in zip(*data)] print(result)
 ```
-Then it will return [True, False, False, True]
+Then it will return [True, False, False, True] - Useless
