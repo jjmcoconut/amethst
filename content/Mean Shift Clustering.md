@@ -22,7 +22,7 @@ $$m(\textbf{x})=\frac{\sum^n_{i=1}\textbf{x}_ig(\frac{||\textbf{x}-\textbf{x}_i|
 | - | -------- | -------- |  
 | Assume spherical cluster | X | O |  
 | Parameter | Window size | K |
-| Robust to outliers | Window O | X |
+| Robust to outliers | O | X |
 | Result differs by parameters | O | O |
 | Expensive | O(More than K-mean) | O |
 

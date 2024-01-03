@@ -10,7 +10,7 @@ __Realization__
 __Covariance Stationary__
 - The time series $\{X_t \}$ is covariance stationary if
 	- $\mu_x = \mu$
-	- $\sigma_{X_t}^2 = \\sigma^2 <\infty$
+	- $\sigma_{X_t}^2 = \sigma^2 <\infty$
 	- $\gamma_{X_{t_1}X_{t_2}}$ and $\rho_{X_{t_1}X_{t_2}}$  depend only on $t_2-t_1$
 - Example)
   
@@ -22,6 +22,41 @@ __White Noise Process__
 - Process $X_t$ is said to be white noise if the following conditions hold
 	- Each $X_t$ has zero mean and finite variance $\sigma_X^2$
 	- $X_{t_1}, X_{t_2}$ are uncorrelated if $t_1 \neq t_2$
+
+##### Time Series Patterns
+- Trend: Long-term decrease or increase in data
+- Seasonal: Data rises and falls with fixed frequency
+- Cyclic: Data rises and falls with unfixed frequency
+
+###### Decomposing with python
+```py
+from pandas import read_csv
+from matplotlib import pyplot
+from statsmodels.tsa.seasonal import seasonal_decompose
+series = read_csv('airline-passengers.csv', header=0, index_col=0)
+result = seasonal_decompose(series, model='multiplicative')
+result.plot()
+pyplot.show()
+```
+
+- Multiplicative model is: y(t) Trend $\times$ Seasonality $\times$ Noise
+- Additive model: y(t) Trend + Seasonality + Noise
+- Able to calculate trend by smoothing(find the optimal k)
+###### Example
+ - Original data
+   ![[Pasted image 20231227210047.png|500]]
+- Resulting data
+  ![[Pasted image 20231227210109.png|500]]
+###### Stationary Test - Augmented Dickey-Fuller 
+- Null hypothesis($H_0$): The time series data is non-stationary
+- Alternative hypothesis($H_a$): The time series is stationary
+- 
+
+###### Making time series stationary
+- Differencing: subtract each data point in the time series from its successor
+- 1 or 2 differencing makes it stationary
+- 
+
 
 __Auto-correlation Plots__
 - Original data

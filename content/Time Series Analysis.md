@@ -8,7 +8,7 @@
    
    In which regular or fixed interval shifts within the dataset in a continuous timeline. Would be a bell curve or saw tooth.
    
-1. Trend
+3. Trend
    
    In which there is no fixed interval and any divergence within the given dataset is a continuous timeline. The trend would be a Negative or Positive or Null Trend.
 
@@ -17,6 +17,8 @@
 - Data points must be linear in their relationship.
 - Data transformations are mandatory, so they are little expensive(?)
 - Models mostly work on univariate(one variable) data.
+
+### [[Outlier Detection]]
 
 
 
