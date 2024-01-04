@@ -74,3 +74,20 @@ __Spectrum, Spectral Density__
 	  $$S_x(f) = \sum_{k=-\infty}^{\infty}e^{-2\pi ifk}\rho_k$$
 __Nyquist Frequency__
 - For data $x_t, t=1,2,,\cdots,n$ then the Nyquist frequency is $\frac{1}{2}$, and the shortest observable period is 2.
+
+### ARMA Models
+
+#### AR(1) Model
+
+$$X_t = \beta + \phi_1X_{t-1}+a_t$$
+- $\phi_1$: real, nonzero
+- $a_t$: white noise process with finite variance $\sigma_a^2$
+- $\beta$: constant value $(1-\phi_1)\mu$
+
+##### AR(1) is stationary iff $|\phi_1|<1$
+- $\mu_x = \mu$
+	- $E[X_t]=E[\beta+\phi_1X_{t-1}+\epsilon_t] = \beta + \phi_1E[X_{t-1}]$
+	  So it must satisfy $$ 
+- $\sigma_{X_t}^2 = \sigma^2 <\infty$
+- $\gamma_{X_{t_1}X_{t_2}}$ and $\rho_{X_{t_1}X_{t_2}}$  depend only on $t_2-t_1$
+- 

@@ -26,3 +26,6 @@
 		 
 
 [[Times Series for Data Science(Chapman)]]
+
+### [[Spectogram]]
+
