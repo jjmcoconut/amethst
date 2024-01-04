@@ -83,12 +83,79 @@ $$X_t = \beta + \phi_1X_{t-1}+a_t$$
 - $\phi_1$: real, nonzero
 - $a_t$: white noise process with finite variance $\sigma_a^2$
 - $\beta$: constant value $(1-\phi_1)\mu$
-
+	
 ##### AR(1) is stationary iff $|\phi_1|<1$
 - $\mu_x = \mu$
 	- $E[X_t]=E[\beta+\phi_1X_{t-1}+\epsilon_t] = \beta + \phi_1E[X_{t-1}]$
 	  So it must satisfy $E[X_t]=E[X_{t-1}]$ 
-	   
+	   $$E[X_t]=\beta+\phi_1E[X_t] \Leftrightarrow E[X_t]=\frac{\beta}{1-\phi_1}$$
 - $\sigma_{X_t}^2 = \sigma^2 <\infty$
+	- $V(X_t)=\phi_1^2V(X_{t-1})+2\phi_1Cov(X_{t-1},\epsilon_t)+V(\epsilon_t)$
+	  $V(X_t)=\phi_1^2V(X_t)+\sigma_a^2 \Leftrightarrow V(X_t)=\frac{\sigma_a^2}{1-\phi_1^2}$ 
 - $\gamma_{X_{t_1}X_{t_2}}$ and $\rho_{X_{t_1}X_{t_2}}$  depend only on $t_2-t_1$
-- 
+	- $\beta = (1-\phi_1)\mu$
+	  $X_t-\mu = \phi_1(X_{t-1}-\mu)+\epsilon_t$ ($\mu$ is constant)
+	  $$
+	  \begin{aligned}
+	  \gamma_k &= E[(X_t-\mu)(X_{t-k}-\mu)] \\
+	  &= E[(\phi(X_{t-1}-\mu)+\epsilon_t)(X_{t-k}-\mu)] \\
+	  &= \phi_1E[(X_{t-1}-\mu)(X_{t-k}-\mu)] + E[\epsilon_t]E[X_{t-k}-\mu] \\
+	  & = \phi_1\gamma_{k-1}
+	  \end{aligned}
+	  $$
+	  By repeated substitution:
+	  $\gamma_k=\phi_1^k\gamma_0=\phi_1^kV(X_t)=\phi^k\frac{\sigma_a^2}{1-\phi_1^2}$
+-  All 3 conditions for stationarity is satisfied iff $|\phi_1^2|<1$
+
+##### Backshift Operator B
+$BX_t = X_{t-1}$
+Then the AR(1) can be expressed as
+$(1-\phi_1B)(X_t-\mu)=a_t$ or $\phi(B)(X_t-\mu)=a_t$ given $\phi(B) = 1-\phi_1B$
+
+##### Properties of Stationary AR(1) Models
+
+- With zero mean $(1-\phi_1B)X_t = a_t$
+- $Var(X_t) = \frac{\sigma_a^2}{1-\phi_1^2}$
+- $Cov(X_t,X_{t-k}) = \phi_1^kVar(X_t) = \phi_1^k\sigma_X^2$
+- $\rho_k = \frac{\gamma_{|k|}}{\gamma_0} =\phi_1^{|k|}$ ($\gamma_k = \gamma_{-k}$)
+
+##### Spectral Density of AR(1)
+
+Spectral density is defined as $S_x(f) = \sum_{k=-\infty}^{\infty}e^{-2\pi ifk}\rho_k$
+In the case of AR(1)
+$$
+\begin{aligned}
+S_x(f) &=\frac{\sigma_a^2}{\gamma_0|1-\phi_1e^{-i2\pi f}|^2} \\
+&= \frac{1-\phi_1^2}{|1-\phi_1e^{-2i\pi f}|^2} \\
+& = \frac{1-\phi_1^2}{(1-\phi_1cos2\pi f)^2+(\phi_1sin2\pi f)^2}
+\end{aligned}
+$$
+Derivative: $\frac{\partial}{\partial f} (1-\phi_1cos2\pi f)^2 + (\phi_1sin2\pi f)^2 = 4\pi \phi_1 sin(2\pi f)$  
+So if $\phi_1>0$ then $S_x(f)$ decreases as $f$ increases
+and if $\phi_1<0$ then $S_x(f)$ increases as $f$ increases
+
+#### AR(2) Model
+$$X_t = \beta + \phi_1X_{t-1}+\phi_2X_{t-2}+a_t$$
+- $\phi_1$: real, nonzero
+- $a_t$: white noise process with finite variance $\sigma_a^2$
+- $\beta$: constant value $(1-\phi_1-\phi_2)\mu$
+
+##### Facts about AR(2)
+- $E[X_t] = \mu$
+- $Var(X_t) = \gamma_0=\frac{\sigma_a^2}{1-\phi_1\rho_{k-1}-\phi_2\rho_{k-2}}$
+- $\rho_k = \phi_1\rho_{k-1}+\phi_2\rho_{k-2}$
+- $S_x(f)=\frac{\sigma_a^2}{\gamma_0 |1-\phi_1e^{-2i\pi f}-\phi_2e^{-4i\pi f}|^2}$
+- With mean 0:
+  $$
+  \begin{aligned}
+  X_t-\phi_1X_{t-1}-\phi_2X_{t-2} &= a_t \\
+  (1-\phi_1B-\phi_2B^2)X_t &= a_t\\
+  \phi(B)X_t &= a_t
+  \end{aligned}
+  $$
+  $\phi(z)$ is the characteristic equation $\phi(z) = 1-\phi_1z-\phi_2z^2$
+##### Stationarity of AR(2)
+
+AR(2) is stationary iff all of the roots of the characteristic equation are greater than 1
+
+E
