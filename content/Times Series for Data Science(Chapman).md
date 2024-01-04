@@ -87,7 +87,8 @@ $$X_t = \beta + \phi_1X_{t-1}+a_t$$
 ##### AR(1) is stationary iff $|\phi_1|<1$
 - $\mu_x = \mu$
 	- $E[X_t]=E[\beta+\phi_1X_{t-1}+\epsilon_t] = \beta + \phi_1E[X_{t-1}]$
-	  So it must satisfy $$ 
+	  So it must satisfy $E[X_t]=E[X_{t-1}]$ 
+	   
 - $\sigma_{X_t}^2 = \sigma^2 <\infty$
 - $\gamma_{X_{t_1}X_{t_2}}$ and $\rho_{X_{t_1}X_{t_2}}$  depend only on $t_2-t_1$
 - 
