@@ -131,8 +131,8 @@ S_x(f) &=\frac{\sigma_a^2}{\gamma_0|1-\phi_1e^{-i2\pi f}|^2} \\
 \end{aligned}
 $$
 Derivative: $\frac{\partial}{\partial f} (1-\phi_1cos2\pi f)^2 + (\phi_1sin2\pi f)^2 = 4\pi \phi_1 sin(2\pi f)$  
-So if $\phi_1>0$ then $S_x(f)$ decreases as $f$ increases
-and if $\phi_1<0$ then $S_x(f)$ increases as $f$ increases
+If $\phi_1>0$ then $S_x(f)$ decreases as $f$ increases. It will show a peak on $f=0$
+If $\phi_1<0$ then $S_x(f)$ increases as $f$ increases. It will show a peak on $f=0.5$
 
 #### AR(2) Model
 $$X_t = \beta + \phi_1X_{t-1}+\phi_2X_{t-2}+a_t$$
@@ -156,6 +156,162 @@ $$X_t = \beta + \phi_1X_{t-1}+\phi_2X_{t-2}+a_t$$
   $\phi(z)$ is the characteristic equation $\phi(z) = 1-\phi_1z-\phi_2z^2$
 ##### Stationarity of AR(2)
 
-AR(2) is stationary iff all of the roots of the characteristic equation are greater than 1
+AR(2) is stationary iff size of all the roots from the characteristic equation are greater than 1
 
-E
+Example: $X_t - 0.2X_{t-1}-0.63X_{t-2}=a_t$
+	$\phi(z)=1-0.2z-0.63z^2=0 \Leftrightarrow (1-0.9z)(1+0.7z)=0$
+	Then we get the solutions $r_1=1/0.9>1$ and $r_2=1/-0.7=-1.43$ 
+	Since all root size is bigger than 1, it is stationary
+
+##### AR(2) with 2 Real Roots
+
+$$X_t-0.2X_{t-1}-0.63X_{t-2}=(1-0.9B)(1+0.7B)X_t=a_t$$
+This will show a combination of two 1st order behaviors.
+- Spectral density will show a peak both on $f=0, f=0.5$,  but slightly higher peak at $f=0$ since $r_1$ is closer to 1 than $r_2$
+- Autocorrelations show a damped exponential with a slight indication of oscillating behavior
+
+##### AR(2) with Complex Conjugate Roots
+- Autocorrelation is a damped sinusoidal with frequency
+  $$f_0=\frac{1}{2\pi}cos^{-1}(\frac{\phi_1}{2\sqrt{-\phi_2}})$$
+- Realizations are pseudosinusoidal with frequency $f_0$
+- Spectral density has peak on $f_0$
+
+
+### AR(p) Models
+$$X_t = \beta + \phi_1X_{t-1}+\phi_2X_{t-2}+\cdots+\phi_pX_{t-p}+a_t$$
+- $\phi_1$: real, nonzero
+- $a_t$: white noise process with finite variance $\sigma_a^2$
+- $\beta$: constant value $(1-\phi_1-\phi_2-\cdots-\phi_p)\mu$
+  
+##### Facts about AR(p)
+- $E[X_t] = \mu$
+- $Var(X_t) = \gamma_0=\frac{\sigma_a^2}{1-\phi_1\rho_{k-1}-\cdots-\phi_p\rho_{t-p}}$
+- $\rho_k = \phi_1\rho_{k-1}+\cdots+\phi_p\rho_{t-p}$
+- $S_x(f)=\frac{\sigma_a^2}{\gamma_0 |1-\phi_1e^{-2i\pi f}-\cdots-\phi_pe^{-2pi\pi f}|^2}$
+- With mean 0:
+  $$
+  \begin{aligned}
+  X_t-\phi_1X_{t-1}-\cdots-\phi_pX_{t-p} &= a_t \\
+  (1-\phi_1B-\cdots-\phi_pB^p)X_t &= a_t\\
+  \phi(B)X_t &= a_t
+  \end{aligned}
+  $$
+  $\phi(z)$ is the characteristic equation $\phi(z) = 1-\phi_1z-\cdots-\phi_pz^p$
+  
+##### Stationarity of AR(p)
+
+AR(p) is stationary iff size of all the roots from the characteristic equation are greater than 1
+
+##### Factor Tables for AR(p)
+
+- 1st order and 2nd order factors serve as DNA of an AR(p) model
+- Features of AR(p) model are simply a combination of 1st, 2nd order factors(no 3rd order features)
+
+Example: Factor table for $X_t-1.95X_{t-1}+1.85X_{t-2}-0.855X_{t-3}=a_t$
+
+| Factor | Roots | $r^{-1}$ | $f_0$ |
+| :--- | ---- | ---- | ---- |
+| $1-0.95B$ | $1.05$ | 0.95 | 0 |
+| $1-B+0.95B^2$ | $0.55 \pm 0.90i$ | 0.95 | 0.16 |
+- The size of roots are bigger than 1. It is stationary
+- In this case the size of the roots are similar. It has almost equal dominance
+  In other cases, the one with the size closest to 1(the smallest when stationary) will be the most dominant factor.
+
+#### Linear filters for AR(p)
+
+##### General linear Process
+$$X_t=\mu = \sum_{j=0}^\infty \Psi_ja_{t-j}$$
+Is a __general linear process__ if
+- $a_t$ is a white noise process
+- $\sum_{j=0}^\infty|\Psi_j|<\infty$
+
+###### A GLP is stationary process
+pf) later
+###### Variance of GLP is $\sigma_X^2 = \sigma_a^2 \sum_{j=0}^\infty \Psi_j^2$
+pf) later
+
+##### AR(1) in GLP Form
+$$
+(1-\phi_1B)(X_t-\mu)=a_t
+$$
+$$
+\begin{aligned}
+X_t - \mu &= \frac{1}{1-\phi_1B}a_t \\
+&= (1+\phi_1B+\phi_1^2B^2 + \cdots)a_t \\
+&=  (\sum_{k=0}^\infty \phi_1^kB^k)a_t \\
+& = \sum_{k=0}^\infty\phi_1^ka_{t-k} \\
+& = \sum_{k=0}^\infty\Psi_ka_{t-k} \space(\Psi_k=\psi_1^k)
+\end{aligned}
+$$
+__WTS: $\sum_{j=0}^\infty|\Psi_j|<\infty$__ 
+ $$\sum_{k=0}^\infty |\Psi_k|=\sum_{k=0}^\infty |\phi_1^k|=\frac{1}{1-|\phi_1|}<\infty \space(|\phi_1|<1)$$
+
+##### AR(p) in GLP Form
+
+$$X_t-\mu = \phi^{-1}(B)a_t$$
+
+Calculate this as the same way as AR(1)
+
+#### MA Models
+
+MA(q) Model:
+$$X_t-\mu = a_t -\theta_1a_{t-1}-\cdots-\theta_qa_{t-q})$$
+
+##### MA(1) Model
+$$X_t - \mu = a_t-\theta_1a_{t-1}$$
+- $X_t-\mu = \theta(B)a_t$ 
+- characteristic function: $\theta(B)=1-\theta_1B$
+- $E[X_t]=\mu$
+- $Var(X_t)=\sigma_X^2(=\gamma_0)=\sigma_a^2(1+\theta_1^2)$
+- Autocorrelations
+	- $\rho_0=1$
+	- $\rho_1=-\frac{\theta_1}{1+\theta_1^2} \space(show: |\rho_1|\leq 0.5)$
+	- $\rho_k=0, \space k>1$
+- $S_x(f)=\frac{\sigma_a^2}{\sigma_X^2}|1-\theta_1e^{-2\pi if}|^2$
+- System frequencies are represented by __dips__ in the spectral density
+
+##### MA(2) Model
+$$X_t - \mu = a_t-\theta_1a_{t-1}-\theta_2a_{t-2}$$
+- $X_t-\mu = \theta(B)a_t$ 
+- characteristic function: $\theta(B)=1-\theta_1B-\theta_2B^2$
+- $E[X_t]=\mu$
+- $Var(X_t)=\sigma_X^2(=\gamma_0)=\sigma_a^2(1+\theta_1^2+\theta_2^2)$
+- Autocorrelations
+	- $\rho_0=1$
+	- $\rho_1=-\frac{\theta_1+\theta_1\theta_2}{1+\theta_1^2+\theta_2^2}$
+	- $\rho_2=-\frac{\theta_2}{1+\theta_1^2+\theta_2^2}$
+	- $\rho_k=0, \space k>1$
+- $S_x(f)=\frac{\sigma_a^2}{\sigma_X^2}|1-\theta_1e^{-2\pi if}-\theta_2e^{-4\pi if}|^2$
+- System frequencies are represented by __dips__ in the spectral density
+
+##### MA(q) Model
+$$X_t-\mu = a_t -\theta_1a_{t-1}-\cdots-\theta_qa_{t-q})$$
+- $X_t-\mu = \theta(B)a_t$ 
+- characteristic function: $\theta(B)=1-\theta_1B-\cdots-\theta_qB^q$
+- $E[X_t]=\mu$
+- $Var(X_t)=\sigma_X^2(=\gamma_0)=\sigma_a^2(1+\theta_1^2+\cdots+\theta_q^q)$
+
+Invertibility
+- $X_t-\mu = \theta(B)a_t$ can be written as $\theta^{-1}(B)(X_t-\mu)=a_t$
+- $$
+	\begin{aligned}
+	\theta^{-1}(B)(X_t-\mu) &= (\sum_{k=0}^\infty \pi_kB^k)(X_t-\mu) \\
+	&=\sum_{k=0}^\infty \pi_k(X_{t-k}-\mu)
+	\end{aligned}
+	$$
+	$$\sum_{k=0}^\infty \pi_k(X_{t-k}-\mu)=a_t$$
+- Definition: MA(q) is __invertible__ if $\sum_{k=0}^\infty |\pi_k|<\infty$
+- MA is invertible iff all roots of $\theta(z)=0$ have size bigger than 1
+
+Reasons for invertibility
+- __Uniqueness__
+  Consider MA(1) model $X_t=(1-\theta_1B)a_t$ and $Y_t = (1-\frac{1}{\theta_1}B)b_t$
+  We have autocorrelations as $\rho_1 = \frac{-\theta_1}{1+\theta_1^2}$ and $\rho_1^\prime = \frac{-\theta_1^{-1}}{1+\theta_1^{-2}}=\frac{-\theta_1}{1+\theta_1^2}$ 
+  We can see that $\rho_1 = \rho_1^\prime$
+  But given $|\theta_1|<1$ we can see that 
+  - $X_t=(1-\theta_1B)a_t \Rightarrow \sum |\pi_k| = \sum |\theta_1^k| < \infty$: invertible
+  - $X_t=(1-\frac{1}{\theta_1}B)a_t \Rightarrow \sum |\pi_k| = \sum \frac{1}{|\theta_1^k|} = \infty$: not invertible
+  So if we choose invertible models, we can get a unique model
+
+- Present events are associated with the past in sensible manner
+  
