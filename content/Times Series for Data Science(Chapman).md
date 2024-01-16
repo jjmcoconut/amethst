@@ -41,6 +41,7 @@ pyplot.show()
 
 - Multiplicative model is: y(t) Trend $\times$ Seasonality $\times$ Noise
 - Additive model: y(t) Trend + Seasonality + Noise
+- Can exchange to each other using exponential, logarithmic function
 - Able to calculate trend by smoothing(find the optimal k)
 ###### Example
  - Original data
@@ -50,12 +51,10 @@ pyplot.show()
 ###### Stationary Test - Augmented Dickey-Fuller 
 - Null hypothesis($H_0$): The time series data is non-stationary
 - Alternative hypothesis($H_a$): The time series is stationary
-- 
 
 ###### Making time series stationary
 - Differencing: subtract each data point in the time series from its successor
 - 1 or 2 differencing makes it stationary
-- 
 
 
 __Auto-correlation Plots__
@@ -240,11 +239,11 @@ X_t - \mu &= \frac{1}{1-\phi_1B}a_t \\
 &= (1+\phi_1B+\phi_1^2B^2 + \cdots)a_t \\
 &=  (\sum_{k=0}^\infty \phi_1^kB^k)a_t \\
 & = \sum_{k=0}^\infty\phi_1^ka_{t-k} \\
-& = \sum_{k=0}^\infty\Psi_ka_{t-k} \space(\Psi_k=\psi_1^k)
+& = \sum_{k=0}^\infty\Psi_ka_{t-k} \space(\Psi_k=\phi_1^k)
 \end{aligned}
 $$
 __WTS: $\sum_{j=0}^\infty|\Psi_j|<\infty$__ 
- $$\sum_{k=0}^\infty |\Psi_k|=\sum_{k=0}^\infty |\phi_1^k|=\frac{1}{1-|\phi_1|}<\infty \space(|\phi_1|<1)$$
+ $$\sum_{k=0}^\infty |\Psi_k|=\sum_{k=0}^\infty |\phi_1^k|=\frac{1}{1-|\phi_1|}<\infty \space(\because|\phi_1|<1)$$
 
 ##### AR(p) in GLP Form
 
@@ -314,4 +313,260 @@ Reasons for invertibility
   So if we choose invertible models, we can get a unique model
 
 - Present events are associated with the past in sensible manner
-  
+  Suppose $\mu = 0$ then
+  $$
+  \begin{aligned}
+  Y_t = (1-\frac{1}{\theta_1}B)b_t &\Rightarrow \sum_{k=0}^\infty \frac{1}{|\theta_1^k|}X_{t-k}=a_t \\
+  & \Rightarrow X_t= a_t-\sum_{k=1}^\infty \frac{1}{|\theta_1^k|}X_{t-k}
+  \end{aligned}
+  $$
+  which $\frac{1}{|\theta_1^k|}$ grows to infinity which means it is not sensible
+
+#### ARMA(p,q) Models
+$$(1-\phi_1B-\cdots-\phi_pB^p)(X_t-\mu) = (1-\theta_1B-\cdots-\theta_qB^q)a_t$$
+or $\phi(B)(X_t-\mu) = \theta(B)a_t$
+##### ARMA(p,q) with p>0 is stationary iff all roots of $\phi(z)=0$ are bigger than 1
+
+##### ARMA(p,q) with q>0 is invertible iff all roots of $\theta(z)=0$ are bigger than 1
+
+#### AR(p) vs ARMA(p,q)
+
+Because $\sum|\pi_k|<\infty$, we can see that $|\pi_k| \rightarrow 0$ as $k \rightarrow \infty$. This means that the coefficients of __infinite order AR__ become negligible beyond some point
+ 
+
+### ARMA Fitting
+
+ARMA(p,q) fitting has two steps
+1. Identifying p,q
+2. Identifying $\phi_1,\cdots,\phi_p,\theta_1,\cdots,\theta_q,\mu,\sigma_a^2$
+
+But the actual way to figure out the ARMA(p,q) model calculates $\phi_1,\cdots,\phi_p,\theta_1,\cdots,\theta_q,\mu,\sigma_a^2$ for every candidate p,q and then take the best combination using some method(AIC).
+
+#### Finding $\phi, \theta$ given $p,q$ 
+- __MOM(Method of Moments)__
+	- AR(1) $X_t = \phi_1 X_{t-1}+\epsilon_t$ we can get then $\phi_1$ is the true lag1-autocorrelation which we can estimate as $\rho_1$
+	- AR(2) $X_t = \phi_1X_{t-1}+\phi_2X_{t-2}+\epsilon_t$ then we get two equations using measured autocorrelations as true autocorrelation.
+	  $$
+	  \begin{aligned}
+	  \rho_1 = \phi_1 + \rho_1\phi_2 \\
+	  \rho_2 = \rho_1\phi_1 + \phi_2
+	  \end{aligned}
+	  $$
+	  Then the result will appear as
+	  $$\hat{\phi}_1 = \frac{r_1(1-r_2)}{1-r_1^2},\hat{\phi_2}=\frac{r_2-r_1}{1-r_1^2}$$
+	- MA(1) $X_t = \epsilon_t -\theta_1\epsilon_{t-1}$ 
+	  $$
+	  \begin{aligned}
+	  \rho_1 &= \frac{Cov(X_t,X_{t-1})}{Var({X_t})} \\
+	  &=\frac{Cov(\epsilon_t-\theta_1\epsilon_{t-1},\epsilon_{t-1}-\theta_1\epsilon_{t-2})}{Var(\epsilon_t-\theta_1\epsilon_{t-1})} \\
+	  & = \frac{-\theta_1\sigma_\epsilon^2}{(1+\theta_1^2)\sigma_\epsilon^2} \\
+	  &=-\frac{\theta_1}{1+\theta_1^2}
+	  \end{aligned}
+	  $$
+	- With higher-order MA it is hard to calculate using MOM, and is inaccurate
+- __MLE__
+  $$L(\phi,\theta,\sigma|\textbf{x})=(2\pi)^{-\frac{n}{2}}det({\Gamma(\phi,\theta,\sigma)})^{-\frac{1}{2}}e^{-\frac{1}{2}\textbf{x}^T\Gamma^{-1}\textbf{x}}$$
+  $$log(L)=-\frac{1}{2}(nlog(2\pi)+log(det(\Gamma))-\textbf{x}^T\Gamma\textbf{x})$$
+  where $\Gamma$ is a autocovariance matrix of $\textbf{x}=[x_1,x_2,\cdots,x_n]^T$ depending on $\phi,\theta,\sigma$ 
+	-  AR(1) $X_t = \phi_1 X_{t-1} +\epsilon_t$ 
+	  $$
+	  \Gamma = \frac{\sigma_\epsilon^2}{1-\phi_1^2}
+	  \begin{bmatrix}
+	  1 & \phi_1 & \phi_1^2 & \cdots & \phi_1^{n-1} \\
+	  \phi_1 & 1 & \phi_1 & \cdots & \phi_1^{n-2} \\
+	  \vdots & \vdots & \vdots & \ddots & \vdots \\
+	  \phi_1^{n-1} & \phi_1^{n-2} & \phi_1^{n-3} & \cdots & 1
+	  \end{bmatrix}
+	  \space(\because Var(X_t)=\frac{\sigma_\epsilon^2}{1-\phi_1^2})
+	  $$
+	  - MA(1) $X_t = \epsilon_t -\theta_1 \epsilon_{t-1}$
+	    $$\Gamma=\sigma_\epsilon^2
+	    \begin{bmatrix}
+	    1+\theta_1 & \theta_1 & 0 &\cdots & 0 \\
+	    \theta_1 & 1+\theta_1 & \theta_1 & \cdots & 0 \\
+	    \vdots & \vdots & \vdots & \ddots &\vdots \\
+	    0 & 0 & 0 & \cdots & 1+\theta_1
+	    \end{bmatrix}$$
+- __Yule-Walker Estimation__
+- __Burg__
+
+#### Estimating $\mu,\sigma$
+- $\mu = \bar{x}$
+- $\sigma_\epsilon^2 = \frac{1}{n-p}\sum_{i=p+1}^n \hat{\epsilon_t}^2 \space(\hat{\epsilon_1}=\cdots=\hat{\epsilon_{p}}=0)$
+
+#### ARMA Model Identification - White Noise Test
+The ARMA is well fit if 
+- $\hat{\rho_k} \approx \frac{1}{\sqrt{n}}$
+- $\hat{\rho_i}, \hat{\rho_j}$ is uncorrelated when $i \neq j$
+- $\hat{\rho_k}s$ is approximately normal
+
+By this information we can make hypothesis:
+- $H_0: \rho_k=0$
+- $H_a: \rho_k \neq 0$
+We can reject $H_0$ by 5% level significance if $|\hat{\rho_k}|>1.96/\sqrt{n}$
+However even we accept $H_0$ we cannot say that the residual is a white noise for 100% possibility.
+![[IMG_E93EE08D6D4B-1.jpeg|500]]
+According to the realization we can see that it is not a white noise but on graph (c) we can see that every bar does not go over the 95% significance line. Which leads to accepting $H_0$
+
+#### Selecting p,q for ARMA(p,q)
+
+Select p,q that minimizes for each criterion
+- AIC: $ln(\hat{\sigma_\epsilon^2})+\frac{2}{n}(p+q+1)$
+- BIC: $ln(\hat{\sigma_\epsilon^2})+\frac{ln(n)}{n}(p+q+1)$
+- AICC: $ln(\hat{\sigma_\epsilon^2})+\frac{n+p+q+1}{n-p-q-3}$
+No criterion is always better than the other(No free lunch theorem).
+
+### Forecasting using ARMA(p,q)
+
+#### Definition
+- $\hat{X}_{t_0}(l)$ is the forecast of $X_{t_0 + l}$ given data up to time $t_0$
+- $\hat{X}_{t_0}(l)=X_{t_0+l} \text{ if } l \leq 0$ 
+- $\hat{\epsilon}_{t_0}(l) = 0$ if $l > 0$
+
+#### Probability Limits for ARMA Forecasts
+
+Forecast error: $e_{t_0}(l)=X_{t_0+l}-\hat{X}_{t_0}(l)$
+
+If we represent ARMA in GLP form: 
+- $X_t -\mu = \sum_{k=0}^\infty \psi_k \epsilon_{t-k}$
+- $X_{t_0+l} -\mu = \sum_{k=0}^\infty \psi_k \epsilon_{t_0+l-k}$
+Then we can calculate forecast error $e_{t_0}(l)$:
+- $e_{t_0}(l)=\sum_{k=0}^{l-1} \psi_k\epsilon_{t_0+l-k}$
+- $e_{t_0}(l) \sim N(0,\sigma_\epsilon^2\sum_{k=0}^{l-1}\psi_k)$
+
+Then we can know that
+$$
+\frac{e_{t_0}(l)-0}{\sigma_\epsilon \sqrt{\sum_{k=0}^{l-1} \psi_k^2}} = 
+\frac{X_{t_0+l}-\bar{X}_{t_0}(l)}{\sigma_\epsilon \sqrt{\sum_{k=0}^{l-1} \psi_k^2}}
+\sim N(0,1)
+$$
+Then the prediction interval can be calculated as
+$$\bar{X}_{t_0}(l) \pm z_{1-\frac{\alpha}{2}}\hat{\sigma_\epsilon}\sqrt{\sum_{k=0}^{l-1}\psi_k^2}$$
+- Sometimes the time series cannot have a negative value(number of chairs, etc.) but the prediction interval may produce a negative value. In this case we should adjust that value to 0.
+
+#### Forecast Performance
+
+$$RMSE = \sqrt{\frac{1}{k}\sum_{k=t_0+1}^{t_0+k}(f_k-x_k)^2}$$
+### ARIMA(p,d,q) Models
+
+#### Definition
+$(1-B)^d$ is the $d(d \geq 0)$th difference operator.
+$X_t$ is a __ARIMA(p,d,q)__ model iff $\phi(B)(1-B)^dX_t =\theta(B)\epsilon_t$ where $\phi(B)$ is stationary, $\theta(B)$ is invertible
+
+- ARIMA(0,1,0): $(1-B)X_t = \epsilon_t$ is same as AR(1) model with $\phi_1 = 1$
+- Check for a (1-B) if the sample autocorrelation decreases slowly.
+  ![[Pasted image 20240116164433.png]]
+  Since ARIMA(2,2,0) has $(1-B)^2$ we can see that the first two plots have strong positive correlations
+
+#### Methods of Deciding to Include 1-B Factors
+
+- Naive approach
+	- Simply just fit a ARMA(p,q) model and check if there is a 1-B factor inside it.
+	- This method is very dangerous since the result white noise makes can differ the results in a significant way.
+- Unit root tests
+	- ADF(Augmented Dickey-Fuller)
+		- $H_0$: Model contains a unit root
+		- $H_a$: Model does not contain a unit root
+	- KPSS
+		- $H_0$: Model does not contain a unit root
+		- $H_a$: Model contains a unit root
+	- Model Comparison
+		- Correctly detect unit roots(unit roots inside model)
+		  KPSS performs better than ADF
+		  ![[Pasted image 20240116165936.png]]
+		- Correctly not detect unit roots(stationary model)
+		  ![[Pasted image 20240116170209.png]]
+		  Since the table represent incorrect percentages, lower percentages are better.
+		  ADF has a better estimation for this. However it still dangerous for cases when $\phi_1>0.95$
+
+#### Fitting ARIMA(p,d,q)
+
+1. Detect unit roots until the differentiated model is a stationary model.
+	- The number of differences required to stationarize the model is the estimated value d.
+	- In most cases d does not exceed 2.$(d \leq 2)$
+1. Fit a ARMA(p,q) for the stationarized model.
+
+#### Forecasting with ARIMA
+
+Fitted ARIMA(p,d,q): $\hat{\phi}(B)(1-B)^dX_t = \hat{\theta}(B)a_t$
+1. Organize $\hat{\phi}(B)(1-B)^d$
+2. Leave only $X_t$ on the left side and move the rest to the right.
+3. Do the rest same as ARMA(p,q) model
+From ARMA(p,q) we can get the prediction interval using the fact in GLP form
+$$
+\frac{e_{t_0}(l)-0}{\sigma_\epsilon \sqrt{\sum_{k=0}^{l-1} \psi_k^2}} = 
+\frac{X_{t_0+l}-\bar{X}_{t_0}(l)}{\sigma_\epsilon \sqrt{\sum_{k=0}^{l-1} \psi_k^2}}
+\sim N(0,1)
+$$
+Then the prediction interval can be calculated as
+$$\bar{X}_{t_0}(l) \pm z_{1-\frac{\alpha}{2}}\hat{\sigma_\epsilon}\sqrt{\sum_{k=0}^{l-1}\psi_k^2}$$
+
+### Seasonal Models
+
+#### Definition
+
+$X_t$ is a stationary ARIMA model iff $\phi(B)(1-B^s)X_t = \theta(B)\epsilon_t$ 
+- s is a non-negative integer, the length of the season
+- if $s=0$ then it is a ARMA(p,q) model
+- if $s=1$ then it is a ARIMA(p,1,q) model
+
+All forms of $1-B^s$ can be divided into $1-\alpha B,1-\beta B -\gamma B^2$  
+For example, $1-B^4 = (1-B)(1+B)(1+B^2)$
+
+#### Fitting Seasonal ARIMA Models to Data
+
+1. Select the value s
+2. Seasonally differentiate the data
+3. Fit ARMA(p,q) on the differentiated data
+
+#### Forecasting ARIMA Models
+
+Fitted ARIMA(p,d,q): $\hat{\phi}(B)(1-B^s)X_t = \hat{\theta}(B)a_t$
+1. Organize $\hat{\phi}(B)(1-B^s)$
+2. Leave only $X_t$ on the left side and move the rest to the right.
+3. Do the rest same as ARMA(p,q) model
+
+
+### ARCH and GARCH Models
+
+#### Why do we need this?
+![[Pasted image 20240116173000.png|600]]
+Features of this data
+- Mean 0
+- Variance does not change gradually in time. But, has sudden periods of increased and decreased variability.
+It is a non-stationary process - has the behavior of a white noise
+However, if we square the data then the data becomes correlated.
+
+#### ARCH(1) Model
+
+$u_t = \epsilon_t \sqrt{\alpha_0 + \alpha_1u_{t-1}^2}$
+- $\alpha_0, \alpha_1$ are constants
+- $\epsilon_t \sim N(0,1)$
+- $\epsilon_t$ is uncorrelated with $u_{t-j}^2, \space j>0$
+
+__Notes__
+- $u_t^2=\epsilon_t^2(\alpha_0 +\alpha_1u_{t-1}^2)=\alpha_0 + \alpha_1u_{t-1}^2+w_t$
+- $Var(u_t) = E[u_t^2]$
+- $Var(u_t)$ given $u_{t-1}^2$ is $\sigma_{t|t-1}^2 = \alpha_0 +\alpha_1u_{t-1}^2$
+
+#### ARCH(q) Model
+
+$u_t = \epsilon_t \sqrt{\alpha_0 + \alpha_1u_{t-1}^2+\cdots +\alpha_pu_{t-p}^2}$
+- $\alpha_0, \alpha_1, \cdots, \alpha_p$ are constants
+- $\epsilon_t \sim N(0,1)$
+- $\epsilon_t$ is uncorrelated with $u_{t-j}^2, \space j>0$
+
+#### GARCH(p,q) Model
+
+$u_t = \epsilon_t \sqrt{\alpha_0 + \alpha_1u_{t-1}^2+\cdots +\alpha_pu_{t-p}^2 +\beta_1\sigma_{t-1|t-2}^2+\cdots+\beta_q\sigma_{t-q|t-q-1}^2}$
+- $\alpha_0, \alpha_1, \cdots, \alpha_p,\beta_1,\cdots,\beta_q$ are constants
+- $\epsilon_t \sim N(0,1)$
+- $\epsilon_t$ is uncorrelated with $u_{t-j}^2, \space j>0$
+
+#### Appropriateness of ARCH/GARCH Fit to Set of Data
+
+After fitting GARCH we can get the $\epsilon_t$ by
+$$\hat{\epsilon}_t = \frac{u_t}{\sqrt{\alpha_0 + \alpha_1u_{t-1}^2+\cdots +\alpha_pu_{t-p}^2 +\beta_1\sigma_{t-1|t-2}^2+\cdots+\beta_q\sigma_{t-q|t-q-1}^2}}$$
+Under the assumption $\epsilon_t \sim N(0,1)$ and uncorrelated check
+- If $\epsilon_t$ follows $N(0,1)$
+- Is uncorrelated by checking the plot and sample autocorrelation
