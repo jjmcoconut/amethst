@@ -12,3 +12,11 @@
 5. [[Detect Alzheimer's Disease]]
 
 6. [[AIDS Analysis]]
+
+7. [[Portfolio Optimization]]
+
+8. [[Risk Management]]
+
+9. [[2024 Spring]]
+
+10. [[Risk-sensitive Policy Optimization]]
