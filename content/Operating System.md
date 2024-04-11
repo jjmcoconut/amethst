@@ -265,4 +265,99 @@ __Threading Models__
 - Many to many
 	- java
 
-###
+### Scheduling
+Scheduling - To obtain maximum CPU utilization
+Scheduling criteria
+1. CPU ultilization
+2. Throughput
+	- Number of processes that complete their execution per unit time
+3. Turnaround time
+	- Amount of time to execute a particular process
+4. Waiting time
+	- Amount of time waiting in the ready queue
+5. Response time
+	- Amount of time it take until the first response from the request submit
+
+#### Scheduling Algorithms
+
+##### First-Come, First-Served(FCFS)
+
+| Process | Burst Time |
+| ------- | ---------- |
+| P1      | 24         |
+| P2      | 3          |
+| P3      | 3          |
+Then the resulting order would be
+![[Pasted image 20240411232921.png|400]]
+- Average waiting time = $(0+24+27)/3 = 17$
+
+##### Shortest Job First
+
+| Process | Burst Time |
+| ------- | ---------- |
+| P1      | 6          |
+| P2      | 8          |
+| P3      | 7          |
+| P4      | 3          |
+![[Pasted image 20240411233305.png|400]]
+- Average waiting time: $(3+16+9+0)/4=7$
+- Optimal strategy but, difficult to know the length of next CPU request
+##### Round Robin
+Each process gets a small unit of CPU time. After that time the process is preempted and added to the end of ready queue
+
+| Process | Burst Time |
+| ------- | ---------- |
+| P1      | 24         |
+| P2      | 3          |
+| P3      | 3          |
+![[Pasted image 20240411233728.png|400]]
+- Average waiting time: $(6+4+7)/3=5.66$
+- Higher average turnaround than SJF, but better response
+
+##### Priority Scheduling
+Priority number is associated with each process
+- Problem-Starvation: low priority process may never execute
+- Solution-Aging: Increase priority as time progresses.
+
+##### Multilevel Queue
+Ready queue is composed with multiple queues
+- each queue has its own scheduling algorithm
+- Scheduling must be done between queues
+- Popular example: Separate queues for different priority
+![[Pasted image 20240411234503.png|300]]
+
+##### Multilevel Feedback Queue
+Multilevel queue + allows process to move around queues
+![[Pasted image 20240411234829.png|300]]
+Multilevel feedback queues favor:
+1. Short CPU bursts
+2. I/O bound
+3. Interactive
+
+### 6. Synchronization
+Race condition: where several processes access and manipulate the same data concurrently and the outcome of the execution depends on the particular order in which the access takes place
+
+#### 6.2 The Critical-Section Problem
+Critical section: Section that the data is shared with at least one other process
+Suppose we have 2 threads A,B:
+```
+y=0; (initial value)
+thread A:
+	x=1;      (1)
+	x=y+1;    (2)
+thread B:
+	y=2;      (3)
+	y=y*2;    (4)
+```
+Then just by different orders we have different results
+3412: x=5, y=4
+3124: x=3, y=4
+
+Advantages of Concurrent Threads 
+- Allows transparent overlapping of computation and I/O
+- Allows use of parallel processing when available
+Problems we need to care about when using concurrency
+- Programs must be insensitive to arbitrary interleavings
+- Without careful design shared variables can become completely inconsistent.
+
+#### Priority Inversion
