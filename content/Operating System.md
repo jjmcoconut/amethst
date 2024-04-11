@@ -287,6 +287,7 @@ Scheduling criteria
 | P1      | 24         |
 | P2      | 3          |
 | P3      | 3          |
+
 Then the resulting order would be
 ![[Pasted image 20240411232921.png|400]]
 - Average waiting time = $(0+24+27)/3 = 17$
@@ -299,6 +300,7 @@ Then the resulting order would be
 | P2      | 8          |
 | P3      | 7          |
 | P4      | 3          |
+
 ![[Pasted image 20240411233305.png|400]]
 - Average waiting time: $(3+16+9+0)/4=7$
 - Optimal strategy but, difficult to know the length of next CPU request
@@ -310,6 +312,7 @@ Each process gets a small unit of CPU time. After that time the process is preem
 | P1      | 24         |
 | P2      | 3          |
 | P3      | 3          |
+
 ![[Pasted image 20240411233728.png|400]]
 - Average waiting time: $(6+4+7)/3=5.66$
 - Higher average turnaround than SJF, but better response
