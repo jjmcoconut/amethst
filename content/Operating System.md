@@ -1,6 +1,6 @@
 
-Lecture notes from Operating System & Experiment taught by Insik Shin - KAIST
-### Introduction - 26 Feb 24
+Lecture notes from Operating System & Lab taught by Insik Shin - KAIST
+### Introduction
 
 - Computer science is abstraction(making things simple)
 - First design and then code
@@ -34,5 +34,235 @@ Role of operating system (Similar to government)
 Definition of operating system
 - No universal definition
 - Suggestion: Everything a vendor ships when you order an operating system
-- The one program running at all times on the computer - Kernel or Operating System
+- The only program that need to be always running - Kernel or Operating System
 
+
+### Computer System Organization
+
+Keywords: Interrupt, System Call, Kernel
+
+A simple model of a computer:
+
+![[Pasted image 20240228131236.png|400]]
+
+Can be divided into: Device, Memory, CPU
+
+How can devices can be controlled?
+1.  Device has a device controller(DC) for each device
+2. Each device controller a local storage called buffer.
+2. CPU and buffer communicates giving data
+OS should have a Device Driver(DD) for each controller
+1. DD loads proper registers within DC
+2. mDc looks at registers and choose what to do
+3. DC moves data to local buffer
+4. DD moves data from local buffer to memory
+DD is with the OS(CPU), DC is within the device
+
+Some kind of negatives for this procedure?
+- This involves the CPU to do the job, but CPU is an expensive source.
+- CPU has to wait? - stays idle(busy waiting) while the DC does its job(2,3)
+$\rightarrow$ Solution: Interrupt
+- CPU can do some else job when DC is doing the job(2,3)
+- Use interrupt to use CPU back again when CPu needs to do job 4
+Interrupt driven I/O
+1. DD loads proper register in DC
+2. DC looks at registers and choose what to do
+3. DC moves data device $\rightarrow$ local buffer
+4. DC interrupts DD
+5. DD returns control of OS fetch the information
+This case CPU is free in the steps 2-4 
+
+__Interrupt__
+- Uses interrupt vector(contains addresses of all service routines)
+- must save address of the interrupted instruction(the one CPU has doing)
+- trap is software-generated interrupt
+- OS is interrupt driven(?)
+
+Example) OS is the only one that is trusted(availed to use DD to change devices)
+![[Pasted image 20240228135114.png|500]]
+
+Dual Mode Operation
+- Kernel mode
+	- privileged mode
+	- all instructions may be executed
+	- user threads is never run in this mode
+- User mode
+	- some commands are 'privileged'
+	- user threads use this mode
+
+Life cycle
+1. System powered on: kernel mode
+2. System booted & kernel init: kernel mode
+3. user programs: user mode
+4. Interrupt, trap, system call: kernel mode
+	- Interrupt: hardware device
+	- trap: cpu
+	- system call: applications(communication mechanism Application $\leftrightarrow$ OS)
+![[Pasted image 20240228135448.png|500]]
+
+__System Calls__
+- programming interface to the services provided by OS
+- API(Application Program Interface) is used because it is compatible with various OS.
+	- printf() in C can be used in Linux, Mac OS, Windows, ...
+	- While write() system call may be different in each OS(?)
+- Number is associated with system call - each number representing what to do
+- system call interface invokes intended system call in OS kernel and returns status of the system call and return values
+
+__OS Design__
+Bottleneck: entire system is limited by some element
+Previously: CPU was slow $\rightarrow$ CPU was a bottleneck
+Now: I/O is slower $\rightarrow$ I/O became a bottleneck $\rightarrow$ we need to design a OS that considers this bottleneck
+- Multi-programming
+- Bigger cache
+
+I/O bottleneck $\rightarrow$ Solution: multiprogramming
+Any challenges?
+
+### Process
+
+How to provide multiprogramming?
+Process: unit of execution and allocation $\rightarrow$ used for Virtual Machine Abstraction: Illusion that each process has its own computer
+![[Pasted image 20240304132408.png|400]]
+Sequential stream of instructions are usually called "program"
+
+![[스크린샷 2024-03-04 13.46.11.png|300]]
+- Stack: Temporary data(function parameters, return addresses, local variables)
+- Static data: Global variables
+- Heap: Memory that is allocated during running time
+- Code: Program code(text)
+Size of static data, code section is fixed. Stack, heap section is not.
+
+To provide illusion: Should remember the state of the previous process(Maintain the environment, In this case environment is the process)
+
+![[Pasted image 20240304132553.png|400]] - The stack, heap, data, code parts are separated by the other program $\rightarrow$ It does not care about the allocation of physical memory addresses
+
+__Process Control Block__
+![[Pasted image 20240304133107.png|300]]
+PCB: repository for any information that may vary from process to process
+used for: Context Switching
+
+__Context switch__
+![[Pasted image 20240304133509.png|400]]
+Operating system does the context switch: kernel has to get control of the CPU constantly
+How does the kernel get in charge? 
+- Running process can pass control to kernel(system call, page fault, illegal instructions, ...)
+- Timer interrupt
+- I/O interrupt
+Context switch needs time to change between process - In this time the CPU does not do anything
+Need to reduce the context switch time. $\rightarrow$ Better hardware, multiple set of registers(CPU cache?)
+
+__Creating a process__
+1. Create PCB - state, context of resources
+2. Create virtual resource - I/O state, ...
+
+__int fork() (UNIX system)__
+Creates a copy of itself: Child process
+fork returns 
+- Parent process: pid(process id) of the child
+- Child process: 0
+![[Pasted image 20240304135822.png|300]] $\rightarrow$![[Pasted image 20240304135852.png|300]]
+
+__Lifecycle of process__
+![[Pasted image 20240304140349.png|400]]
+process termination
+- When to terminate: After process does its job done
+- What does it do: deallocate resources, PCB
+- parent decides to terminate child process
+	- Some OS does not child to continue if parent terminates - cascading termination
+
+Parent-child correlation
+![[Pasted image 20240304141046.png|400]]
+Parent needs to wait() $\rightarrow$ If child exit() before parent's wait(), it becomes *zombie process*
+If parent exit() before child exit() (Grandparents may terminate parent process or by illegal instructions) $\rightarrow$ Child process becomes an *orphaned process* $\rightarrow$ Re-parented to init process()
+Init process: root of the process hierarchy(periodically invokes wait())
+
+Problems of wait()
+- If it is synchronous: it needs to keep checking all the child process if it is terminated or not
+$\rightarrow$ Asynchronous way to wait()
+- signal handlers: parent can use SIGCHLD signal (sth similar to interrupt)
+- waitpid(): work on non-blocking mode
+	- In this way we can improve performance
+	- However it becomes more complicated
+
+__Cooperating processes__
+Ex) Chrome browser
+What if browsers run as single process: if one web site causes problem, the entire browser will crash
+Chrome has 3 categories of processes:
+- Browser: UI, disk & network I/O
+- Renderer: Render web pages, HTML, ...(# of tabs)
+- Plug-in: such as adblock.
+Internet $\rightarrow$ network I/O(browser) $\rightarrow$ render engine, DOM tree(renderer) $\rightarrow$ compositor $\rightarrow$ GPU thread(browser)
+Why do we separate into different processes
+- Advantage:
+	- fault isolation(fault is available but the impact is not great as before)
+	- Security
+		- Renderer only uses CPU(cannot access memory, I/O)
+		- Everything else should be done by browser process (same-origin policy?)
+- Disadvantage: having multiple processes decreases the speed
+
+![[Pasted image 20240306133701.png|450]]
+Shared Memory mapping
+- Region of memory is shared by cooperating process
+- More efficient(Does not use system calls)
+Message passing
+- Communication takes place by message exchanged btw cooperating process
+- Safe but slow(uses system calls)
+
+POSIX shared memory
+```
+// Creates shared memory content
+segment_id = shmget(IPC PRIVATE, size, S_IRUSR | S_IWUSR);
+
+// Getting access to shared memory
+shared_memory = (char *) shmat(id, NULL, 0); 
+
+// Writing on the shared memory
+sprintf(shared_memory,"HI");
+
+// Detach shared memory
+shmdt(shared_memnory);
+```
+
+__Process vs Thread__
+
+|                              | Process                              | Thread                                                                         |
+| ---------------------------- | ------------------------------------ | ------------------------------------------------------------------------------ |
+| Switch overhead              | high(memory/IO bottleneck)           | low                                                                            |
+| CPU state                    | low                                  | low                                                                            |
+| Memory/IO state              | high                                 | none                                                                           |
+| Process/thread creation load | high                                 | low                                                                            |
+| CPU protection               | yes                                  | yes                                                                            |
+| Memory/IO protection         | yes(secured, hard to share memory)   | no(non-secured, easy to share memory)                                          |
+| Sharing overhead             | high(context switch)                 | low(thread switch)                                                             |
+| Image                        | ![[Pasted image 20240306140207.png]] | ![[Pasted image 20240306140241.png]]Has multiple PC, SP, stack for each thread |
+Inter-process collaboration is hard $\rightarrow$ Make concept of thread $\rightarrow$ Does new concept thread work with the traditional architecture? $\rightarrow$ Yes -> Thread unit of scheduling -> Process are containers of threads
+
+__Thread states__
+Thread should do context switches as process does but in different way
+State shard by all threads in process/ addr space
+- Content of memory
+- I/O state
+State private to each thread
+- TCB
+- CPU registers
+- execution stack
+	- parameters, temporary variables
+	- return PCs
+
+__Thread management__
+- OS(OS takes care of all thread operation)
+	- System call based, TCB
+- User level(User-level library takes care of all thread operation)
+	- Done by procedure calls(no kernel involved $\rightarrow$ x10~100 faster)
+	- transparent to OS(may not match well)
+	- OS can make poor scheduling decision(may not fully utilize CPUs)
+
+__Threading Models__
+- Many to one
+	- Bottleneck with kernel threads
+- One to one
+	- Each user thread has a kernel thread -> making kernel thread takes time
+- Many to many
+	- java
+
+###
