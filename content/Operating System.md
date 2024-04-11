@@ -338,7 +338,14 @@ Multilevel feedback queues favor:
 Race condition: where several processes access and manipulate the same data concurrently and the outcome of the execution depends on the particular order in which the access takes place
 
 #### 6.2 The Critical-Section Problem
-Critical section: Section that the data is shared with at least one other process
+- Critical section: 
+	  Section that the data is shared with at least one other process
+- Mutual Exclusion:
+	  Ensuring that only one thread executes critical section
+- Synchronization:
+	  Multiple threads work together to do some action
+- Lock:
+	  Prevents someone from doing something
 Suppose we have 2 threads A,B:
 ```
 y=0; (initial value)
@@ -361,3 +368,61 @@ Problems we need to care about when using concurrency
 - Without careful design shared variables can become completely inconsistent.
 
 #### Priority Inversion
+Scenario where a lower-priority task blocks the execution of a higher-priority task
+- It negates the principle of priority based scheduling
+
+How does it happen?
+![[Pasted image 20240412001815.png|500]]
+1. TL holds a shared resource R
+2. TM preempts TL
+3. TH task wants to access R
+4. TH needs to wait until TL releases R, and TL needs to wait until TM to finish
+The problem here is that TH needs to wait for TM to finish for no reason.
+It may be critical if the TH is an important thread
+
+##### Solution: Priority Inheritance
+![[Pasted image 20240412002217.png|500]]
+- TH increases the priority of TL equivalent to TH.
+- After TL executing the critical section priority of TL is returned to its original priority
+
+#### Too Much Milk
+
+__First Case__
+![[Pasted image 20240412002825.png|300]]
+This may result in having 2 milk.
+
+__Second Case - Leaving a note__
+![[Pasted image 20240412003147.png|200]]  ![[Pasted image 20240412002947.png|300]]
+Leaving a note is not enough
+If executed as above we get 2 milk
+
+__Third Case - Early Notes__
+![[Pasted image 20240412003126.png|350]] ->
+![[Pasted image 20240412003303.png|350]]
+Still possible to have 2 milk.
+
+__Fourth Case - 2 note solution__
+![[Pasted image 20240412003613.png|400]]
+- Critical section: 
+```
+  if(noMilk){
+	  buy Milk;
+  }
+```
+- This solution works but its not good
+	- Complex
+	- Code A is different from B
+	- A is busy waiting - consumes CPU
+__Solution: Use lock__
+- Lock.Acquire(): wait until lock is free, then take it
+- Lock.Release(): unlock, waking up anyone waiting\
+Therefore the above code can be changed into
+```
+milklock.Acquire();
+if(noMilk){
+	buy Milk;
+}
+milklock.Relase();
+```
+Section between Acquire() and Release() is the critical section
+
