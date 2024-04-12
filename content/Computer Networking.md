@@ -507,3 +507,252 @@ Protocol **rdt3.0** is functionally correct but suffers from poor performance du
 
 ![[Pasted image 20240412181711.png|500]]![[Pasted image 20240412181737.png|500]]
 **Conclusion:** GBN protocol encompasses techniques crucial for reliable data transfer, laying the foundation for further study of TCP's reliable data transfer components.
+
+### 3.4.4 **Selective Repeat (SR)**
+![[Pasted image 20240412182134.png|500]]
+The **GBN protocol** aims to optimize channel utilization by filling the pipeline with packets, unlike stop-and-wait protocols. However, GBN can face performance issues, especially with large window sizes and bandwidth-delay products, leading to unnecessary retransmissions upon a single packet error.
+
+**Selective-repeat protocols** address this by retransmitting only suspected erroneous packets, minimizing unnecessary retransmissions. The sender uses a window size to control the number of unacknowledged packets. Unlike GBN, the sender receives acknowledgments for some packets in the window.
+
+The **SR receiver** acknowledges correctly received packets regardless of order and buffers out-of-order packets until missing ones are received. This allows delivering batches of packets in order to the upper layer.
+
+**Important Considerations:**
+- Lack of synchronization between sender and receiver windows can lead to retransmissions of already received packets.
+- The sender and receiver may not have an identical view of received packets.
+- A finite range of sequence numbers can affect protocol behavior, necessitating a careful choice of window size.
+
+**Implications of Packet Reordering:**
+- Packet reordering can occur in network channels, challenging the assumption of packet order preservation.
+- Strategies like sequence number reuse prevention are employed to mitigate duplicate packet issues.
+- Techniques like those described in [Sunshine 1978] help avoid reordering problems.
+
+**Conclusion:**
+Reliable data transfer protocols introduce various mechanisms to ensure data integrity and efficiency. Understanding these mechanisms is crucial for designing robust communication systems.
+
+## 3.5 Connection-Oriented Transport: TCP
+- **Transport-layer Protocol:** TCP (Transmission Control Protocol).
+- **Connection-oriented & Reliable:** Utilizes principles of reliable data transfer, error detection, retransmissions, cumulative acknowledgments, timers, and header fields.
+- **Defined in:** RFC 793, RFC 1122, RFC 2018, RFC 5681, and RFC 7323.
+
+### 3.5.1 The TCP Connection
+- **Connection Establishment:** Involves a handshake between communicating processes to establish parameters.
+- **TCP Connection Nature:** Logical connection; resides only in communicating end systems.
+- **Full-duplex Service:** Allows simultaneous data flow between sender and receiver.
+- **Point-to-point:** Between single sender and receiver; multicast not supported.
+
+__Establishing a TCP Connection__
+- **Client-Server Interaction:** Client process initiates connection with server process.
+- **Three-way Handshake:** Initiated by client, acknowledged by server, and finalized by client.
+
+__Data Transmission__
+- **Data Passing:** Client process sends data to TCP, directed to connection's send buffer.
+- **Segment Formation:** Data paired with TCP header, forming TCP segments.
+- **Buffer Management:** Segments received at the other end stored in connection's receive buffer.
+- **No Intermediate Buffers:** Buffers and variables allocated only in end systems, not in network elements.
+
+*Note: TCP ensures reliable and orderly data transmission between communicating processes, utilizing connection-oriented principles.*
+
+### 3.5.2 **TCP Segment Structure**
+![[Pasted image 20240412182757.png|400]]
+The TCP segment comprises **header fields** and a **data field**, with the **Maximum Segment Size (MSS)** defining the maximum data field size. For large files, TCP divides data into MSS-sized chunks. Interactive apps often use smaller data chunks, e.g., Telnet and ssh typically use one-byte segments.
+
+The TCP header, usually 20 bytes longer than UDP, contains:
+- **Sequence number** and **acknowledgment number** fields for reliable data transfer.
+- **Receive window** field for flow control.
+- **Header length** field, variable due to TCP options.
+- **Options field** for negotiation (e.g., MSS) and time-stamping.
+- **Flag field** (6 bits), including ACK, SYN, FIN for connection setup/teardown, and PSH, URG for data handling.
+
+**Sequence Numbers and Acknowledgment Numbers**
+- TCP views data as an ordered byte stream.
+- Sequence numbers mark byte positions in the stream.
+- Acknowledgment numbers indicate the expected next byte.
+- TCP offers cumulative acknowledgments.
+- Handling out-of-order segments is at the discretion of TCP implementers.
+
+![[Pasted image 20240412182820.png|400]]
+**Telnet: A Case Study**
+- Telnet, a remote login protocol, illustrates TCP sequence and acknowledgment numbers.
+- Host A initiates a Telnet session with Host B.
+- Each typed character undergoes a round trip between the client and server.
+- Segments contain sequence numbers reflecting byte positions and acknowledgment numbers indicating the next expected byte.
+
+*Note: Detailed examples and explanations were provided to elucidate TCP's functionality.*
+
+### 3.5.3 **Round-Trip Time Estimation and Timeout in TCP**
+
+- **Concept:** TCP implements a timeout/retransmit mechanism akin to the rdt protocol, aiming to recover from lost segments. This involves addressing various subtleties, particularly concerning timeout intervals.
+- **Round-Trip Time (RTT) Estimation:** TCP estimates RTT between sender and receiver, crucial for setting timeout intervals. It measures SampleRTT, the time between segment transmission and acknowledgment receipt. TCP maintains an EstimatedRTT, an average of SampleRTT values, using an exponential weighted moving average (EWMA) formula.
+	- `EstimatedRTT = (1 – α) * EstimatedRTT + α * SampleRTT`
+- **RTT Variability:** DevRTT estimates the variability of RTT, providing insights into fluctuations in SampleRTT values. It also utilizes an EWMA formula to track deviations from EstimatedRTT.
+	- `DevRTT = (1 – β) * DevRTT + β * | SampleRTT – EstimatedRTT |`
+- **Setting Timeout Interval:** TCP determines the timeout interval (TimeoutInterval) based on EstimatedRTT and DevRTT. The interval should be greater than EstimatedRTT but not excessively so, considering DevRTT to avoid unnecessary retransmissions or delayed retransmissions.
+- **Initial Timeout and Adjustment:** An initial TimeoutInterval value of 1 second is recommended, doubling upon timeout occurrence to prevent premature timeouts. Upon acknowledgment receipt, TimeoutInterval is recalculated using the formula.
+
+**Vinton Cerf, Robert Kahn, and TCP/IP**
+
+- **Origins:** In the early 1970s, Vinton Cerf and Robert Kahn envisioned interconnecting diverse packet-switched networks, leading to the development of TCP/IP (Transmission Control Protocol/Internet Protocol).
+- **Protocol's Significance:** TCP/IP, devised before modern networking technologies and applications, laid the foundation for today's Internet. It aimed to support various applications while facilitating interoperability among different hosts and link-layer protocols.
+- **Recognition:** In 2004, Cerf and Kahn were honored with the ACM Turing Award for their pioneering work on TCP/IP, recognized as fundamental to internetworking and basic communications protocols design.
+
+### 3.5.4 **Reliable Data Transfer**
+
+The Internet's IP service is **unreliable**, leading to issues like datagram loss, out-of-order delivery, and data corruption. TCP ensures **reliable data transfer** despite this. It guarantees uncorrupted, ordered, and gapless data streams.
+
+- **Timer Management:** TCP uses a **single retransmission timer** to manage unacknowledged segments, reducing overhead.
+- **Steps for Reliable Transfer:** TCP's process involves data reception, timeout, and acknowledgment receipt.
+- **Timeout Handling:** TCP retransmits lost segments upon timeout and restarts the timer.
+- **Acknowledgment Handling:** Upon ACK receipt, TCP updates its SendBase and potentially restarts the timer.
+
+**Interesting Scenarios:**
+- **Scenario 1:** A lost acknowledgment triggers retransmission, avoiding duplicate data at the receiver.
+- **Scenario 2:** Back-to-back segments are sent; if one is lost, only it is retransmitted upon timeout.
+- **Scenario 3:** If acknowledgment is received before timeout, no retransmission occurs.
+![[Pasted image 20240412184204.png|700]]
+
+**Timeout Interval Modification:**
+- TCP employs an **exponential increase** in timeout intervals for retransmitted segments to mitigate congestion.
+- This aids in **congestion control** by preventing persistent retransmissions during network congestion.
+**Fast Retransmit:**
+![[Pasted image 20240412184234.png|400]]
+- Duplicate ACKs trigger **fast retransmit**, enabling prompt retransmission of lost segments.
+- TCP reacts to **three duplicate ACKs** by retransmitting the missing segment.
+
+**TCP Mechanism Analysis:**
+- TCP's mechanism **evolves** based on extensive experience, addressing numerous subtle issues.
+- TCP's error-recovery mechanism combines elements of both Go-Back-N and Selective Repeat protocols.
+- **Selective acknowledgment** enhances TCP's error recovery, allowing for selective retransmission of out-of-order segments.
+
+TCP's approach to reliable data transfer balances efficiency and robustness, evolving over decades of refinement.
+
+### 3.5.5 **Flow Control**
+![[Pasted image 20240412184307.png|400]]
+In TCP connections, hosts allocate receive buffers to store incoming data, allowing application processes to read data at their own pace. However, if the sender transmits data faster than the receiver can process, buffer overflow can occur. TCP addresses this with **flow control**, ensuring the sender matches its transmission rate to the receiver's reading rate.
+
+- **Flow Control vs. Congestion Control:** Flow control regulates sender speed to match receiver capacity, while congestion control throttles sender due to network congestion.
+- **Receive Window:** TCP sender maintains a variable representing available buffer space at the receiver.
+- **Dynamic Receive Window:** Adjusts based on buffer space availability.
+- **TCP Operation:** Hosts exchange the current receive window value to regulate data transmission.
+- **Buffer Full Issue:** When the receiver's buffer is full, TCP requires the sender to continue sending small segments to prevent blocking.
+- **UDP Contrast:** UDP lacks flow control, leading to potential segment loss at the receiver due to buffer overflow.
+
+TCP's flow control mechanism ensures efficient data transmission, contrasting with UDP's lack of control, which can lead to data loss under heavy load.
+### 3.5.6 **TCP Connection Management**
+![[Pasted image 20240412184337.png|300]]![[Pasted image 20240412184350.png|300]]
+In TCP connection management, understanding how a connection is established and torn down is crucial. TCP connection establishment can contribute to perceived delays and is vulnerable to network attacks like SYN flood attacks. The process involves three steps:
+
+1. **Connection Establishment:**
+   - Client sends a SYN segment to the server, initiating the connection.
+   - Server responds with a SYNACK segment, acknowledging and agreeing to the connection.
+   - Client acknowledges the server's response, completing the three-way handshake.
+
+2. **Connection Termination:**
+   - Either party can initiate connection closure by sending a FIN segment.
+   - After a series of acknowledgments, resources in both hosts are deallocated.
+
+During a TCP connection's lifecycle, hosts transition through various states, starting from CLOSED to ESTABLISHED and ending in CLOSED again. The duration of these states varies based on implementation, typically involving states like FIN_WAIT_1, FIN_WAIT_2, and TIME_WAIT.
+
+In cases where TCP segments with mismatched port numbers or source IP addresses are received, hosts respond with reset segments or ICMP datagrams, indicating a lack of matching sockets.
+
+The nmap port-scanning tool utilizes TCP SYN segments to explore specific ports on a target host, determining whether they are open, blocked, or unresponsive. It aids in analyzing firewall configurations and detecting application versions and operating systems.
+
+TCP connection management is essential for error control and flow control in TCP. In the next section, TCP congestion control will be explored in more detail, followed by a broader examination of congestion-control issues.
+
+## 3.6 **Principles of Congestion Control**
+
+In this section, we delve into **congestion control** principles and their application in TCP to ensure reliable data transfer amidst packet loss due to network congestion. While **packet retransmission** addresses the symptom of congestion, the underlying issue lies in the excessive data transmission rates.
+
+### 3.6.1 Causes and Costs of Congestion
+__Scenario 1: Two Senders, Infinite Buffer Router__
+- As the sending rate approaches R/2, throughput at the receiver hits a ceiling.
+- Congestion leads to unbounded queuing delays and infinite delays in extreme cases.
+
+__Scenario 2: Two Senders, Finite Buffer Router__
+- Packet loss occurs when buffers are full, triggering retransmissions.
+- Throughput depends on retransmission strategies, with increased delays and wasted bandwidth due to unnecessary retransmissions.
+
+__Scenario 3: Four Senders, Finite Buffer Routers, Multihop Paths__
+- High traffic leads to buffer overflows, causing reduced throughput.
+- Competition for buffer space results in decreased throughput for certain connections, leading to a tradeoff between offered load and throughput.
+
+__Conclusion__
+Congestion control mechanisms are crucial to ensure efficient network performance, mitigating the adverse effects of packet loss and optimizing resource utilization.
+
+## **3.7 TCP Congestion Control**
+
+**Overview:**
+  - **Definition:** TCP provides reliable transport service.
+  - **Focus:** Examines TCP congestion-control mechanisms.
+  - **Approach:** Classic TCP uses end-to-end congestion control.
+  - **Newer Flavors:** Explores TCP versions with explicit congestion indication.
+  - **Challenge:** Achieving fairness among shared congested links.
+
+### 3.7.1 Classic TCP Congestion Control
+  - **Sender's Role:** Limits traffic based on perceived congestion.
+  - **Variables:** Includes congestion window (cwnd), receive window (rwnd).
+  - **Congestion Window:** Constraints sender's rate based on unacknowledged data.
+  - **Congestion Detection:** Loss event triggers perception of congestion.
+  - **Acknowledgments:** Indicate successful delivery, leading to rate increase.
+  - **Guiding Principles:** Lost segment implies congestion, acknowledged segment indicates network health.
+
+**TCP Congestion-Control Algorithm**
+![[Pasted image 20240412185107.png|400]]
+  - **Components:** Slow start, congestion avoidance, fast recovery.
+  - **Slow Start:** Exponential growth of congestion window until loss event or threshold.
+  - **Congestion Avoidance:** Linear increase in congestion window, cautious approach.
+  - **Fast Recovery:** Increases congestion window based on duplicate ACKs, transitions based on loss events.
+
+**TCP Cubic**
+![[Pasted image 20240412185230.png|400]]
+  - **Objective:** Probes for optimal sending rate more aggressively.
+  - **Approach:** Increases congestion window as a function of time.
+  - **Comparison:** Provides higher throughput than TCP Reno in certain scenarios.
+  - **Deployment:** Widely adopted, especially in Linux operating system.
+
+![[Pasted image 20240412185200.png|500]]
+**Macroscopic Description of TCP Reno Throughput**
+  - **Steady-State Behavior:** TCP's throughput ranges between minimum and maximum values.
+  - **Average Throughput:** Calculated as 0.75 times the congestion window size divided by round-trip time.
+
+This section delves into TCP's congestion-control mechanisms, focusing on classic approaches and newer flavors like TCP Cubic. It details algorithms like slow start, congestion avoidance, and fast recovery, explaining their roles in adjusting sending rates based on network conditions. Additionally, it provides insights into TCP Cubic's aggressive probing for optimal sending rates and offers a macroscopic description of TCP Reno's throughput behavior.
+
+### 3.7.2 **Network-Assisted Explicit Congestion Notification and Delayed-based Congestion Control**
+
+**Explicit Congestion Notification (ECN)**
+![[Pasted image 20240412185558.png|500]]
+- TCP's congestion control inferred congestion through observed packet loss.
+- Extensions to IP and TCP [RFC 3168] allow explicit signaling of congestion.
+- ECN involves TCP and IP, utilizing two bits in the Type of Service field of the IP datagram header.
+- Routers signal congestion to TCP sender via marked IP datagram.
+- TCP sender reacts to congestion by halving congestion window and setting Congestion Window Reduced (CWR) bit.
+- Datagram Congestion Control Protocol (DCCP), DCTCP, and DCQCN utilize ECN.
+- Increasing deployment of ECN capabilities observed in servers and routers.
+
+**Delay-based Congestion Control**
+- TCP Vegas measures Round-Trip Time (RTT) to detect congestion onset.
+- Uncongested throughput rate calculated using RTTmin and congestion window size.
+- TCP Vegas aims to keep the pipe just full, avoiding increased delay.
+- BBR protocol builds on TCP Vegas ideas for fair competition with non-BBR TCP senders.
+- Other delay-based TCP congestion control protocols include TIMELY, Compound TCP (CTPC), and FAST.
+
+### 3.7.3 Fairness
+- TCP's AIMD algorithm aims for equal sharing of link bandwidth among connections.
+- TCP congestion control converges to provide an equal share of a bottleneck link’s bandwidth.
+- Conditions such as RTT, multiple connections, and packet loss influence fairness.
+- Multimedia applications over UDP may not cooperate with TCP's congestion control, impacting fairness.
+- Parallel TCP connections in applications can lead to unfair bandwidth allocation, common in web traffic.
+  
+## 3.8 **Evolution of Transport-Layer Functionality**
+
+- **TCP and UDP:** Dominant transport layer protocols with decades of experience.
+- **TCP Evolution:** Numerous newer versions like TCP CUBIC, DCTCP, CTCP, BBR, tailored for diverse scenarios.
+- **Diverse TCP Versions:** For wireless links, high-bandwidth paths, packet re-ordering, and data centers, among others.
+- **QUIC (Quick UDP Internet Connections):**
+    - **Purpose:** Designed to address needs between UDP and TCP.
+    - **Deployment:** Widely used by Google, YouTube, Chrome, and Android.
+    - **Features:** Combines speed and security, multiplexes streams, and ensures reliable, TCP-friendly congestion control.
+    - **Design:** Built on UDP, interfaces with evolved HTTP/2, soon to be integrated with HTTP/3.
+    - **Advantages:** Faster establishment, stream-based data delivery, and adaptable congestion control.
+    - **Contribution:** Offers flexibility for application-layer updates at a faster pace than TCP or UDP.
+
+*Note: QUIC represents a significant advancement in transport-layer protocols, offering enhanced performance and adaptability for modern internet applications.*
