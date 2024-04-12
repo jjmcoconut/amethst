@@ -235,6 +235,7 @@ __Process vs Thread__
 | Memory/IO protection         | yes(secured, hard to share memory)   | no(non-secured, easy to share memory)                                          |
 | Sharing overhead             | high(context switch)                 | low(thread switch)                                                             |
 | Image                        | ![[Pasted image 20240306140207.png]] | ![[Pasted image 20240306140241.png]]Has multiple PC, SP, stack for each thread |
+
 Inter-process collaboration is hard $\rightarrow$ Make concept of thread $\rightarrow$ Does new concept thread work with the traditional architecture? $\rightarrow$ Yes -> Thread unit of scheduling -> Process are containers of threads
 
 __Thread states__
@@ -242,6 +243,7 @@ Thread should do context switches as process does but in different way
 State shard by all threads in process/ addr space
 - Content of memory
 - I/O state
+
 State private to each thread
 - TCB
 - CPU registers
@@ -323,11 +325,11 @@ Priority number is associated with each process
 - Solution-Aging: Increase priority as time progresses.
 
 ##### Multilevel Queue
+![[Pasted image 20240411234503.png|300]]
 Ready queue is composed with multiple queues
 - each queue has its own scheduling algorithm
 - Scheduling must be done between queues
 - Popular example: Separate queues for different priority
-![[Pasted image 20240411234503.png|300]]
 
 ##### Multilevel Feedback Queue
 Multilevel queue + allows process to move around queues
@@ -349,6 +351,7 @@ Race condition: where several processes access and manipulate the same data conc
 	  Multiple threads work together to do some action
 - Lock:
 	  Prevents someone from doing something
+
 Suppose we have 2 threads A,B:
 ```
 y=0; (initial value)
@@ -360,12 +363,13 @@ thread B:
 	y=y*2;    (4)
 ```
 Then just by different orders we have different results
-3412: x=5, y=4
-3124: x=3, y=4
+- 3412: x=5, y=4
+- 3124: x=3, y=4
 
 Advantages of Concurrent Threads 
 - Allows transparent overlapping of computation and I/O
 - Allows use of parallel processing when available
+
 Problems we need to care about when using concurrency
 - Programs must be insensitive to arbitrary interleavings
 - Without careful design shared variables can become completely inconsistent.
@@ -380,6 +384,7 @@ How does it happen?
 2. TM preempts TL
 3. TH task wants to access R
 4. TH needs to wait until TL releases R, and TL needs to wait until TM to finish
+
 The problem here is that TH needs to wait for TM to finish for no reason.
 It may be critical if the TH is an important thread
 
@@ -416,6 +421,7 @@ __Fourth Case - 2 note solution__
 	- Complex
 	- Code A is different from B
 	- A is busy waiting - consumes CPU
+
 __Solution: Use lock__
 - Lock.Acquire(): wait until lock is free, then take it
 - Lock.Release(): unlock, waking up anyone waiting\
