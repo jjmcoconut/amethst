@@ -92,7 +92,7 @@
 - **Primary SQL Commands**: `CREATE TABLE` which may include constraints like `NOT NULL`, `UNIQUE`, and `CHECK(<predicate>)`.
 
 ### 4.4.2 Not Null Constraint
-**Purpose**: Prevent null values in critical fields, ensuring data completeness.
+- **Purpose**: Prevent null values in critical fields, ensuring data completeness.
 - **SQL Example**:
   ```sql
   CREATE TABLE student (
@@ -103,7 +103,7 @@
 - **Use Case**: Null values are prohibited in primary keys to maintain entity integrity.
 
 ### 4.4.3 Unique Constraint
-**Definition**: Ensures no two tuples have the same values in specified attributes.
+- **Definition**: Ensures no two tuples have the same values in specified attributes.
 - **SQL Syntax**:
   ```sql
   UNIQUE (attribute1, attribute2, ...)
@@ -111,7 +111,7 @@
 - **Details**: Attributes under `UNIQUE` constraint can still be null unless explicitly declared as `NOT NULL`.
 
 ### 4.4.4 The Check Clause
-**Purpose**: Enforces that attributes satisfy specified conditions, acting as a dynamic assertion within the database.
+- **Purpose**: Enforces that attributes satisfy specified conditions, acting as a dynamic assertion within the database.
 - **SQL Example**:
   ```sql
   CREATE TABLE department (
@@ -128,11 +128,10 @@
 
 
 ### 4.4.5 Referential Integrity
-**Referential Integrity Constraints**: Ensure a value in one relation (referencing relation) also appears in another (referenced relation), typically implemented using foreign keys.
+- **Referential Integrity Constraints**: Ensure a value in one relation (referencing relation) also appears in another (referenced relation), typically implemented using foreign keys.
   - **Foreign Key Example**: In a university database, the `course` table references the `department` table to ensure all listed departments exist.
 
- 
-**SQL Foreign Key Declaration**: Specified within the `CREATE TABLE` statement using the `FOREIGN KEY` clause.
+- **SQL Foreign Key Declaration**: Specified within the `CREATE TABLE` statement using the `FOREIGN KEY` clause.
   ```sql
   CREATE TABLE course (
     dept_name VARCHAR(20),
@@ -140,7 +139,7 @@
   );
   ```
 
-**Referential Actions**: SQL allows specifying actions like `ON DELETE CASCADE` and `ON UPDATE CASCADE` to handle changes that might violate integrity constraints.
+- **Referential Actions**: SQL allows specifying actions like `ON DELETE CASCADE` and `ON UPDATE CASCADE` to handle changes that might violate integrity constraints.
   ```sql
   CREATE TABLE course (
     ...
@@ -150,7 +149,7 @@
   );
   ```
 
-**Handling Null Values**: SQL allows foreign keys to contain null values unless specified as `NOT NULL`. Null foreign keys automatically satisfy integrity constraints.
+- **Handling Null Values**: SQL allows foreign keys to contain null values unless specified as `NOT NULL`. Null foreign keys automatically satisfy integrity constraints.
 
 ### 4.4.6 Assigning Names to Constraints
 - **Naming Constraints**: Enhances manageability by allowing specific constraints to be named and later dropped if necessary.
@@ -159,11 +158,11 @@
   ```
 
 ### 4.4.7 Integrity Constraint Violation During a Transaction
-**Deferred Constraint Checking**: SQL supports deferring integrity checks to the end of a transaction, allowing intermediate states that might otherwise violate constraints.
+- **Deferred Constraint Checking**: SQL supports deferring integrity checks to the end of a transaction, allowing intermediate states that might otherwise violate constraints.
   - **Example Scenario**: Inserting related data across tables (e.g., spouses in a `person` table) that temporarily violates foreign key constraints until all inserts are complete.
 
 ### 4.4.8Complex Check Conditions and Assertions
-**Advanced Integrity Constraints**: SQL standards allow specifying complex conditions using subqueries and assertions, though not widely supported.
+- **Advanced Integrity Constraints**: SQL standards allow specifying complex conditions using subqueries and assertions, though not widely supported.
   - **Assertion Example**: Ensuring total credits in the `student` table match sum of completed course credits.
   ```sql
   CREATE ASSERTION credits_earned CHECK (
@@ -183,11 +182,11 @@
 ## 5.1 Accessing SQL from a Programming Language
 SQL, while powerful and declarative for querying, lacks the full capabilities of general-purpose languages, necessitating integration with such languages for comprehensive application development. Here are the key reasons and methods for combining SQL with general-purpose languages:
 
-**Reasons for Integration**:
+- **Reasons for Integration**:
   1. **Expressiveness Limitations**: Some complex queries require the advanced capabilities of languages like C, Java, or Python, which are not available in SQL.
   2. **Nondeclarative Actions**: Tasks such as outputting reports, user interaction, or integrating query results into user interfaces must be handled outside SQL.
 
-**Methods of Accessing SQL**:
+- **Methods of Accessing SQL**:
   1. **Dynamic SQL**:
      - Enables runtime construction and execution of SQL queries within general-purpose programs.
      - Supported by procedural and object-oriented languages through functions or methods that allow queries to be built as character strings, executed, and their results retrieved into program variables.
@@ -202,10 +201,10 @@ SQL, while powerful and declarative for querying, lacks the full capabilities of
      - Uses a preprocessor to convert SQL into function calls that interact with the database at runtime through an API providing Dynamic SQL capabilities.
      - Specific to the database being used and recognized at compile time, contrasting with the runtime flexibility of Dynamic SQL.
 
-**Challenges**:
+- **Challenges**:
   - **Data Manipulation Mismatch**: SQL operates on relational data and returns sets (relations), while general-purpose languages work on individual variables. Bridging this gap requires mechanisms to adapt set-oriented SQL results into the variable-oriented structure of programming languages.
 
-**Alternative Approaches**:
+- **Alternative Approaches**:
   - **Embedded Databases**: Discussed as another option for integrating databases within applications, offering localized data management without server connectivity.
 
 #### Code Example: SQL Queries
@@ -221,10 +220,10 @@ while (has_more_results(result)) {
 ```
 
 ### 5.3.2 Triggers in SQL
-**Purpose and Usage**: Triggers in SQL are used to ensure data integrity and automate data management tasks by responding to specific changes or events within a database.
-**Standard vs. Non-standard Syntax**: While the SQL standard defines a specific syntax for triggers, most databases implement variations of this syntax, making it crucial to understand the concepts broadly applicable across different systems.
+- **Purpose and Usage**: Triggers in SQL are used to ensure data integrity and automate data management tasks by responding to specific changes or events within a database.
+- **Standard vs. Non-standard Syntax**: While the SQL standard defines a specific syntax for triggers, most databases implement variations of this syntax, making it crucial to understand the concepts broadly applicable across different systems.
 
-**Referential Integrity Example**:
+- **Referential Integrity Example**:
   - **Insert Trigger**: Ensures that `time slot id` in the `section` relation is valid upon insertions. The trigger checks each new row and rolls back the transaction if it violates referential integrity.
   - **SQL Query**:
     ```sql
@@ -239,10 +238,10 @@ while (has_more_results(result)) {
     ```
   - **Delete Trigger**: Ensures that a `time slot id` being deleted is not referenced in the `section` relation, maintaining referential integrity.
 
-**Handling Updates and Deletes**:
+- **Handling Updates and Deletes**:
   - Triggers must also manage updates and deletes to both the `section` and `time slot` tables to ensure ongoing referential integrity.
 
-**Update Specific Attributes**:
+- **Update Specific Attributes**:
   - Triggers can be configured to respond only to changes in specific attributes, which prevents unnecessary executions and enhances performance.
   - **SQL Query**:
     ```sql
@@ -256,12 +255,12 @@ while (has_more_results(result)) {
     end;
     ```
 
-**Trigger Options**:
+- **Trigger Options**:
   - **Before and After**: Triggers can be set to activate before or after an event, allowing them to either prevent or correct errors.
   - **Row vs. Statement Level**: Triggers can operate on individual rows or on all rows affected by a SQL statement, with different implications for performance and complexity.
   - **Enabling and Disabling**: Triggers can be dynamically enabled or disabled, allowing for flexible database management.
 
-**Advanced Uses and Customization**:
+- **Advanced Uses and Customization**:
   - **Set Value Modification**: Triggers can modify data as it is being inserted or updated, such as changing blank values to null.
   - **SQL Query**:
     ```sql
@@ -278,7 +277,7 @@ while (has_more_results(result)) {
 ### 5.3.3 When Not to Use Triggers
 Triggers are powerful tools in database management, but there are instances where their use is not advisable or necessary. Alternative solutions often offer more efficient or clearer implementations.
 
-**Alternative to Triggers**: 
+- **Alternative to Triggers**: 
   - **Foreign-Key Constraints**: Using triggers to mimic the 'on delete cascade' feature is more complex than using the built-in cascade feature of foreign-key constraints, making the database harder to understand.
   - **Materialized Views**: While triggers can maintain materialized views, such as updating a count of students per course section, modern databases support automatic maintenance of materialized views, negating the need for manual trigger management.
     - **SQL Example**: 
@@ -296,33 +295,33 @@ Triggers are powerful tools in database management, but there are instances wher
       GROUP BY course_id, sec_id, semester, year;
       ```
 
-**Database Replication**: Triggers were historically used to maintain replicas of databases by recording changes in delta relations. Modern systems, however, offer built-in replication facilities that are more efficient and robust than trigger-based solutions.
+- **Database Replication**: Triggers were historically used to maintain replicas of databases by recording changes in delta relations. Modern systems, however, offer built-in replication facilities that are more efficient and robust than trigger-based solutions.
 
-**Triggers in Backup and Replication Scenarios**: 
+- **Triggers in Backup and Replication Scenarios**: 
   - **Unintended Execution**: Triggers may execute unintended actions during data loads from backups or when updates at a primary site are replicated at a backup site. To manage this, triggers can be disabled or set as 'not for replication' to prevent execution in replication scenarios.
   - **System Variables**: Some systems use a variable to indicate a database is a replica, allowing trigger bodies to exit without executing if this condition is true.
 
-**Care in Trigger Use**:
+- **Care in Trigger Use**:
   - **Runtime Errors**: Errors within triggers can cause the transaction that activated the trigger to fail.
   - **Chain Reactions**: Improperly designed triggers can initiate a chain of triggers, potentially leading to infinite loops. Database systems may limit the number of permissible trigger cascades to prevent such issues.
 
-**Alternatives to Triggers**:
+- **Alternatives to Triggers**:
   - **Stored Procedures**: Many tasks assigned to triggers can be more appropriately handled by stored procedures, which offer more direct control and can be easier to manage.
 
 
 ### 5.4.2 Recursion in SQL
-**Recursion in SQL**: Utilized to specify transitive closure more conveniently than iteration, allowing for recursive view definitions.
-**Example Use Case**: Defining courses that are prerequisites (both directly and indirectly) for a specific course such as CS-347.
+- **Recursion in SQL**: Utilized to specify transitive closure more conveniently than iteration, allowing for recursive view definitions.
+- **Example Use Case**: Defining courses that are prerequisites (both directly and indirectly) for a specific course such as CS-347.
 
-**SQL Standard on Recursion**:
+- **SQL Standard on Recursion**:
   - Supports a limited form of recursion using the `with recursive` clause.
   - Recursive views are temporary and defined in terms of themselves.
 
-**Recursive View Definition**:
+- **Recursive View Definition**:
   - Must be the union of a **base query** (nonrecursive) and a **recursive query**.
   - The process continues iteratively until no new tuples are added to the view, reaching a **fixed point** where the view contains the tuples in the fixed-point instance.
 
-**Query Example**:
+- **Query Example**:
   - To find all prerequisites of CS-347, modify the query with a `where` clause filtering by the course ID.
 
 - **SQL Query Syntax for Recursive Operation**:
@@ -338,122 +337,14 @@ select * from rec_prereq;
 ```
   - This recursive SQL query efficiently finds all direct and indirect prerequisites for a course.
 
-**Restrictions on Recursive Queries**:
+- **Restrictions on Recursive Queries**:
   - Must be **monotonic**, meaning the result must grow as more tuples are added to the view relation.
   - Cannot use operations like aggregation on the recursive view, `not exists` with a subquery involving the recursive view, or set difference (`except`) where the right-hand side uses the recursive view.
 
-**Other SQL Implementations**:
+- **Other SQL Implementations**:
   - Some databases like Oracle use different syntax such as `start with / connect by prior` for hierarchical queries.
 
-## 5.5 Advanced Aggregation Features in SQL
 
-### 5.5.1 Ranking
-**Purpose**: Ranking helps determine the position of a value within a set, such as ranking students by GPA.
-  
-**SQL Constructs for Ranking**:
-  - Standard SQL ranking is challenging and may combine SQL with other programming languages for efficiency.
-  - Example ranking query:
-    ```sql
-    select ID, rank() over (order by GPA desc) as s_rank
-    from student_grades;
-    ```
-  - An additional `order by` is required to sort by rank:
-    ```sql
-    select ID, rank() over (order by GPA desc) as s_rank
-    from student_grades
-    order by s_rank;
-    ```
-
-**Handling Ties**:
-  - The `rank` function assigns the same rank to tied values, creating gaps in subsequent rankings.
-  - The `dense_rank` function does not create gaps after ties, providing a sequential ranking.
-
-**Null Values**:
-  - Nulls can be treated as the highest values or controlled with `nulls first` or `nulls last` options:
-    ```sql
-    select ID, rank() over (order by GPA desc nulls last) as s_rank
-    from student_grades;
-    ```
-  - Traditional SQL approach to simulate rank:
-    ```sql
-    select ID, (1 + (select count(*) from student_grades B where B.GPA > A.GPA)) as s_rank
-    from student_grades A
-    order by s_rank;
-    ```
-
-**Partitioned Ranking**:
-  - Ranking within categories (e.g., by department) uses the `partition by` clause:
-    ```sql
-    select ID, rank() over (partition by dept_name order by GPA desc) as dept_rank
-    from dept_grades
-    order by dept_name, dept_rank;
-    ```
-
-**Efficient Ranking**:
-  - Nested queries for top-n results:
-    ```sql
-    select *
-    from (select ID, rank() over (order by GPA desc) as s_rank from student_grades)
-    where s_rank <= 5;
-    ```
-  - This may return more than `n` results due to ties.
-
-**Alternative Ranking Functions**:
-  - **Percent Rank**: Calculates rank as a fraction of the total count.
-  - **Cume Dist**: Cumulative distribution function.
-  - **Row Number**: Assigns a unique number to each row based on order.
-  - **Ntile**: Divides data into nearly equal buckets, useful for histograms:
-    ```sql
-    select ID, ntile(4) over (order by GPA desc) as quartile
-    from student_grades;
-    ```
-  - These functions offer various ways to interpret and analyze data rankings differently depending on the specific requirements of the analysis.
-
-This comprehensive exploration of SQL ranking functions underscores their versatility and power in data analysis, allowing for detailed and nuanced insights into data sets.
-
-### 5.5.2 Windowing
-**Window Queries**: Compute aggregate functions over ranges of tuples, useful for analyzing trends over time. Windows may overlap, allowing tuples to contribute to multiple windows, unlike partitions where a tuple contributes to only one.
-
-**Use Cases**:
-  - **Trend Analysis**: Analyzing sales data to understand trends affected by external factors like weather. Similarly, stock market trends can be analyzed using various moving averages.
-
-**SQL Windowing Feature**:
-  - Simplifies queries that compute aggregates over sliding windows of data.
-  - Example: Calculating moving averages over fixed periods without writing cumbersome SQL for each window.
-
-**SQL Queries for Windowing**:
-  - **Fixed Window Size Example**:
-    ```sql
-    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS 3 PRECEDING) AS avg_total_credits
-    FROM tot_credits;
-    ```
-    This query calculates the average number of credits over the three preceding years.
-
-  - **Unbounded Preceding Window Example**:
-    ```sql
-    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS UNBOUNDED PRECEDING) AS avg_total_credits
-    FROM tot_credits;
-    ```
-    This computes the average over all prior years to a given year.
-
-  - **Variable Size Window Example**:
-    ```sql
-    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS BETWEEN 3 PRECEDING AND 2 FOLLOWING) AS avg_total_credits
-    FROM tot_credits;
-    ```
-    Averages credits over a window that starts three years before and ends two years after the current year.
-
-  - **Department-Specific Window Example**:
-    ```sql
-    SELECT dept_name, year, AVG(num_credits) OVER (PARTITION BY dept_name ORDER BY year ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS avg_total_credits
-    FROM tot_credits_dept;
-    ```
-    This query partitions data by department and computes the average credits for the department over a defined window.
-
-**Range vs. Rows**:
-  - `ROWS`: Specifies the window in terms of physical rows.
-  - `RANGE`: Covers all tuples with a particular value rather than a specific number of tuples.
-  - Note: The `RANGE` keyword might not be fully implemented in all SQL systems.
 
 
 
