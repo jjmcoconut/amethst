@@ -383,9 +383,7 @@ __Chapter Contents__
 
 __Implementation Variations__
 - **Differences:** SQL implementations may support nonstandard features and omit advanced or recent features.
-- **Consultation:** Refer to user manuals for specific database systems to verify supported features.
-
-*Note: Chapters 4 and 5 delve deeper into SQL query language and its advanced functionalities.*
+- **Consultation:** Refer to user manuals for specific database systems to verify supported features
 
 # 3.2 **SQL Data Definition**
 
@@ -1240,8 +1238,6 @@ This chapter extends the discussion from Chapter 3 on SQL data types and introdu
     ```
   - **Catalogs**: Creation and management of catalogs vary across different SQL implementations and are not standardized.
 
-This summary captures the essential concepts and SQL codes from the sections on user-defined types, unique key value generation, table creation extensions, and the organization of schemas, catalogs, and SQL environments.
-
 ## 4.6 Index Definition in SQL
 - **Purpose of Indexes**: Enhance the efficiency of queries that access only a small fraction of records, avoiding the need to scan all records.
 - **Index Usage**: Allows quick retrieval of tuples with specific attribute values, such as department names or IDs in a relation.
@@ -1530,8 +1526,6 @@ SQLTransact(conn, SQL_COMMIT);
 
 - **Support Across Databases**: Different databases support various external languages, impacting the portability and maintenance of database applications.
 
-This summary encapsulates the key aspects of SQL functions and procedures as discussed, highlighting their practical applications, performance considerations, and integration with external programming languages.
-
 ## 5.3 Triggers
 - **Definition**: A statement executed automatically by the system due to a database modification.
 - **Configuration**:
@@ -1678,8 +1672,6 @@ Implementation Notes
 These features enhance SQL's capability to handle complex data aggregation and analysis tasks efficiently and effectively.
 
 # 6. Database Design Using the E-R Model
-
-### Lecture Summary: Overview of the Database Design Process
 
 ## 6.1 Overview of the Design Process
 - **Complexity**: Involves designing database schema, access/update programs, and a security scheme.
