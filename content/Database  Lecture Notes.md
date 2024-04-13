@@ -344,7 +344,115 @@ select * from rec_prereq;
 - **Other SQL Implementations**:
   - Some databases like Oracle use different syntax such as `start with / connect by prior` for hierarchical queries.
 
+## 5.5 Advanced Aggregation Features in SQL
 
+### 5.5.1 Ranking
+- **Purpose**: Ranking helps determine the position of a value within a set, such as ranking students by GPA.
+  
+- **SQL Constructs for Ranking**:
+  - Standard SQL ranking is challenging and may combine SQL with other programming languages for efficiency.
+  - Example ranking query:
+    ```sql
+    select ID, rank() over (order by GPA desc) as s_rank
+    from student_grades;
+    ```
+  - An additional `order by` is required to sort by rank:
+    ```sql
+    select ID, rank() over (order by GPA desc) as s_rank
+    from student_grades
+    order by s_rank;
+    ```
+
+- **Handling Ties**:
+  - The `rank` function assigns the same rank to tied values, creating gaps in subsequent rankings.
+  - The `dense_rank` function does not create gaps after ties, providing a sequential ranking.
+
+- **Null Values**:
+  - Nulls can be treated as the highest values or controlled with `nulls first` or `nulls last` options:
+    ```sql
+    select ID, rank() over (order by GPA desc nulls last) as s_rank
+    from student_grades;
+    ```
+  - Traditional SQL approach to simulate rank:
+    ```sql
+    select ID, (1 + (select count(*) from student_grades B where B.GPA > A.GPA)) as s_rank
+    from student_grades A
+    order by s_rank;
+    ```
+
+- **Partitioned Ranking**:
+  - Ranking within categories (e.g., by department) uses the `partition by` clause:
+    ```sql
+    select ID, rank() over (partition by dept_name order by GPA desc) as dept_rank
+    from dept_grades
+    order by dept_name, dept_rank;
+    ```
+
+- **Efficient Ranking**:
+  - Nested queries for top-n results:
+    ```sql
+    select *
+    from (select ID, rank() over (order by GPA desc) as s_rank from student_grades)
+    where s_rank <= 5;
+    ```
+  - This may return more than `n` results due to ties.
+
+- **Alternative Ranking Functions**:
+  - **Percent Rank**: Calculates rank as a fraction of the total count.
+  - **Cume Dist**: Cumulative distribution function.
+  - **Row Number**: Assigns a unique number to each row based on order.
+  - **Ntile**: Divides data into nearly equal buckets, useful for histograms:
+    ```sql
+    select ID, ntile(4) over (order by GPA desc) as quartile
+    from student_grades;
+    ```
+  - These functions offer various ways to interpret and analyze data rankings differently depending on the specific requirements of the analysis.
+
+This comprehensive exploration of SQL ranking functions underscores their versatility and power in data analysis, allowing for detailed and nuanced insights into data sets.
+
+### 5.5.2 Windowing
+- **Window Queries**: Compute aggregate functions over ranges of tuples, useful for analyzing trends over time. Windows may overlap, allowing tuples to contribute to multiple windows, unlike partitions where a tuple contributes to only one.
+
+- **Use Cases**:
+  - **Trend Analysis**: Analyzing sales data to understand trends affected by external factors like weather. Similarly, stock market trends can be analyzed using various moving averages.
+
+- **SQL Windowing Feature**:
+  - Simplifies queries that compute aggregates over sliding windows of data.
+  - Example: Calculating moving averages over fixed periods without writing cumbersome SQL for each window.
+
+- **SQL Queries for Windowing**:
+  - **Fixed Window Size Example**:
+    ```sql
+    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS 3 PRECEDING) AS avg_total_credits
+    FROM tot_credits;
+    ```
+    This query calculates the average number of credits over the three preceding years.
+
+  - **Unbounded Preceding Window Example**:
+    ```sql
+    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS UNBOUNDED PRECEDING) AS avg_total_credits
+    FROM tot_credits;
+    ```
+    This computes the average over all prior years to a given year.
+
+  - **Variable Size Window Example**:
+    ```sql
+    SELECT year, AVG(num_credits) OVER (ORDER BY year ROWS BETWEEN 3 PRECEDING AND 2 FOLLOWING) AS avg_total_credits
+    FROM tot_credits;
+    ```
+    Averages credits over a window that starts three years before and ends two years after the current year.
+
+  - **Department-Specific Window Example**:
+    ```sql
+    SELECT dept_name, year, AVG(num_credits) OVER (PARTITION BY dept_name ORDER BY year ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS avg_total_credits
+    FROM tot_credits_dept;
+    ```
+    This query partitions data by department and computes the average credits for the department over a defined window.
+
+- **Range vs. Rows**:
+  - `ROWS`: Specifies the window in terms of physical rows.
+  - `RANGE`: Covers all tuples with a particular value rather than a specific number of tuples.
+  - Note: The `RANGE` keyword might not be fully implemented in all SQL systems.
 
 
 
