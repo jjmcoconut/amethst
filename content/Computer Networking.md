@@ -587,6 +587,7 @@ The TCP header, usually 20 bytes longer than UDP, contains:
 - **RTT Variability:** DevRTT estimates the variability of RTT, providing insights into fluctuations in SampleRTT values. It also utilizes an EWMA formula to track deviations from EstimatedRTT.
 	- `DevRTT = (1 – β) * DevRTT + β * | SampleRTT – EstimatedRTT |`
 - **Setting Timeout Interval:** TCP determines the timeout interval (TimeoutInterval) based on EstimatedRTT and DevRTT. The interval should be greater than EstimatedRTT but not excessively so, considering DevRTT to avoid unnecessary retransmissions or delayed retransmissions.
+	- `TimeoutInterval = EstimatedRTT + 4 * DevRTT`
 - **Initial Timeout and Adjustment:** An initial TimeoutInterval value of 1 second is recommended, doubling upon timeout occurrence to prevent premature timeouts. Upon acknowledgment receipt, TimeoutInterval is recalculated using the formula.
 
 **Vinton Cerf, Robert Kahn, and TCP/IP**
