@@ -1098,66 +1098,105 @@ __Distinction Between Join Types__
 
 ## 4.4 **Integrity Constraints**
 
-Integrity constraints maintain **data consistency** in databases, preventing accidental data loss. They differ from security constraints, which control unauthorized access.
+- **Purpose**: Ensure database consistency by guarding against accidental data corruption, contrasting with security constraints which prevent unauthorized access.
+- **Examples**:
+  - Instructor names cannot be null.
+  - Unique instructor IDs.
+  - Department names in courses must match those in the department relation.
+  - Department budgets must exceed $0.00.
 
-**Examples:**
-- Instructor name cannot be null.
-- Each instructor ID must be unique.
-- Department names in the course relation must match those in the department relation.
-- Department budgets must be greater than $0.00.
+- **Specification**: Typically specified during schema design and included in SQL `CREATE TABLE` commands or added later via `ALTER TABLE`.
 
-Constraints can be specified in the **create table** command or added later with **alter table**. They include:
-- **not null**
-- **unique**
-- **check()**
+### 4.4.1 Constraints on a Single Relation
+- **Primary SQL Commands**: `CREATE TABLE` which may include constraints like `NOT NULL`, `UNIQUE`, and `CHECK(<predicate>)`.
 
-**Not Null Constraint:**
-Prohibits null values for attributes, ensuring meaningful data. For example:
-```sql
-name varchar(20) not null,
-budget numeric(12,2) not null
-```
+### 4.4.2 Not Null Constraint
+- **Purpose**: Prevent null values in critical fields, ensuring data completeness.
+- **SQL Example**:
+  ```sql
+  CREATE TABLE student (
+      name VARCHAR(20) NOT NULL,
+      budget NUMERIC(12, 2) NOT NULL
+  );
+  ```
+- **Use Case**: Null values are prohibited in primary keys to maintain entity integrity.
 
-**Unique Constraint:**
-Ensures attribute uniqueness, unless explicitly declared as null. Attributes form a superkey.
-```sql
-unique (Aj1,Aj2,...,Ajm)
-```
+### 4.4.3 Unique Constraint
+- **Definition**: Ensures no two tuples have the same values in specified attributes.
+- **SQL Syntax**:
+  ```sql
+  UNIQUE (attribute1, attribute2, ...)
+  ```
+- **Details**: Attributes under `UNIQUE` constraint can still be null unless explicitly declared as `NOT NULL`.
 
-**Check Clause:**
-Defines predicates to be satisfied by every tuple. Enables powerful type systems. For instance:
-```sql
-check (budget > 0)
-```
+### 4.4.4 The Check Clause
+- **Purpose**: Enforces that attributes satisfy specified conditions, acting as a dynamic assertion within the database.
+- **SQL Example**:
+  ```sql
+  CREATE TABLE department (
+      budget NUMERIC(12, 2),
+      CHECK (budget > 0)
+  );
+  CREATE TABLE section (
+      semester VARCHAR(6),
+      CHECK (semester IN ('Fall', 'Winter', 'Spring', 'Summer'))
+  );
+  ```
+- **Special Cases**: Null values do not violate `CHECK` constraints unless explicitly stated by a `NOT NULL` constraint.
+- **Limitations**: Current SQL standards do not support subqueries within `CHECK` predicates.
 
-**Referential Integrity:**
-Ensures values in one relation match those in another. Foreign keys enforce these constraints.
-- **Foreign key clause** specifies referencing attributes and referenced relation.
-- Actions like **cascade** propagate changes across relations.
-- Constraints can be deferred or deferrable, checked at transaction end.
 
-**Naming Constraints:**
-Constraints can be named for easier management.
-```sql
-constraint minsalary check (salary > 29000)
-```
-Later, constraints can be dropped by name.
+### 4.4.5 Referential Integrity
+- **Referential Integrity Constraints**: Ensure a value in one relation (referencing relation) also appears in another (referenced relation), typically implemented using foreign keys.
+  - **Foreign Key Example**: In a university database, the `course` table references the `department` table to ensure all listed departments exist.
 
-**Complex Check Conditions and Assertions:**
-SQL allows complex predicates and assertions, though not widely supported.
-- Assertions express conditions to always satisfy.
-- Assertions should be used judiciously due to overhead.
+- **SQL Foreign Key Declaration**: Specified within the `CREATE TABLE` statement using the `FOREIGN KEY` clause.
+  ```sql
+  CREATE TABLE course (
+    dept_name VARCHAR(20),
+    FOREIGN KEY (dept_name) REFERENCES department(dept_name)
+  );
+  ```
 
-*SQL Queries:*
-```sql
--- To add a named constraint
-alter table instructor add constraint minsalary check (salary > 29000);
+- **Referential Actions**: SQL allows specifying actions like `ON DELETE CASCADE` and `ON UPDATE CASCADE` to handle changes that might violate integrity constraints.
+  ```sql
+  CREATE TABLE course (
+    ...
+    dept_name VARCHAR(20),
+    FOREIGN KEY (dept_name) REFERENCES department ON DELETE CASCADE ON UPDATE CASCADE,
+    ...
+  );
+  ```
 
--- To drop a named constraint
-alter table instructor drop constraint minsalary;
-```
+- **Handling Null Values**: SQL allows foreign keys to contain null values unless specified as `NOT NULL`. Null foreign keys automatically satisfy integrity constraints.
 
-Complex check conditions and assertions provide powerful data integrity mechanisms but should be used cautiously due to potential overhead. They're implemented using triggers in some systems.
+### 4.4.6 Assigning Names to Constraints
+- **Naming Constraints**: Enhances manageability by allowing specific constraints to be named and later dropped if necessary.
+  ```sql
+  ALTER TABLE instructor DROP CONSTRAINT minsalary;
+  ```
+
+### 4.4.7 Integrity Constraint Violation During a Transaction
+- **Deferred Constraint Checking**: SQL supports deferring integrity checks to the end of a transaction, allowing intermediate states that might otherwise violate constraints.
+  - **Example Scenario**: Inserting related data across tables (e.g., spouses in a `person` table) that temporarily violates foreign key constraints until all inserts are complete.
+
+### 4.4.8Complex Check Conditions and Assertions
+- **Advanced Integrity Constraints**: SQL standards allow specifying complex conditions using subqueries and assertions, though not widely supported.
+  - **Assertion Example**: Ensuring total credits in the `student` table match sum of completed course credits.
+  ```sql
+  CREATE ASSERTION credits_earned CHECK (
+    NOT EXISTS (
+      SELECT ID FROM student
+      WHERE tot_cred <> (
+        SELECT COALESCE(SUM(credits), 0)
+        FROM takes NATURAL JOIN course
+        WHERE student.ID = takes.ID AND grade IS NOT NULL AND grade <> 'F'
+      )
+    )
+  );
+  ```
+- **Use of Assertions**: Provides a powerful but costly method to enforce data integrity. Care is advised due to potential performance impact. Assertions are not typically supported by common database systems, but similar functionality can be achieved using triggers.
+
 
 ## 4.5 SQL Data Types and Schemas
 This chapter extends the discussion from Chapter 3 on SQL data types and introduces user-defined types alongside built-in types.
@@ -1401,13 +1440,46 @@ Overall, SQL provides a robust framework for managing database authorizations at
 # 5. Advanced SQL
 
 ## 5.1 Accessing SQL from a Programming Language
-- **SQL and Programming Languages**: SQL's declarative nature is simpler for queries but lacks the expressive power and functionality for nondeclarative tasks found in languages like C, Java, or Python. These include generating reports, user interaction, and handling GUI output, which are essential for integrated applications.
+SQL, while powerful and declarative for querying, lacks the full capabilities of general-purpose languages, necessitating integration with such languages for comprehensive application development. Here are the key reasons and methods for combining SQL with general-purpose languages:
 
-- **Approaches to SQL Access**:
-  - **Dynamic SQL**: Enables SQL query construction at runtime via general-purpose programming languages using functions or methods. This allows submission and retrieval of query results dynamically.
-  - **Embedded SQL**: Embeds SQL in a host language, with SQL statements processed at compile-time into function calls. This method interacts with databases at runtime via an API providing dynamic SQL capabilities.
+- **Reasons for Integration**:
+  1. **Expressiveness Limitations**: Some complex queries require the advanced capabilities of languages like C, Java, or Python, which are not available in SQL.
+  2. **Nondeclarative Actions**: Tasks such as outputting reports, user interaction, or integrating query results into user interfaces must be handled outside SQL.
 
-- **Challenges**: Mixing SQL with general-purpose languages presents difficulties due to different data handling methods. SQL operates on relational data, returning sets, whereas programming languages operate on individual variables.
+- **Methods of Accessing SQL**:
+  1. **Dynamic SQL**:
+     - Enables runtime construction and execution of SQL queries within general-purpose programs.
+     - Supported by procedural and object-oriented languages through functions or methods that allow queries to be built as character strings, executed, and their results retrieved into program variables.
+     - **Standards and APIs**:
+       - **JDBC**: Java API that facilitates database connection and operations.
+       - **ODBC**: Initially for C, now supports C++, C#, Ruby, Go, PHP, and Visual Basic.
+       - **Python Database API**: Connects Python programs to databases.
+       - **ADO.NET**: For .NET languages (e.g., C# and Visual Basic), allows data access similar to JDBC but also supports non-relational data sources.
+
+  2. **Embedded SQL**:
+     - Incorporates SQL directly within the code, identified during the compilation.
+     - Uses a preprocessor to convert SQL into function calls that interact with the database at runtime through an API providing Dynamic SQL capabilities.
+     - Specific to the database being used and recognized at compile time, contrasting with the runtime flexibility of Dynamic SQL.
+
+- **Challenges**:
+  - **Data Manipulation Mismatch**: SQL operates on relational data and returns sets (relations), while general-purpose languages work on individual variables. Bridging this gap requires mechanisms to adapt set-oriented SQL results into the variable-oriented structure of programming languages.
+
+- **Alternative Approaches**:
+  - **Embedded Databases**: Discussed as another option for integrating databases within applications, offering localized data management without server connectivity.
+
+#### Code Example: SQL Queries
+
+```sql
+-- Example of a Dynamic SQL query in a programming language (Pseudocode)
+query = "SELECT * FROM users WHERE age > 21";
+result = execute_query(query);
+while (has_more_results(result)) {
+    user = fetch_next(result);
+    print(user.name);
+}
+```
+
+This lecture highlights the necessity and methods for integrating SQL with general-purpose programming languages to create robust, multifunctional applications capable of handling both complex data operations and non-database functionalities.
 
 Subsection Details:
 - **JDBC (Java Database Connectivity)**:
