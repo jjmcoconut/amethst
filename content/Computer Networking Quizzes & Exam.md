@@ -387,3 +387,164 @@ In rdt 3.0, timers are used to detect packet loss. If an ACK is not received wit
 **What is the scope of an IP packet with a broadcast destination address?**
 - **subnet**
 - Broadcasts are typically confined to a single subnet to limit network congestion.
+
+
+# Answers for Exams
+## 2017 Spring
+Here are the answers for the PDF you provided:
+
+1. **True or False?**
+   - (a) **False** - Transmission delay is not proportional to the propagation delay but rather depends on the data size and the data rate of the transmission link.
+   - (b) **False** - Queueing delay is not proportional to propagation delay; it depends on the traffic load and the performance of the queuing strategies at routers.
+   - (c) **True** - Cross traffic can cause additional data packets in the queue, increasing queueing delay.
+   - (d) **False** - With nonpersistent connections, each TCP segment carries exactly one HTTP request; a new connection is needed for each new request.
+   - (e) **False** - HTTP response messages can have an empty message body, particularly in responses like 204 No Content.
+   - (f) **False** - Circuit switching uses dedicated circuit paths and not statistical multiplexing, which is associated with packet-switched networks.
+   - (g) **False** - TCP does have mechanisms like ACKs and retransmissions to notify the sender of packet loss implicitly.
+   - (h) **False** - HTTP by itself is stateless; cookies are used by websites to maintain state, making it behave in a stateful manner when cookies are used.
+
+2. **Delay Components in End-to-End Delay**
+   - The main delay components include processing delay, queueing delay, transmission delay, and propagation delay. 
+   - **Constant Delays**: Propagation delay tends to be constant as it is based on the physical distance and medium.
+   - **Variable Delays**: Queueing delay is highly variable depending on the network traffic; transmission delay can vary with the size of the packet and the network's capacity.
+
+3. **Time Elapsed for VoIP Communication**
+   - (a) Total time = Processing delay + Queueing delay (if any) + Transmission delay + Propagation delay. With a transmission rate of 256 Kbps and a 56-byte packet, the transmission delay = (56 bytes * 8 bits/byte) / 256,000 bits/second ≈ 1.75 ms. Adding the propagation delay of 10 ms, the total time from creation to decoding is approximately **11.75 ms**.
+   - (b) For a 100 Mbps transmission rate and a 100 ms propagation delay, the transmission delay becomes significantly shorter, approximately 0.00448 ms. Thus, the total time from creation to decoding is about **100.00448 ms**.
+
+4. **Fields in the TCP Header**
+   - Source Port, Destination Port, Sequence Number, Acknowledgment Number, Data Offset, Reserved, Control Bits (e.g., SYN, ACK), Window Size, Checksum, Urgent Pointer, Options (if any).
+
+5. **TCP Congestion Control without Slow Start**
+   - (a) Time to increase cwnd from 6 MSS to 12 MSS: Assuming AIMD increases cwnd linearly without loss, it would take 6 RTTs to double the cwnd from 6 to 12 MSS.
+   - (b) Average throughput up to 6 RTTs: The average throughput can be calculated as the total segments sent divided by the total time. Over 6 RTTs, starting from 1 MSS and doubling, the average throughput is approximately **4 MSS/RTT** (since the sum of the series from 1 to 6 divided by 6 gives an average window size of 4).
+
+6. **Advantages and Disadvantages of CDNs and P2P**
+   - **CDNs**: Advantages include high availability and high performance due to distributed nature. Disadvantages include higher cost and potentially less privacy.
+   - **P2P**: Advantages include lower cost and scalability. Disadvantages include inconsistent performance and potential security vulnerabilities.
+
+## 2018 Spring
+Here are the answers to the questions from the PDF you uploaded:
+
+1. **Which technology delivers the highest bandwidth for Internet access?**
+   - **FTTH (Fiber to the Home)** delivers the highest bandwidth for Internet access among the options listed .
+
+2. **Which of the following does not belong to guided media?**
+   - **Digital satellite channel** does not belong to guided media; it is an example of unguided media as it uses wireless communication through space .
+
+3. **What do the following acronyms stand for?**
+   - **DDoS**: Distributed Denial of Service
+   - **AIMD**: Additive Increase Multiplicative Decrease
+   - **MTU**: Maximum Transmission Unit
+   - **CIDR**: Classless Inter-Domain Routing 
+
+4. **True or False?**
+   - (a) **True** - The fiber-optic cable is guided media.
+   - (b) **True** - The goal of persistent HTTP connections is to avoid TCP 3-way handshake delay overhead per object.
+   - (c) **False** - The unit of the TTL field in the IP header is not in seconds; it's in hops (the maximum number of hops that packets are allowed to travel through routers).
+   - (d) **False** - The destination addresses of DHCP messages can vary; not all are 255.255.255.255, particularly in later stages of the DHCP process .
+
+5. **What is the source IP address of a DHCP discover message that a host sends out when it arrives at a network?**
+   - The source IP address is typically **0.0.0.0** when the host does not yet have an assigned IP .
+
+6. **End-to-End Delays in a Datacenter Scenario**
+   - (a) Without queueing or processing delays, the end-to-end delay would be dominated by **propagation delay**, though minimal given the short distances and high speed of light in the medium.
+   - (b) With maximum queueing, the dominant delay component would likely be **queueing delay** due to the filled buffers at each router.
+   - (c) Increasing the length of the links to 10 km significantly increases the **propagation delay**, making it the dominant component.
+   - (d) Changing both the link length to 10 km and packet size to 10 Kbits would make **transmission delay** significant, potentially dominating due to the larger packet size over higher distances .
+
+7. **Distribution Schemes in Networking**
+   - (a) To minimize inter-ISP bandwidth, all hosts should ideally be within the same ISP as host s or directly connected ISPs to minimize crossing to other ISPs.
+   - (b) To maximize inter-ISP bandwidth consumption, the hosts should be distributed across multiple different ISPs that require crossing multiple ISP networks, thereby increasing inter-ISP traffic .
+
+8. **TCP Throughput Description**
+   - The loss rate \( L \) can be mathematically derived based on the formula and TCP throughput considerations. The average throughput of TCP is not directly proportional to RTT; it generally decreases as RTT increases because the window size is limited by the delay-bandwidth product .
+
+9. **Maximum Window Size for a TCP (Reno) Connection**
+   - Considering the link speed, segment size, and RTT, the maximum window size can be calculated based on the congestion avoidance algorithm where it grows until loss occurs, dictated by the bandwidth-delay product .
+
+10. **Network Addresses for Subnets**
+   - Each subnet needs a specific prefix and enough addresses to support the required number of interfaces. Network addresses must conform to subnetting rules that allow for the required number of hosts, given as /24 for about 254 hosts, adjusted as needed .
+
+11. **Impact of NATs on P2P Applications**
+   - Establishing a TCP connection between two peers behind NATs can be achieved using techniques like NAT traversal, which may involve methods such as UPnP, NAT-PMP, or hole punching, depending on the NAT configuration and type .
+
+12. **Packet Loss at Input Ports**
+   - Packet loss at input ports can occur due to buffer overflow, when incoming packets arrive at a rate exceeding the processing capacity of the port or its buffer space .
+
+13. **Overhead in Data Transmission**
+   - Calculating the overhead involves considering the size of the TCP and IP headers relative to the data size of 40 bytes. Given typical header sizes, the percentage of overhead versus application data can be calculated .
+
+14. **Worst Startup Time for Loading a Web Page**
+   - **DNS Resolution**: In the worst case, if the DNS server is slow to respond or if the domain is not cached locally.
+
+## 2021 Fall
+
+Here are the answers to the questions from the 2021 Fall CS341 Midterm PDF:
+
+**P1: Finite State Machine (FSM) of rdt 3.0 receiver**
+- Unfortunately, without seeing the specific FSM diagram with its empty phrases, I can't accurately fill in the blanks. This would typically involve understanding the specific actions and responses of the receiver in various states of packet reception, including acknowledgment and handling of duplicate or corrupt packets.
+
+**P2: Effects of DHCP and DNS server downtime while surfing the web**
+- a. **DHCP server down:** Your current web surfing session will not be immediately affected because your device has already obtained an IP address. However, you might not be able to renew the IP lease or get a new IP address if needed. A solution other than waiting could be to manually configure a static IP address, if possible, within the same subnet.
+- b. **DNS server down:** You won't be able to resolve domain names to IP addresses, which means new websites might not load. Cached DNS entries will still work. Alternatives include switching to a public DNS server like Google DNS (8.8.8.8 and 8.8.4.4) or Cloudflare DNS (1.1.1.1).
+
+**P3: Non-compliance with TCP congestion control**
+- If other hosts do not use congestion control and send packets aggressively, it can lead to network congestion, increased packet loss, and unfair bandwidth distribution. This can degrade overall network performance and particularly impact compliant hosts, which might experience reduced throughput as a consequence.
+
+**P4: Time to download a document calculation**
+- Given \( S/R + T > 4 \cdot S/R \), you can estimate the time to download a document of size \( 13 \cdot S \) as follows:
+  - The total time \( T_{total} \) to download the document would be the sum of the transmission times and the round-trip times involved. Since \( S/R \) is the time to send one segment and there are 13 segments, the naive calculation would be \( 13 \cdot S/R \) for transmission plus round-trip times. However, the comparison provided suggests there's more waiting involved due to the round-trip time, making \( T \) a significant factor. Thus, a more accurate estimate might involve multiple of \( T \), suggesting \( T_{total} \approx 13 \cdot S/R + multiple \cdot T \).
+
+**P5: Number of datagrams to send a 1GB file**
+- A 1GB file is \( 1 \times 10^9 \) bytes. Each datagram can carry \( 1500 - 20 = 1480 \) bytes of data. Therefore, the number of datagrams required would be:
+  $\text{Number of Datagrams} = \lceil \frac{1 \times 10^9 \text{ bytes}}{1480 \text{ bytes}} \rceil$
+  This results in approximately 675,676 datagrams needed to send the file. The calculation divides the total file size by the payload capacity of each datagram, considering the IP header size, and uses the ceiling function to account for any remaining partial datagram.
+
+## 2022 Spring
+Here are the responses to the questions from the 2022 Spring CS341 Midterm PDF:
+
+1. **True or False Answers:**
+   - (1) **True** - Propagation delay is indeed a function of the distance and the medium through which data travels.
+   - (2) **True** - Transmission delay depends on the link capacity (or bandwidth) and the packet length.
+   - (3) **False** - Queueing delay is generally a function of the traffic load and the link capacity, not directly the packet length.
+   - (4) **False** - In a client-server paradigm, clients do not typically communicate directly with each other; they interact through the server.
+   - (5) **False** - In a peer-to-peer paradigm, peers are not necessarily expected to be always on; they can join and leave the network as needed.
+   - (6) **False** - HTTP cookies are stored at the client's browser, not on the server-side database, although servers may store session identifiers linked to those cookies.
+   - (7) **False** - The DNS root servers, including m.root-servers.net, do not serve as authoritative servers for specific domains like kaist.ac.kr.
+   - (8) **True** - Both TCP and UDP headers include a checksum field.
+   - (9) **False** - Only the TCP header has a length field (as part of the data offset field); the UDP header does not.
+   - (10) **True** - Both IP and UDP headers include a length field.
+   - (11) **False** - TCP and UDP headers contain port numbers but IP addresses are in the IP header, not TCP or UDP headers.
+   - (12) **False** - The rwnd field in the TCP header is for flow control, not congestion control.
+   - (13) **True** - The IPv6 header has a fixed length of 40 bytes.
+   - (14) **False** - TCP receivers do not start a timer every time a packet is received; timers are generally started to manage packet loss and retransmissions.
+   - (15) **True** - Queueing can occur at both the input and output ports of a router.
+   - (16) **True** - Faster transmission speeds generally result in faster arrival of packets at the destination assuming all other factors are constant.
+
+2. **Subnet and Forwarding Table Questions:**
+   - Without specific diagrams (Figures 1 and 2) showing the subnet addresses, it's impossible to determine the number of subnets or construct a forwarding table.
+
+3. **DHCP Transactions:**
+   - Filling in the addresses in a DHCP transaction diagram requires specific details from the diagram which are not available in this text format.
+
+4. **NAT Translation Table:**
+   - Similar to the DHCP transactions, constructing a NAT translation table needs specific transaction details from the diagrams.
+
+5. **IPv6 Tunneling:**
+   - Specific source and destination addresses for IPv6 tunneling over IPv4 nodes would require more details from the provided diagram.
+
+6. **TCP Segment Exchange:**
+   - Correct sequence and acknowledgment numbers would need the specific states and actions from the TCP segment exchange diagram.
+
+7. **DNS Query Calculations:**
+   - Assuming each DNS query for www.mit.edu results in one query to the .edu TLD server per day due to the 24-hour TTL, and each query to the mit.edu authoritative server 4 times a day due to the 6-hour TTL, approximately 1 query to the .edu TLD server and 4 queries to the mit.edu server per day would be needed.
+
+8. **External Web Site Access Detection:**
+   - Without administrative access to the DNS server logs or network monitoring tools, an ordinary user cannot determine if an external website was accessed from within the department recently.
+
+9. **Transmission and Propagation Delay Calculations:**
+   - These calculations would require the specific formulae for transmission and propagation delays, which depend on link capacity, packet size, and the speed of signal propagation.
+
+10. **Users in a Shared Link Scenario:**
+   - Calculating the number of users supported under circuit switching, the probability of transmission under packet switching, and the probabilities involving binomial distributions would require detailed calculations based on provided formulas and values.
