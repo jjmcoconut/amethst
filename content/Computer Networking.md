@@ -757,3 +757,347 @@ This section delves into TCP's congestion-control mechanisms, focusing on classi
     - **Contribution:** Offers flexibility for application-layer updates at a faster pace than TCP or UDP.
 
 *Note: QUIC represents a significant advancement in transport-layer protocols, offering enhanced performance and adaptability for modern internet applications.*
+
+
+# 4. The Network Layer: Data Plane
+
+## 4.2 What’s Inside a Router?
+
+- **Router Components**:
+  - **Input Ports**:
+    - Functions include terminating incoming physical links, performing link-layer functions, and crucially, a lookup to consult the forwarding table to determine the output port for forwarding packets via the switching fabric.
+    - Control packets are directed from the input port to the routing processor.
+    - The number of ports in routers varies significantly, from a few in enterprise routers to hundreds in ISPs' routers, such as the Juniper MX2020, which supports up to 800 100 Gbps Ethernet ports.
+  - **Switching Fabric**:
+    - Connects the router’s input ports to its output ports, effectively acting as a network within a router.
+  - **Output Ports**:
+    - Store and transmit packets received from the switching fabric, handling necessary link-layer and physical-layer functions.
+    - Typically paired with the corresponding input port on the same line card for bidirectional traffic.
+  - **Routing Processor**:
+    - Handles control-plane functions, executes routing protocols, maintains routing and forwarding tables, and in SDN routers, communicates with the remote controller to receive and install forwarding table entries.
+    - Manages network functions and typically executes slower control activities, such as responding to changes in link states and managing the router.
+
+- **Performance and Implementation**:
+  - Hardware is often used for input ports, switching fabric, and output ports due to the high speed required for processing datagrams in large routers.
+  - Control functions, which operate on a slower timescale (milliseconds to seconds), are typically implemented in software on the routing processor.
+
+- **Analogy and Practical Considerations**:
+  - Packet forwarding is likened to cars entering and exiting a roundabout, with the input port acting as the entry station where directions are given, the switching fabric as the roundabout itself, and the output port as the exit road.
+  - Potential bottlenecks include rapid packet arrival rates and slow processing rates at the input ports, analogous to fast cars and a slow station attendant.
+  - Router and switch designers must consider these dynamics to prevent backups and efficiently manage traffic prioritization and blocking.
+
+### 4.2.1 Input Port Processing and Destination-Based Forwarding
+- **Input Processing at Router Ports**: Critical for router operation, involving physical and link-layer processing.
+- **Forwarding Table Lookup**:
+  - Essential task performed at each router's input port.
+  - Determines the output port for packet forwarding based on the packet’s destination address.
+  - Forwarding tables are populated by routing processors or SDN controllers and are essential for making forwarding decisions locally at each input port.
+
+- **Forwarding Mechanisms**:
+  - **Destination-Based Forwarding**: Utilizes a forwarding table where packet forwarding is determined by matching the packet's destination IP address with table entries.
+  - **Handling Large Address Spaces**: Instead of a direct one-to-one mapping, routers use prefix matching to efficiently manage and lookup addresses.
+  - **Longest Prefix Matching Rule**: When multiple prefix matches occur, the router selects the entry with the longest matching prefix, critical for correct routing decisions.
+
+- **Lookup Efficiency**:
+  - **High-Speed Requirements**: Lookups need to be extremely fast, especially at gigabit transmission rates, necessitating hardware-based solutions.
+  - **Advanced Lookup Technologies**:
+    - Utilization of Ternary Content Addressable Memories (TCAMs) for rapid lookup processes.
+    - TCAMs allow for quick searches through large forwarding tables by returning forwarding information almost instantaneously.
+
+- **Packet Handling Post-Lookup**:
+  - **Switching Fabric Entry**: Once the output port is determined, the packet is sent to the switching fabric for transfer to the correct output port.
+  - **Queue Management**: Packets may be queued at the input port if the switching fabric is currently occupied by packets from other ports, with scheduling for later transmission.
+
+- **Additional Input Port Actions**:
+  - Verification and rewriting of packet fields such as version number, checksum, and time-to-live.
+  - Updating counters for network management purposes.
+
+- **General "Match Plus Action" Abstraction**:
+  - Used across various network devices (routers, switches, firewalls, NAT devices) for a broad range of actions beyond mere packet forwarding.
+  - Involves matching certain packet attributes and performing specified actions based on these matches, integral to modern network forwarding logic.
+
+
+### 4.2.2 Switching
+![[Pasted image 20240415211232.png|500]]
+- **Switching Fabric in Routers**: Central to routers, enabling packet forwarding from input to output ports. Several methods are used:
+
+  - **Switching via Memory**:
+    - **Early Routers**: Functioned as computers with CPUs controlling switching. Packets from input ports are moved to processor memory, then to output after routing decisions.
+    - **Limitations**: Forwarding throughput is limited to less than half the memory bandwidth due to read/write constraints.
+    - **Modern Variants**: Similar to shared-memory multiprocessors, input line cards perform address lookup and direct memory writing, e.g., Cisco Catalyst 8500 series.
+
+  - **Switching via a Bus**:
+    - **Direct Transfer**: Input ports send packets with a local header across a shared bus to the designated output port, which strips the header.
+    - **Limitations**: The speed is restricted to the bus’s capacity, making it suitable only for smaller networks, e.g., Cisco 6500 router.
+
+  - **Switching via an Interconnection Network**:
+    - **Crossbar Switch**: Utilizes a grid of buses allowing multiple simultaneous packet transfers without blocking, unless two packets target the same output port.
+    - **Advanced Configurations**: Cisco 12000 series employs crossbar switching; Cisco 7600 series can use both bus and crossbar configurations.
+    - **Multi-Stage and Parallel Switching**: Multi-stage networks handle concurrent transfers to the same output, and parallel fabrics increase capacity by distributing packet chunks, e.g., Cisco CRS.
+
+- **Sophisticated Interconnection Networks**:
+  - **Multi-Stage Switching**: Allows simultaneous routing to the same output port using a complex fabric setup.
+  - **Parallel Switching Fabrics**: Enhances capacity by dividing a packet into chunks processed by multiple fabrics.
+
+### 4.2.3 Output Port Processing
+- **Functions of Output Ports**:
+  - **Storage and Transmission**: Packets are stored in memory before being sent over the output link.
+  - **Scheduling and De-Queuing**: Decides the order of packet transmission.
+  - **Transmission Protocols**: Manages link-layer and physical-layer transmission functions, ensuring packets are correctly formatted and timed for sending.
+
+### 4.2.4 Where Does Queuing Occur?
+
+- **Packet Queuing Locations**: Occurs at both the input and output ports of a router, akin to traffic queues in a roundabout analogy. 
+- **Queue Formation Factors**: Influenced by traffic load, the speed of the switching fabric, and line speed.
+- **Queueing Implications**: Large queues can exhaust router memory leading to packet loss.
+
+__Detailed Examination of Queues__
+![[Pasted image 20240415211212.png|500]]
+- **Input Queues**:
+  - **Conditions for Input Queueing**: Occurs if the switching fabric's transfer rate (Rswitch) is slower than the input line speeds (Rline), causing packets to wait in input port queues.
+  - **Head-of-the-Line (HOL) Blocking**: A packet at the front of the queue prevents other packets from being transferred even if their destination output port is free, potentially leading to unbounded queue lengths and significant packet loss under certain load conditions.
+
+![[Pasted image 20240415211153.png|500]]
+- **Output Queues**:
+  - **Conditions for Output Queueing**: Even with a switching fabric speed of N times the line speed, simultaneous arrival of packets destined for the same output port leads to queuing.
+  - **Queue Management Decisions**: Involves choosing to drop the arriving packet or remove queued packets to make room, utilizing strategies like drop-tail or proactive packet marking with Explicit Congestion Notification (ECN).
+
+__Buffering Considerations__
+- **How Much Buffering Is Enough?**:
+  - **Traditional Rule of Thumb**: Buffer size should equal the round-trip time (RTT) multiplied by the link capacity (C).
+  - **Recent Insights**: In core networks with many TCP flows, buffer requirements decrease significantly, making the need for large buffers less critical.
+  - **Buffering Effects**: While buffering can reduce packet loss by absorbing traffic fluctuations, it also increases queuing delays, which can affect applications like gaming and teleconferencing by increasing the end-to-end delay.
+
+- **Bufferbloat Issue**:
+  - **Persistent Buffering**: Leads to consistent queuing delays despite no apparent network congestion, known as bufferbloat.
+  - **Network Standard Measures**: The DOCSIS 3.1 standard includes AQM mechanisms specifically to address bufferbloat while maintaining throughput performance.
+
+### 4.2.5 Packet Scheduling
+Packet scheduling involves determining the order of packet transmission over an outgoing link, managing how queued packets are processed. Different queuing disciplines are used, each with its own methodology for handling packet transmission.
+
+- **First-in-First-Out (FIFO) Discipline**:
+  - FIFO, also known as first-come-first-served (FCFS), processes packets in the order they arrive. If the link is busy, packets wait in the queue until they can be transmitted. There is no preemption; once a packet transmission starts, it continues to completion. This method is straightforward but can lead to inefficiencies if the packet mix varies significantly in importance or size.
+
+- **Priority Queuing**:
+  - This method classifies incoming packets into priority classes at the queue. Packets from higher priority classes are transmitted first, regardless of their arrival time relative to packets in lower priority classes. This ensures critical information, such as network management or real-time packets (e.g., VoIP), is transmitted ahead of less critical data like emails.
+
+- **Round Robin and Weighted Fair Queuing (WFQ)**:
+  - Round Robin queuing alternates packet transmission between classes, ensuring no class dominates the transmission time. It’s a work-conserving discipline that continuously checks for packets in all classes, avoiding idle link time.
+  - WFQ, an advanced form of Round Robin, assigns weights to each packet class, determining the fraction of bandwidth each class receives relative to others. This weighted approach allows for more nuanced control of transmission priorities, accommodating varying needs of packet classes efficiently.
+
+## 4.3 The Internet Protocol (IP)
+- **Context**: This section of the network layer includes data and control plane components, forwarding and routing, various network service models, and internal router operations without reference to any specific network architecture.
+- **Focus**: Details the functioning of the Internet Protocol (IP) which is central to the Internet’s network layer.
+
+### 4.3.1 IPv4 Datagram Format
+![[Pasted image 20240415211124.png|400]]
+- **IPv4**: The primary version of Internet Protocol in use, defined in RFC 791.
+- **IPv6**: Proposed as a replacement for IPv4 to address its limitations, detailed in RFC 2460 and RFC 4291.
+- **Datagram Structure**: Describes the anatomy of IPv4 datagrams:
+  - **Version Number**: 4 bits indicating the IP protocol version, critical for routers to process the datagram correctly.
+  - **Header Length**: 4 bits specifying the start of the payload, influenced by variable options included in the header.
+  - **Type of Service (TOS)**: Distinguishes between types of traffic (e.g., real-time vs. non-real-time) and incorporates Explicit Congestion Notification.
+  - **Datagram Length**: 16-bit field defining the total length of the datagram; typically does not exceed 1,500 bytes to fit within an Ethernet frame.
+  - **Identifier, Flags, Fragmentation Offset**: Manage IP fragmentation for large datagrams which is not supported in IPv6.
+  - **Time-to-Live (TTL)**: Ensures datagrams do not remain indefinitely in the network by decrementing this field at each router hop.
+  - **Protocol**: Indicates the transport-layer protocol (e.g., TCP or UDP) to which the datagram’s data should be passed at the destination.
+  - **Header Checksum**: Helps detect bit errors in the datagram at routers, recalculated at each hop due to changes in the TTL.
+  - **Source and Destination IP Addresses**: Set by the source using DNS lookup, crucial for routing the datagram.
+  - **Options**: Allows extension of the IP header; used rarely to avoid complexity and processing delays.
+  - **Data (Payload)**: Carries the transport-layer segment or other data types like ICMP messages.
+
+### 4.3.2 IPv4 Addressing
+IPv4 addressing is a nuanced and critical aspect of Internet infrastructure, playing a central role in network communication.
+![[Pasted image 20240415211104.png|500]]
+
+- **Interfaces and IP Address Association**:
+  - Devices (hosts and routers) connect to the Internet via interfaces.
+  - Each interface has a unique IP address.
+  - A router has multiple interfaces to manage data forwarding across different network links.
+
+- **IP Address Structure**:
+  - An IPv4 address is 32 bits long, divided into 4 bytes.
+  - Expressed in dotted-decimal notation, e.g., 193.32.216.9.
+  - Globally unique except when obscured by Network Address Translation (NAT).
+
+- **Subnetting**:
+  - IP addresses may share a common prefix indicating they belong to the same subnet.
+  - Example: 223.1.1.xxx where xxx varies per device within the subnet.
+  - A subnet can be an Ethernet LAN or connected via other technologies like wireless access points.
+
+- **CIDR (Classless Interdomain Routing)**:
+  - IP addresses are split into two parts; the network prefix and the host identifier.
+  - CIDR uses notation like a.b.c.d/x to specify network size.
+  - Helps reduce routing table size externally by using only the network prefix for routing decisions.
+  
+- **Subnet Structure**:
+  - Within an organization, different subnets may exist, often with similar subnet addresses.
+  - Subnets are defined by isolating network interfaces and recognizing them as distinct network segments.
+
+- **Classful vs. Classless Addressing**:
+  - Pre-CIDR, addressing was classful (Class A, B, C) with fixed subnet lengths of 8, 16, or 24 bits.
+  - CIDR allows for variable length subnet masks, optimizing address allocation and usage.
+
+- **IP Broadcast Address**:
+  - The address 255.255.255.255 is used for broadcasting to all hosts on the same subnet.
+
+- **Address Assignment**:
+  - Organizations receive a block of addresses with a common prefix.
+  - Devices within the organization are assigned addresses from this block, potentially using further subnetting within the organization.
+
+![[Pasted image 20240415211028.png|500]]
+
+__Obtaining a Block of Addresses__
+- **Process of Acquiring IP Addresses**:
+  - Organizations typically contact their ISP to obtain a block of IP addresses.
+  - The ISP provides a subdivision of a larger block it owns, like dividing a 200.23.16.0/20 block into smaller /23 blocks for distribution among organizations.
+
+- **Global IP Address Management**:
+  - IP addresses are globally managed by the Internet Corporation for Assigned Names and Numbers (ICANN), which allocates blocks to regional Internet registries (e.g., ARIN, RIPE).
+  - ICANN also manages DNS root servers and resolves domain name disputes.
+
+__Dynamic Host Configuration Protocol (DHCP)__
+![[Pasted image 20240415210931.png|350]]![[Pasted image 20240415210915.png|350]]
+- **Functionality and Importance**:
+  - DHCP allows automatic IP address assignment to hosts, making network configuration easier and supporting frequent network changes without manual setup.
+  - It is essential in environments with high mobility, such as campuses where students move between multiple locations.
+
+- **DHCP Operation**:
+  - Consists of four main steps: Server Discovery, Server Offer(s), Request, and Acknowledgment (ACK).
+  - A client first discovers servers via a broadcast message, receives offers, selects an offer, and finally receives an ACK to confirm the IP address configuration.
+
+- **Benefits and Implementation**:
+  - Reduces the administrative burden of manually configuring IP addresses.
+  - Widely used in various network environments including residential, enterprise, and wireless networks due to its plug-and-play capability.
+
+- **DHCP and Mobility**:
+  - Although DHCP supports IP reassignment for mobile devices changing subnets, it does not maintain TCP connections during these transitions, which is a significant limitation for continuous connectivity.
+  
+- **Renewing and Managing Leases**:
+  - DHCP allows for lease renewal, which lets a host extend its IP address allocation beyond the initial lease duration.
+  - Provides a mechanism to manage network configurations over time efficiently.
+
+#### 4.3.3 Network Address Translation (NAT)
+![[Pasted image 20240415210846.png|500]]
+- **Context and Necessity**:
+  - Every IP-capable device requires a unique IP address. Given the multitude of devices in small office, home office (SOHO) networks, this could mean a substantial block of IP addresses needed from ISPs. Address management by typical homeowners is impractical.
+
+- **NAT Solution**:
+  - **Network Address Translation (NAT)** simplifies IP address allocation for multiple devices within private networks like SOHOs, circumventing the need for extensive public IP address allocations from ISPs.
+
+- **Private Network Addressing**:
+  - Within a home network, devices use a common subnet address (e.g., 10.0.0.0/24). This address space is reserved for private networks and is meaningless outside of this local context.
+
+- **Functionality of NAT**:
+  - A NAT-enabled router presents itself to the internet with a single IP address. Internally, it manages a local network with private addresses, using a NAT translation table to map external connections back to the correct internal devices.
+
+- **Operational Details**:
+  - Devices within the NAT network communicate using private addresses, while external communication uses a translated public address provided by the NAT router.
+  - The NAT router uses a translation table to track and map internal private addresses and port numbers to a single public address and corresponding ports.
+
+- **Challenges and Criticisms**:
+  - Technical: NAT can complicate server operations and peer-to-peer connections within the network because it alters address and port information.
+  - Philosophical: NAT disrupts the architectural purity of network-layer operations by modifying packet data, which some argue should not happen in routers.
+
+- **Technological Adaptations**:
+  - **NAT Traversal Tools**: Developed to address connectivity issues caused by NAT, facilitating communications and services that require device discoverability and accessibility.
+
+### 4.3.4 IPv6
+![[Pasted image 20240415210828.png|400]]
+- **Development and Motivation**: Initiated in the early 1990s by the Internet Engineering Task Force to address the limitations of the 32-bit address space of IPv4 which was rapidly depleting. This was due to the high rate of new subnets and IP nodes requiring unique IP addresses.
+- **IPv6 Features**:
+  - **Expanded Addressing Capabilities**: Increases IP address size from 32 to 128 bits, essentially ensuring an almost unlimited number of IP addresses.
+  - **Simplified 40-byte Header**: Drops several IPv4 fields, making IPv6 headers streamlined for faster processing by routers.
+  - **Flow Labeling**: Introduces the concept of flows, potentially allowing for differentiating service quality among different types of data traffic.
+- **Key Fields in IPv6 Datagram**:
+  - **Version**: Identifies the version of IP being used (6 for IPv6).
+  - **Traffic Class**: Similar to the TOS field in IPv4, used for prioritizing datagrams.
+  - **Flow Label**: Used to identify a flow of datagrams for special handling.
+  - **Payload Length**: Indicates the size of the payload.
+  - **Next Header**: Identifies the protocol for the payload.
+  - **Hop Limit**: Replaces the TTL field from IPv4; decremented by routers to limit datagram lifetime.
+  - **Source and Destination Addresses**: Now 128-bit, supporting a larger address space.
+  - **Data**: The payload of the datagram.
+
+![[Pasted image 20240415210807.png|500]]
+- **Transition from IPv4 to IPv6**:
+  - **Challenges**: IPv4 systems cannot inherently process IPv6 datagrams, complicating the transition.
+  - **Tunneling Method**: Widely adopted method involving encapsulating IPv6 datagrams within IPv4 datagrams to bridge IPv4 and IPv6 systems.
+- **Current Adoption and Future Outlook**:
+  - Slow initial uptake, but increasing deployment driven by the proliferation of IP-enabled devices.
+  - Future changes in the network layer are expected to occur at a slower pace compared to rapid developments at the application layer.
+
+### 4.4 Generalized Forwarding and SDN
+![[Pasted image 20240415210738.png|500]]
+- **Match-plus-action paradigm**: This advanced forwarding approach extends beyond simple destination-based forwarding. It involves matching packets based on multiple header fields across various network layers and executing actions like forwarding, load balancing, rewriting headers (e.g., NAT), blocking/dropping packets (firewall actions), or sending packets for further processing (DPI).
+- **Generalized forwarding devices**: Previously known as layer 3 routers or layer 2 switches, these are now referred to as packet switches in SDN contexts. They operate based on match-plus-action tables managed by a remote controller.
+
+__OpenFlow Standard__
+- **Introduction**: OpenFlow, a prominent standard in SDN, introduces the match-plus-action concept. It allows for extensive network programmability, changing the landscape of network management and operation.
+- **Flow table components**:
+  - **Header field values**: Incoming packets are matched to specified header field values.
+  - **Counters**: Updated as packets match the entries, recording metrics like match frequency and last update time.
+  - **Actions**: Defined per entry, actions may include forwarding packets to specific ports, dropping packets, or rewriting headers.
+
+### 4.4.1 Match
+![[Pasted image 20240415210715.png|500]]
+- **OpenFlow 1.0 specifics**:
+  - **Header fields for matching**: Up to 12 different values can be matched, covering multiple layers (link-layer, network-layer, and transport-layer). The specifications have expanded in later versions.
+  - **Wildcard entries**: Support for broad matching criteria, such as an IP address with wildcard segments, enhancing flexibility.
+  - **Priority settings**: Multiple matches are resolved by prioritizing entries, ensuring that the most critical rules are applied first.
+
+### 4.4.2 Action
+- **Flow Table Actions**:
+  - **Forwarding**: Packets can be directed to specific ports, broadcasted, multicast, or sent to a remote controller which might alter flow table rules.
+  - **Dropping**: Indicates packets that match this entry should be discarded.
+  - **Modify-field**: Allows rewriting values in 10 packet-header fields before forwarding to the designated port.
+
+### 4.4.3 OpenFlow Examples of Match-plus-action in Action
+![[Pasted image 20240415210659.png|500]]
+- **Network Configuration**:
+  - **Network Components**: 6 hosts (h1 to h6) and 3 packet switches (s1, s2, s3) with 4 interfaces each.
+- **OpenFlow Examples**:
+  - **Example 1: Simple Forwarding**:
+    - Packets from h5 and h6 to h3 and h4 are forwarded from s3 to s1, then from s1 to s2, avoiding the link between s3 and s2.
+  - **Example 2: Load Balancing**:
+    - Datagrams from h3 destined to 10.1.*.* are sent from s2 to s1 directly.
+    - Datagrams from h4 destined to 10.1.*.* go from s2 to s3, then to s1.
+    - Flow table entries are required at s1 and s3 to manage the forwarding paths.
+  - **Example 3: Firewalling**:
+    - s2 is configured to receive traffic only from hosts connected to s3.
+    - Only traffic from 10.3.*.* would be allowed through to s2 if no other entries contradict this in s2’s flow table.
+- **Versatility of Generalized Forwarding**:
+  - Flow tables allow for the creation of various network behaviors such as virtual networks using the same physical infrastructure.
+- **Flow Tables in SDN Controllers**:
+  - Reviewed in context with SDN controllers that calculate and distribute flow tables and manage communications between switches and controllers.
+
+## 4.5 **Middleboxes**
+
+In the realm of networking, **routers** are fundamental for forwarding IP datagrams to their destinations. However, there are additional network devices termed **"middleboxes"** that perform functions beyond mere forwarding, encountered throughout various chapters.
+
+Middleboxes encompass a range of equipment including **Web caches, TCP connection splitters, NAT, firewalls,** and **intrusion detection systems (IDS)**. These devices play roles in **NAT translation,** **security services,** and **performance enhancement.**
+
+- **NAT Translation:** Middleboxes rewrite datagram header IP addresses and port numbers for private network addressing.
+- **Security Services:** Firewalls block traffic based on header-field values or redirect packets for additional processing, such as deep packet inspection (DPI). IDS detect predetermined patterns and filter packets accordingly. Application-level e-mail filters combat junk, phishing, and security threats.
+- **Performance Enhancement:** Middleboxes offer services like compression, content caching, and load balancing to improve service requests.
+
+The rise of middleboxes poses challenges in terms of operation, management, and upgrade due to separate specialized hardware and software stacks, leading to significant costs. Consequently, **network function virtualization (NFV)** and outsourcing middlebox functionality to the cloud are explored as alternatives.
+
+Middleboxes challenge the traditional separation between the network layer and the transport/application layers. While some view them as an architectural deviation, others argue for their necessity and anticipate their proliferation in the future.
+
+This debate raises questions about the placement of service functionality in a network, touching upon the principles of the **"end-to-end argument."**
+
+
+**Architectural Principles of the Internet**
+
+The Internet's success prompts inquiry into its guiding architectural principles. RFC 1958 proposes minimal principles: connectivity as the goal, the Internet Protocol (IP) as the tool, and intelligence predominantly at the network edge.
+
+**The IP Hourglass**
+
+Illustrated by the "IP hourglass," the Internet's layered architecture focuses on IP as the singular network layer protocol. Its simplicity fosters the integration of diverse networks into the Internet, bridging varying link-layer technologies.
+
+**The End-to-End Argument**
+
+Echoing RFC 1958, functionality is primarily placed at endpoints rather than within the network. The "end-to-end argument" posits that certain functions require application-level knowledge for effective implementation, advocating for intelligence at endpoints. For instance, reliable data transfer necessitates end-to-end implementation due to potential packet loss within the network.
+
+These principles, articulated in fundamental papers like [Saltzer 1984] and [Clark 1988], underpin Internet architecture. Follow-up discussions further explore these principles in the context of the evolving Internet landscape.
