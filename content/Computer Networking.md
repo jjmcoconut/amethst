@@ -1,6 +1,6 @@
+[[Computer Networking Quizzes & Exam]]
 
 Lecture notes from Introduction to Computer Networking taught by  - KAIST
-
 # Introduction
 Internet: computer network that interconnects computing devices around the world
 Protocol: Defines format and order of messages exchanged between multiple communication entities, as well as actions taken on the transmission
