@@ -435,3 +435,163 @@ milklock.Relase();
 ```
 Section between Acquire() and Release() is the critical section
 
+
+
+# 9. File systems
+
+
+__Directory Structure__
+- Metadata are stored in the file control block (i.e., i-node)
+- For single indirect: 1000 can be linked, each data block is 4B then one single indirect block can cover up to 4MB
+- double indirect: 4GB, triple indirect: 4TB
+![[Pasted image 20240422130706.png|350]]![[Pasted image 20240422131153.png|350]]
+
+__File size Distribution__
+![[Pasted image 20240422131123.png|500]]
+
+__File Types__
+- File types help OS to perform reasonable operations on files, i.e.,
+- What kinds of operations can OS do?
+	- Disallow printing binary executable programs
+	- Execute appropriate applications when double-clicking the mouse on some file icons
+
+__Directory Structure__
+![[Pasted image 20240422131611.png|300]]
+- A collection of nodes containing information about all files
+- Both the directory structure and the files reside on disk
+- Good design principle: a directory itself as a file
+	- we have different type of data, but want to save in the same place
+
+__Naming__
+- Naming (name resolution): process by which a system translates from user-visible names to system resources
+- In the case of files, need to translate from strings (textual names) or icons to inumbers/inodes
+- For global file systems, data may be spread over globe -> need to translate from strings or icons to some combination of physical server location and inumber
+
+__Directory Organization__
+- Directories organized into a hierarchical structure
+	- Seems standard, but in early 70’s it wasn’t
+	- Permits much easier organization of data structures
+- Entries in directory can be either files or directories
+- Files named by ordered set
+	- (e.g., /classes/cs330/lecture01.pdf)
+
+__Directory Structure__
+![[Pasted image 20240422132140.png|400]]
+- Not really a hierarchy!
+	- Many systems allow directory structure to be organized as an acyclic graph or even a (potentially) cyclic graph
+	- Link: another name (pointer) to an existing file
+	- we have a cycle structure in the picture: book->avi->book
+
+![[Pasted image 20240422132335.png|100]]
+- How many disk accesses to resolve “/classes/cs330/lecture01.pdf” (1MB)?
+	- Where are the following informations stored?
+		- we need 256 blocks(1MB/4KB=256)
+		- index block to save each pointer of each block
+		- ![[Pasted image 20240422132909.png|400]]
+		- Above picture is inode(same as FCB: file control block)
+		- We need all 12 of direct blocks and several in single indirect block
+		- but where are these inodes stored?
+- Answer
+	- Read in file header for root (fixed spot on disk, PCB knows where inode of root is)
+	- Read in first data block for root
+	- Table of file name/index pairs. Search linearly – ok since directories typically very small
+	- Read in file header for “classes”
+	- Read in first data block for “classes”; search for “cs330”
+	- Read in file header for “cs330”
+	- Read in first data block for “cs330”; search for “lecture01.pdf”
+	- Read in file header for “lecture01.pdf”
+	- Read in data blocks for “lecture01.pdf”
+
+__File Systems__
+- Issues on directory
+	- Most file operations involve searching the directory for the entry associated with the file name
+	- How to resolve this?
+
+__Open File(Cache)__
+![[Pasted image 20240422135300.png|400]]
+- Open-file table
+	- To avoid constant searching, OS keeps a small table containing information about all open files (open-file table)
+	- When a file operation is requested, the file is specified via an index into this table, so no searching is required
+- File operations
+	- Open(Fi)– search the directory structure on disk for entry Fi, and move the content of entry to memory
+	- Close (Fi)– move the content of entry Fi in memory to directory structure on disk
+- Several pieces of data are needed to manage open files:
+	- File pointer
+		- pointer to last read/write location, per process that has the file open
+	- File-open count
+		- counter of number of times a file is open – to allow removal of data from open-file table when last processes closes it
+		- If multiple process access same file & one file wants to close it, in the system-wide open-file table should not close the file since another process is still using it.
+	- Disk location of the file
+		- cache of data access information
+	- Access rights
+		- per-process access mode information
+
+Tree-Structured Directories
+- Absolute or relative path name
+- Creating a new file/directory is done in current directory
+	- `mkdir <dir-name>`
+- Delete a file
+	- `rm <file-name>`
+
+__File System Mounting__
+![[Pasted image 20240422140310.png|450]]![[Pasted image 20240422140328.png|250]]
+- Mounting
+	- In Unix, it arranges all files accessible in one single big tree, the file hierarchy, rooted at “/”
+	- Files can be spread out over several devices
+		- A file system (from another device) must be mounted before it can be accessed
+	- An unmounted file system is mounted at a mount point, which is typically an empty directory
+- Example
+	- The second partition of a hard disk is mounted with the command:
+		- $ mount /dev/hda2 /new/subdir
+	- and unmounted with the command:
+		- $ umount /dev/hda2 or $ umount /new/subdir
+- File system type
+	- OS inspects the structures of a device & determines the type of file system
+- A mounting point
+	- Path is constructed from the mounting point
+- Verification process
+	- OS asks the device driver to read the device directory and verifies that the directory has the expected format
+- Mounting semantics
+	- Systems impose semantics to clarify functionality
+	- Mounting point
+		- Only allows an empty directory
+		- Mount a new FS and hide existing FS; restore existing one after terminating mounting
+	- Mounting
+		- Allow one mount per FS
+		- Allow multiple mountings
+
+__File Sharing__
+- Sharing of files on multi-user systems is desirable
+- Sharing may be done through a protection scheme
+- On distributed systems, files may be shared across a network
+- Network File System (NFS) is a common distributed file-sharing method
+
+__File Sharing – Multiple Users__
+- User IDs identify users, allowing permissions and protections to be per-user
+- Group IDs allow users to be in groups, permitting group access rights
+
+__File Sharing – Remote File Systems__
+- Uses networking to allow file system access between systems
+	- Manually via programs like FTP
+	- Automatically, seamlessly using distributed file systems
+	- Semi automatically via the world wide web
+- Client-server model allows clients to mount remote file systems from servers
+	- Server can serve multiple clients
+	- NFS is standard UNIX client-server file sharing protocol
+	- CIFS is standard Windows protocol
+	- Standard operating system file calls are translated into remote calls
+
+__File Sharing – Consistency Semantics__
+- Consistency semantics specify how multiple users access a shared file simultaneously
+	- Similar to process synchronization algorithms
+		- Tend to be less complex due to disk I/O and network latency (for remote file systems)
+	- Semantics for concurrent accesses:
+		- What happens when one process reads while another writes?
+		- What happens when two processes open the same file?
+- Unix file system (UFS) implements:
+	- Writes to an open file visible immediately to other users of the same open file
+	- Sharing file pointer to allow multiple users to read and write concurrently (i.e., fork())
+- AFS has session semantics (Andrew File System)
+	- A session begins/ends when a file is open/closed
+	- Writes only visible to sessions starting after the file is closed
+- 

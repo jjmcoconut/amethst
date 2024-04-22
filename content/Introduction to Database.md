@@ -2175,4 +2175,262 @@ ALTER TABLE Instructor
 DROP COLUMN dept_name;
 ```
 
-This change in the database schema reflects the design principle of minimizing redundancy by managing relationships rather than duplicating data across tables.
+## Reduction to Relational Schemas
+
+__Reduction to Relational Schemas__
+- Entity sets and relationship sets can be expressed uniformly as relational schemas that represent the contents of the database
+- A database which conforms to an ER diagram can be represented by a collection of schemas
+- For each entity set and relationship set, there is a unique schema that is assigned the name of the corresponding entity set or relationship set
+- Each schema has a number of columns (generally corresponding to attributes), which have unique names
+
+__Representing Entity Sets__
+- A strong entity set reduces to a schema with the same attributes student (ID, name, tot_cred)
+- A weak entity set becomes a table that includes a column for the primary key of the identifying strong entity set
+    section (course_id, sec_id, sem, year)
+![[Pasted image 20240422125905.png|400]]
+
+__Entity Sets with Composite Attributes__
+- Composite attributes are flattened out by creating a separate attribute for each component attribute
+	- e.g., given entity set instructor with a composite attribute name with component attributes first_name, middle_initial, and last_name, the schema corresponding to the entity set has three attributes name_first_name, name_middle_initial, and name_last_name
+	- The prefix can be omitted if there is no ambiguity
+		- name_first_name could be first_name
+- Ignoring multivalued attributes, extended instructor schema is instructor(ID, first_name, middle_initial, last_name, street_number, street_name, apt_number, city, state, zip_code, date_of_birth)
+
+__Entity Sets with Multivalued Attributes__
+- A multivalued attribute M of an entity E is represented by a separate schema EM
+- The schema EM has attributes corresponding to the primary key of E and an attribute corresponding to the multivalued attribute M
+    - e.g., a multivalued attribute phone_number of instructor is represented by a schema: inst_phone = ( ID, phone_number )  
+- Each value of the multivalued attribute maps to a separate tuple of the relation on the schema EM  
+	- For example, an instructor entity with the primary key 22222 and phone numbers 456-7890 and 123-4567 maps to two tuples: (22222, 456-7890) and (22222, 123-4567)
+
+__Representing Relationship Sets__
+![[Pasted image 20240422130335.png|400]]
+- A many-to-many relationship set is represented as a schema with attributes for the primary keys of the two participating entity sets and any descriptive attributes of the relationship set  
+	- e.g., schema for a relationship set advisor advisor = (s_id, i_id)
+- Many-to-one and one-to-many relationship sets that are total on the many-side can be represented by adding an extra attribute to the “many” side, containing the primary key of the “one” side
+	- e.g., instead of creating a schema for a relationship set inst_dept, add an attribute dept_name to the schema arising from the entity set instructor
+- For one-to-one relationship sets, either side can be chosen to act as the “many” side
+	- An extra attribute can be added to either of the tables corresponding to the two entity sets If participation is partial on the “many” side, replacing a schema by an extra attribute in the schema corresponding to the “many” side could result in null values
+	- e.g., suppose, in the previous slide, we added an attribute instructor_ID to the schema for the entity set student instead of creating a schema for a relationship set advisor; if a student does not have an advisor, its instructor_ID will become null
+
+__Redundancy of Schemas__
+![[Pasted image 20240422141344.png|400]]
+- The schema corresponding to a relationship set linking a weak entity set to its identifying strong entity set is redundant  
+	- e.g., the section schema already contains the attributes that would appear in the sec_course schema
+
+## Extended ER Features
+
+__Specialization__
+- Top-down design process: we designate sub-groupings within an entity set that are distinctive from other entities in the set
+- These sub-groupings become lower-level entity sets that have attributes or participate in relationships that do not apply to the higher-level entity set
+- It is depicted by a triangle component labeled ISA
+	- e.g., an instructor “is a” person
+- Attribute inheritance: a lower-level entity set inherits all the attributes and relationship participation of the higher-level entity set to which it is linked
+
+__Specialization Example__
+![[Pasted image 20240422141535.png|250]]
+- Overlapping: employee and student
+- Disjoint: instructor and secretary
+- Total and partial
+
+Representing Specialization via Schemas
+Method 1:
+
+| schema   | attributes             |
+| -------- | ---------------------- |
+| person   | ID, name, street, city |
+| student  | ID, tot_credits        |
+| employee | ID, salary             |
+![[Pasted image 20240422142117.png|250]]
+- Forming a schema for the higher-level entity
+- Forming a schema for each lower-level entity set and including the primary key of the higher-level entity set and local attributes
+
+- Drawback: getting information about an employee requires accessing two relations, the one corresponding to the low-level schema and the one corresponding to the high-level schema
+Method 2:
+
+| schema   | attributes                          |
+| -------- | ----------------------------------- |
+| person   | ID, name, street, city              |
+| student  | ID, name, street, city, tot_credits |
+| employee | ID, name, street, city, salary      |
+![[Pasted image 20240422142139.png|250]]
+
+- Forming a schema for each entity set with all local and inherited attributes
+- Drawback: name, street, and city may be stored redundantly for people who are both students and employees
+
+__Generalization__
+- Bottom-up design process: we combine a number of entity sets that share the same features into a higher-level entity set
+- Specialization and generalization are simple inversions of each other; they are represented in an ER diagram in the same way
+- The terms specialization and generalization are used interchangeably
+
+__Completeness Constraint__
+- Completeness constraint: specifying whether or not an entity in the higher-level entity set must belong to at least one of the lower-level entity sets within a generalization
+	- Total: an entity must belong to one of the lower-level entity sets
+	- Partial: an entity need not belong to one of the lower-level entity sets
+- Partial generalization is the default
+- We can specify total generalization in an ER diagram by adding the keyword “total” in the diagram and drawing a dashed line from the keyword to the corresponding hollow arrow-head to which it applies or to the set of hollow arrow-heads to which it applies
+- e.g., the student generalization is total: All student entities must be either graduate or undergraduate
+
+__Aggregation__
+![[Pasted image 20240422142547.png|350]]![[Pasted image 20240422142529.png|350]]
+- Consider the ternary relationship proj_guide, which we saw earlier
+- Suppose we want to record evaluations of a student by a guide on a project
+- Relationship sets eval_for and proj_guide represent overlapping information
+	- Every eval_for relationship corresponds to a proj_guide relationship
+	- However, some proj_guide relationships may not correspond to any eval_for relationships
+		- So we cannot discard the proj_guide relationship
+- Eliminate this redundancy via aggregation
+	- Treating a relationship as an abstract entity
+	- Allowing a relationship between relationships
+	- Abstraction of a relationship into a new entity
+- Eliminate this redundancy via aggregation without introducing redundancy, the following diagram represents:
+	- A student is guided by a particular instructor on a particular project
+	- A student, instructor, project combination may have an associated evaluation
+
+Reduction to Relational Schemas
+- To represent aggregation, create a schema containing
+    - The primary key of the aggregated relationship
+    - The primary key of the associated entity set
+    - Any descriptive attributes, if exists
+- In our example:
+    - The schema eval_for is:
+	    - eval_for (s_ID, project_id, i_ID, evaluation_id)
+    - The schema proj_guide is redundant, provided that we are willing to store null values for the score attribute in the relation on evaluation (added by JGL)
+		- evaluation (id, score): the score attribute could be null if the corresponding instructor, student, project combination was not evaluated
+
+## Design Issues
+
+__Common Mistakes in E-R Diagrams__
+![[Pasted image 20240422142734.png|500]]
+![[Pasted image 20240422142801.png|500]]
+
+__Attributes vs. Entity Sets__ 
+- Use of attributes vs. entity sets
+	- e.g., exactly one phone number vs. multiple phone numbers  
+		- Use of phone as an entity allows extra information about phone numbers (plus multiple phone numbers)
+
+__Relationship Sets vs. Entity Sets__
+- Use of relationship sets vs. entity sets
+	- e.g., both designs accurately represent the university’s information, but the use of takes is more compact and probably preferable
+	- A possible guideline is to designate a relationship set to describe an action that occurs between entities
+- Placement of relationship attributes
+	- e.g., the attribute date as an attribute of advisor or as an attribute of student
+
+__Binary vs. Non-Binary Relationships__
+- Although it is possible to replace any non-binary (n-ary, for n > 2) relationship set by a number of distinct binary relationship sets, a n-ary relationship set shows more clearly that several entities participate in a single relationship
+- Some relationships that appear to be non-binary may be better represented
+    using binary relationships
+	- For example, a ternary relationship parents, relating a child to his/her father and mother, is best replaced by two binary relationships, father and mother  
+		- Using two binary relationships allows partial information (e.g., only mother being known)
+	- But there are some relationships that are naturally non-binary 
+		- e.g., proj_guide
+
+__Converting Non-Binary Relationships__
+![[Pasted image 20240422143235.png|350]]
+- In general, any non-binary relationship can be represented using binary relationships by creating an artificial entity set  
+	- Replace R between entity sets A, B, and C by an entity set E and three relationship sets:
+		- 1. RA, relating E and A 2. RB, relating E and B 3. RC, relating E and C
+	- Create an identifying attribute for E and add any attributes of R to E
+	- For each relationship (ai, bi, ci) in R,
+		- 1. create a new entity ei in the entity set E 2. add (ei , ai) to RA 3. add (ei, bi) to RB 4. add (ei , ci) to RC
+- There may not be a way to translate constraints on the ternary relationship into those on the binary relationships  
+	- e.g., consider a constraint saying that R is many-to-one from A, B to C; that is, each pair of entities from A and B is associated with at most one C entity  
+		- This constraint cannot be expressed by using cardinality constraints on RA, RB, and RC
+
+__ER Design Decisions__
+- The use of an attribute or entity set to represent an object
+- Whether a real-world concept is best expressed by an entity set or a relationship set
+- The use of a ternary relationship versus a pair of binary relationships
+- The use of a strong or weak entity set
+- The use of specialization/generalization ← contributes to modularity in the design
+- The use of aggregation ← can treat the aggregate entity set as a single unit without concern for the details of its internal structure
+
+__Symbols Used in ER Notation__
+![[Pasted image 20240422143426.png|350]]![[Pasted image 20240422143452.png|350]]
+
+# 7. Normalization
+
+## Overview of Normalization
+
+__Features of Good Relational Designs__
+![[Pasted image 20240422143753.png|400]]
+- Suppose we combine instructor and department into in_dep, which represents the natural join on the relations instructor and department
+- There is repetition of information
+- Null values are needed for a new department with no instructor
+
+__Combined Schema Without Repetition__
+- Not all combined schemas result in repetition of information
+- e.g., consider combining relations
+    - sec_class(sec_id, building, room_number) and section(course_id, sec_id, semester, year) ⇒ section(course_id, sec_id, semester, year, building, room_number)
+    - No repetition in this case
+
+__Decomposition__
+- The only way to avoid the repetition-of-information problem in the in_dep schema is to decompose it into two schemas: instructor and department schemas
+- Not all decompositions are good. Suppose we decompose 
+	- employee (ID, name, street, city, salary) ⇒  employee1 (ID, name); employee2 (name, street, city, salary)
+		- A problem arises when we have two employees with the same name The next slide shows how we lose information
+		- We cannot reconstruct the original employee relation; so, this is a lossy decomposition
+
+__A Lossy Decomposition__
+![[Pasted image 20240422144606.png|400]]
+
+__Lossless Decomposition__
+![[Pasted image 20240422144808.png|400]]
+- Let R be a relation schema and let R1 and R2 form a decomposition of R, i.e., R = R1 U R2
+- We say that the decomposition is a lossless decomposition if there is no loss of information by replacing R with the two relation schemas R1 U R2
+- Formally, πR1 (r) ⋈ πR2 (r) = r
+- And, conversely a decomposition is lossy if r ⊂ πR1 (r) ⋈ πR2 (r)
+
+__Normalization Theory__
+- Decide whether a particular relation R is in “good” form
+- In the case that a relation R is not in “good” form, decompose it into a set of relations {R1, R2, ..., Rn} such that
+    - Each relation is in good form
+    - The decomposition is a lossless decomposition
+- Our theory is based on:
+	- Functional dependencies
+	- Multivalued dependencies
+
+__Functional Dependencies__
+- There are usually a variety of constraints (rules) on the data in the real world
+- For example, some of the constraints that are expected to hold in a university database are:
+    - Students and instructors are uniquely identified by their ID
+    - Each student and instructor has only one name
+    - Each instructor and student is (primarily) associated with only one department
+    - Each department has only one value for its budget and only one associated building
+- An instance of a relation that satisfies all such real-world constraints is called a legal instance of the relation
+- A legal instance of a database is one where all the relation instances are legal instances
+- A functional dependency is a generalization of the notion of a key
+
+__Functional Dependencies Definition__
+- Let R be a relation schema α ⊆ R and β ⊆ R
+- The functional dependency α⟶β holds on R if and only if for any legal relations r(R), whenever any two tuples t1 and t2 of r agree on the attributes α, they also agree on the attributes β, i.e., t1[α] = t2[α] ⇒ t1[β] = t2[β]
+- e.g., Consider r(A, B) with the following instance of r ![[Pasted image 20240422145121.png|70]]
+	- On this instance, B⟶A hold; A⟶B does not hold
+
+__Closure of a Set of Functional Dependencies__
+- Given a set F set of functional dependencies, there are certain other functional dependencies that are logically implied by F
+	- If A⟶B and B⟶C, then we can infer that A⟶C
+- The set of all functional dependencies logically implied by F is the closure of F
+- We denote the closure of F by F+
+
+__Keys and Functional Dependencies__
+- K is a superkey for relation schema R if and only if K⟶R
+- K is a candidate key for R if and only if K⟶R, and for no α ⊂ K, α⟶R
+- Functional dependencies allow us to express constraints that cannot be expressed using superkeys
+- Example
+    - in_dep (ID, name, salary, dept_name, building, budget).
+    - We expect these functional dependencies to hold:
+        - dept_name⟶budget
+	    -  ID⟶building
+    - but would not expect the following to hold:
+        - dept_name⟶salary
+
+__Use of Functional Dependencies__
+
+- We use functional dependencies:  
+	- To test relations to see if they are legal under a given set of functional dependencies
+		- If a relation r is legal under a set F of functional dependencies, we say that r satisfies F
+	- To specify constraints on the set of legal relations
+		- We say that F holds on R if all legal relations on R satisfy the set of functional dependencies F
+- Note: A specific instance of a relation schema may satisfy a functional dependency even if the functional dependency does not hold on all legal instances  
+	- e.g., a specific instance of instructor may, by chance, satisfy name⟶ID
