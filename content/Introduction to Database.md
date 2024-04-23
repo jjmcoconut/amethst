@@ -2355,20 +2355,21 @@ __Symbols Used in ER Notation__
 __Features of Good Relational Designs__
 ![[Pasted image 20240422143753.png|400]]
 - Suppose we combine instructor and department into in_dep, which represents the natural join on the relations instructor and department
-- There is repetition of information
-- Null values are needed for a new department with no instructor
+- There is repetition of information - the red box(Physics, Watson, 70000)
+- Null values are needed for a new department with no instructor(When initiating a new department)
 
 __Combined Schema Without Repetition__
 - Not all combined schemas result in repetition of information
 - e.g., consider combining relations
-    - sec_class(sec_id, building, room_number) and section(course_id, sec_id, semester, year) ⇒ section(course_id, sec_id, semester, year, building, room_number)
+    - `sec_class(sec_id, building, room_number)` and `section(course_id, sec_id, semester, year)` ⇒ `section(course_id, sec_id, semester, year, building, room_number)`
     - No repetition in this case
 
 __Decomposition__
 - The only way to avoid the repetition-of-information problem in the in_dep schema is to decompose it into two schemas: instructor and department schemas
 - Not all decompositions are good. Suppose we decompose 
-	- employee (ID, name, street, city, salary) ⇒  employee1 (ID, name); employee2 (name, street, city, salary)
-		- A problem arises when we have two employees with the same name The next slide shows how we lose information
+	- `employee (ID, name, street, city, salary)` ⇒  `employee1 (ID, name), employee2 (name, street, city, salary)`
+		- A problem arises when we have two employees with the same name 
+	- The next slide shows how we lose information
 		- We cannot reconstruct the original employee relation; so, this is a lossy decomposition
 
 __A Lossy Decomposition__
@@ -2403,7 +2404,7 @@ __Functional Dependencies__
 
 __Functional Dependencies Definition__
 - Let R be a relation schema α ⊆ R and β ⊆ R
-- The functional dependency α⟶β holds on R if and only if for any legal relations r(R), whenever any two tuples t1 and t2 of r agree on the attributes α, they also agree on the attributes β, i.e., t1[α] = t2[α] ⇒ t1[β] = t2[β]
+- The functional dependency α⟶β holds on R if and only if for any legal relations r(R), whenever any two tuples t1 and t2 of r agree on the attributes α, they also agree on the attributes β, i.e., t1[α] = t2[α] ⇒ t1[β] = t2[β] (α, β may be multiple attributes)
 - e.g., Consider r(A, B) with the following instance of r ![[Pasted image 20240422145121.png|70]]
 	- On this instance, B⟶A hold; A⟶B does not hold
 
@@ -2416,7 +2417,7 @@ __Closure of a Set of Functional Dependencies__
 __Keys and Functional Dependencies__
 - K is a superkey for relation schema R if and only if K⟶R
 - K is a candidate key for R if and only if K⟶R, and for no α ⊂ K, α⟶R
-- Functional dependencies allow us to express constraints that cannot be expressed using superkeys
+- Functional dependencies allow us to express constraints that cannot be expressed using superkeys (superkeys right side is fixed with R, but functional dependencies can be anything)
 - Example
     - in_dep (ID, name, salary, dept_name, building, budget).
     - We expect these functional dependencies to hold:
@@ -2426,7 +2427,6 @@ __Keys and Functional Dependencies__
         - dept_name⟶salary
 
 __Use of Functional Dependencies__
-
 - We use functional dependencies:  
 	- To test relations to see if they are legal under a given set of functional dependencies
 		- If a relation r is legal under a set F of functional dependencies, we say that r satisfies F
@@ -2434,3 +2434,39 @@ __Use of Functional Dependencies__
 		- We say that F holds on R if all legal relations on R satisfy the set of functional dependencies F
 - Note: A specific instance of a relation schema may satisfy a functional dependency even if the functional dependency does not hold on all legal instances  
 	- e.g., a specific instance of instructor may, by chance, satisfy name⟶ID
+
+__Trivial Functional Dependencies__
+- A functional dependency is trivial if it is satisfied by all instances of a relation e.g., ID, name⟶ID, name⟶ name
+- In general, α⟶β is trivial if β ⊆ α
+
+__Lossless Decomposition__
+- We can use functional dependencies to show when certain decompositions are lossless
+- For the case of R = (R1, R2), we require that for all possible relations r on schemaR,r=πR1 (r)⋈πR2 (r)
+- A decomposition of R into R1 and R2 is lossless decomposition if at least one of the following dependencies is in F+: 
+	- R1∩R2⟶R1  
+	- R1∩R2⟶R2
+- The above functional dependencies are a sufficient condition for lossless join decomposition; the dependencies are a necessary condition only if all constraints are functional dependencies
+- Example
+	- R = (A, B, C) , F = {A⟶B, B⟶C}
+	- R1 = (A, B), R2 = (B, C)  
+		- Lossless decomposition: R1 ∩ R2 = {B} and B⟶BC
+	- R1 = (A, B), R2 = (A, C)  
+		- Lossless decomposition: R1 ∩ R2 = {A} and A⟶AB  
+	- Note: B⟶BC is a shorthand notation for B⟶{B, C}
+
+__Dependency Preservation__
+- Testing functional dependency constraints each time the database is updated can be costly
+- It is useful to design the database in a way that constraints can be tested efficiently
+- If testing a functional dependency can be done by considering just one relation, then the cost of testing this constraint is low
+- When decomposing a relation, it may be no longer possible to do the testing without having to perform a Cartesian product or join
+- A decomposition that makes it computationally hard to enforce functional dependency is said to be not dependency preserving
+- Example
+	- Consider a schema: dept_advisor(s_ID, i_ID, dept_name)
+	- With function dependencies:
+	    - i_ID ⟶ dept_name
+	    - s_ID, dept_name ⟶ i_ID
+	- In the above design, we are forced to repeat the department name once for each time an instructor participates in a dept_advisor relationship
+	- To fix this, we need to decompose dept_advisor
+	- Any decomposition will not include all the attributes in
+		- s_ID, dept_name ⟶ i_ID
+	- Thus, the decomposition will not be dependency preserving
