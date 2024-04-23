@@ -1027,7 +1027,7 @@ __Dynamic Host Configuration Protocol (DHCP)__
   - Slow initial uptake, but increasing deployment driven by the proliferation of IP-enabled devices.
   - Future changes in the network layer are expected to occur at a slower pace compared to rapid developments at the application layer.
 
-### 4.4 Generalized Forwarding and SDN
+## 4.4 Generalized Forwarding and SDN
 ![[Pasted image 20240415210738.png|500]]
 - **Match-plus-action paradigm**: This advanced forwarding approach extends beyond simple destination-based forwarding. It involves matching packets based on multiple header fields across various network layers and executing actions like forwarding, load balancing, rewriting headers (e.g., NAT), blocking/dropping packets (firewall actions), or sending packets for further processing (DPI).
 - **Generalized forwarding devices**: Previously known as layer 3 routers or layer 2 switches, these are now referred to as packet switches in SDN contexts. They operate based on match-plus-action tables managed by a remote controller.
@@ -1136,7 +1136,7 @@ These principles, articulated in fundamental papers like [Saltzer 1984] and [Cla
     - Notable usage by AT&T with plans for extensive network virtualization and software control.
     - Applied by China Telecom and China Unicom within and between data centers.
 
-### 5.2 Routing Algorithms
+## 5.2 Routing Algorithms
 
 __Overview of Routing Algorithms__
 - **Purpose**: Determine optimal paths from senders to receivers through a network of routers.
@@ -1177,29 +1177,49 @@ __Overview of Link-State (LS) Routing Algorithm__
 - **Implementation**: Nodes broadcast link-state packets containing the identity and costs of attached links to all other nodes in the network, achieving uniform awareness across the network.
 
 __Key Algorithm: Dijkstra's Algorithm__
+```
+Initialization:
+	N' = {u}
+	for all nodes v
+		if v is neighbor of u
+			then D(v)=c(u,v)
+		else D(v) = inf
+
+Loop
+	find w not in N' such that D(w) is minimum
+	add w to N'
+	update D(v) for each neighbor v of w and not in N':
+		D(v) = min(D(v),D(w)+e(w,v))
+until N'= N
+```
 - **Functionality**: Computes the least-cost path from a source node to all other nodes.
 - **Iterative Process**:
 	- **Initialization**: Begins with direct path costs to neighbors.
-	- **Iteration Steps**: Sequentially adds nodes to the set \( N' \) (nodes with known least-cost paths) and updates path costs to other nodes.
+	- **Iteration Steps**: Sequentially adds nodes to the set $ N' $ (nodes with known least-cost paths) and updates path costs to other nodes.
 - **Outcome**: At termination, provides the shortest paths from the source to all network nodes, forming the basis for constructing forwarding tables.
 
 __Detailed Steps of Dijkstra's Algorithm__
 - **Initialization**: Known costs to direct neighbors are set (e.g., to infinity if not directly connected).
-- **First Iteration**: Identify the node with the smallest known cost not yet in \( N' \), update path costs based on this node.
-- **Subsequent Iterations**: Continue adding nodes with the least cost to \( N' \) and update path costs.
+- **First Iteration**: Identify the node with the smallest known cost not yet in $ N' $, update path costs based on this node.
+- **Subsequent Iterations**: Continue adding nodes with the least cost to $ N' $ and update path costs.
 
 __Example Calculation__
-- **Network Analysis**: From a given source node \( u \), detailed calculations show iterative updates of path costs to all destinations in the network, as visualized in a tabular format (referenced as Table 5.1 in the text).
+![[Pasted image 20240423133636.png|200]]![[Pasted image 20240423133652.png|400]]
+- **Network Analysis**: From a given source node $ u $, detailed calculations show iterative updates of path costs to all destinations in the network, as visualized in a tabular format 
+- __Result__:
+  ![[Pasted image 20240423133801.png|450]]
 
 __Computational Complexity__
-- **Initial Complexity**: \( O(n^2) \) based on iterative node inclusion and path cost updates.
-- **Optimization**: Using a heap data structure can reduce complexity by optimizing the search for the minimum cost node.
+- **Initial Complexity**: $ O(n^2) $ based on iterative node inclusion and path cost updates.
+- **Optimization**: Using a heap data structure can reduce complexity by optimizing the search for the minimum cost node. O(n$\cdot$logn)
 
 __Considerations and Pathologies__
 - **Dynamic Link Costs**: If link costs reflect real-time traffic load, path costs may not be symmetric and can lead to oscillations in route determination.
 - **Prevention of Oscillations**:
 	- Staggering the execution of the LS algorithm across different nodes.
 	- Randomizing times for sending link-state advertisements to prevent algorithm synchronization across routers.
+- What about equal cost paths?
+	- Use hashing to take care of it.
 
 ### 5.2.2 The Distance-Vector (DV) Routing Algorithm
 
@@ -1212,35 +1232,35 @@ __Overview of Distance-Vector Routing__
 
 __Bellman-Ford Equation__
 - **Purpose**: Fundamental to the DV algorithm, providing a method to calculate least-cost paths.
-- **Formula**: \(dx(y) = \min_{v}(c(x, v) + dv(y))\)
-	- \(dx(y)\) represents the cost of the least-cost path from node \(x\) to \(y\).
-	- The equation takes the minimum sum of costs to a neighbor \(v\) and from \(v\) to \(y\).
+- **Formula**: $d_x(y) = \min_{v}(c(x, v) + d_v(y))$
+	- $d_x(y)$ represents the cost of the least-cost path from node $x$ to $y$.
+	- The equation takes the minimum sum of costs to a neighbor $v$ and from $v$ to $y$.
   
 __Practical Application of the Bellman-Ford Equation__
 - **Routing Table Updates**:
-	- The solution to the Bellman-Ford equation determines the entries in node \(x\)’s forwarding table.
-	- For a packet destined for \(y\), node \(x\) forwards it to a neighbor \(v^*\) that offers the minimal path cost.
+	- The solution to the Bellman-Ford equation determines the entries in node $x$’s forwarding table.
+	- For a packet destined for $y$, node $x$ forwards it to a neighbor $v^*$ that offers the minimal path cost.
   
 __Mechanism of the DV Algorithm__
 - **Initial Setup**:
-  - Each node \(x\) starts with \(Dx(y)\), an estimate of the path cost from itself to all nodes \(y\) in \(N\).
+  - Each node $x$ starts with $Dx(y)$, an estimate of the path cost from itself to all nodes $y$ in $N$.
 - **Distance Vectors**:
-  - \(Dx = [Dx(y): y \in N]\): Node \(x\)’s vector of cost estimates to all nodes \(y\).
-  - \(Dv = [Dv(y): y \in N]\) for each neighbor \(v\): Neighbors’ cost estimates.
+  - $Dx = [Dx(y): y \in N]$: Node $x$’s vector of cost estimates to all nodes $y$.
+  - $Dv = [Dv(y): y \in N]$ for each neighbor $v$: Neighbors’ cost estimates.
 - **Asynchronous Updates**:
   - Nodes periodically send their distance vectors to neighbors.
-  - Upon receiving a new distance vector from a neighbor \(w\), node \(x\) updates its distance vector using the Bellman-Ford equation: \(Dx(y) = \min_{v}(c(x, v) + Dv(y))\).
-  - If \(Dx(y)\) changes, \(x\) broadcasts its updated vector to its neighbors, triggering potential updates.
+  - Upon receiving a new distance vector from a neighbor $w$, node $x$ updates its distance vector using the Bellman-Ford equation: $Dx(y) = \min_{v}(c(x, v) + Dv(y))$.
+  - If $Dx(y)$ changes, $x$ broadcasts its updated vector to its neighbors, triggering potential updates.
 
 __Convergence__
-- **Outcome**: As nodes exchange distance vectors asynchronously, each \(Dx(y)\) converges to \(dx(y)\), the actual cost of the least-cost path from node \(x\) to node \(y\), as proven by Bertsekas in 1991.
+- **Outcome**: As nodes exchange distance vectors asynchronously, each $Dx(y)$ converges to $dx(y)$, the actual cost of the least-cost path from node $x$ to node $y$, as proven by Bertsekas in 1991.
 
 __Distance-Vector Algorithm Overview__
 At each node, x:
 ```
 Initialization:
 	for all destinations y in N:  
-		Dx(y)= c(x,y)/* if y is not a neighbor then c(x,y)= ∞ */
+		Dx(y) = c(x,y)/* if y is not a neighbor then c(x,y)= ∞ */
 	
 	for each neighbor w  
 		Dw(y) = ? for all destinations y in N
