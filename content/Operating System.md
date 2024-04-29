@@ -594,4 +594,315 @@ __File Sharing – Consistency Semantics__
 - AFS has session semantics (Andrew File System)
 	- A session begins/ends when a file is open/closed
 	- Writes only visible to sessions starting after the file is closed
-- 
+
+__WrapUp__
+
+__File-System Implementation__
+- Boot Control Block (BCB) contains info needed by system to boot OS from that partition
+	- Needed if partition contains OS, usually first block of partition
+- Partition Control Block (PCB) contains partition details (FS metadata)
+	- Total # of blocks, # of free blocks, block size, free block pointers
+- Directory structure organizes the files
+	- Names and inode numbers, master file table
+- Per-file File Control Block (FCB) contains many details about the file (file metadata)
+	- Inode number, permissions, size, dates
+
+__Allocation Methods__
+- Allocation methods for how to allocate disk blocks to files:
+  ![[Pasted image 20240424130611.png|500]]
+- Contiguous allocation disadvantages: fragmentation, file size is fixed(cannot grow)
+- Indexed allocation: uses one block as a list of indexes for allocated resources
+	- disadvantage: needs more space & need to access separate block(expensive)
+
+__Directory Structure__
+- Metadata are stored in the file control block (i.e., i-node)
+  ![[Pasted image 20240424131004.png|500]]
+- data blocks are another directory table(?, need checking)
+
+Naming
+- How many disk accesses to resolve: “/users/i/insik.shin/thumbnail.jpg” (1KB)?
+1) Read in i-node for root (fixed spot on disk)
+2) Read in first data block for root
+3) Read in i-node for “users”
+4) Read in first data block for “users”; search for “i”
+5) Read in i-node for “i”
+6) Read in first data block for “i”; search for “insik.shin”
+7) Read in i-node for “insik.shin”
+8) Read in first data block for “insik.shin”; search for “thumbnail.jpg”
+9) Read in i-node for “thumbnail.jpg”
+10) Read in first data block for “thumbnail.jpg”
+
+
+__Finding a Needle in a Haystack: Facebook’s Photo Storage__
+
+__Main Goals for Photo Serving Method__
+- Four main goals for photo serving method:
+	- High throughput and low latency
+		- Provide a good user experience
+	- Fault-tolerant
+		- Handle server crashes and hard drive failures
+		- Lifespan of HDD is about 3~5 years, For 20PB we need 20k of 10TB HDD. -> average of 20. HDD fails every day.
+	- Cost-effective
+		- Save money over traditional approaches (reduce reliance on CDNs!)
+	- Simplicity
+		- Make it easy to implement and maintain
+- Typical Design
+  ![[Pasted image 20240424132419.png|500]]
+	- If CDN has high cache hit ratios -> efficient(does not need to access Photo Storage which is Facebook)
+	- How many days should the CDN store the cache?
+
+__Background__
+- Two types of workloads for image serving
+	- Profile pictures – heavy access, smaller size
+	- Photo albums – intermittent access, higher at beginning, decreasing over time (long tail)
+- ![[Pasted image 20240424132905.png|400]]
+	- 80 percent of the access requested for about the first 240 days.
+	- If they choose to extend the age of cache twice, they need to double the storage size(costly).
+		- Cannot have infinite cache age
+
+__Facebook vs. Typical Websites__
+- Typical websites
+	- Small working set
+	- Infrequent access of old content
+	- ~99% CDN hit rate
+- Facebook
+	- Large working set
+	- Frequent access of old content
+	- 80% CDN hit rate
+
+__Facebook’s Old Design__
+- The old photo infrastructure consisted of several tiers:
+	- Upload tier receives users’ photo uploads, scales the original images and saves them on the NFS storage tier.
+	- Photo serving tier receives HTTP requests for photo images and serves them from the NFS storage tier.
+	- NFS storage tier built on top of commercial storage appliances
+
+__NFS based Design__
+- Metadata bottleneck
+	- Each image stored as a file
+	- Large metadata size severely limits the metadata hit ratio (in the cache)
+- Image read performance
+	- ~10 iops / image read (large directories – thousands of files)
+		- If we have deep directories then for one file access, we need a lot of disk accesses.
+	- ~3 iops / image read (smaller directories – hundreds of files)
+		- For usual file access we need at least 3 accesses:
+			- read the directory metadata into memory
+			- load the inode into memory
+			- read the file contents
+		- Facebook wants to shorten this process
+			- We do not use symbolic names for images in Facebook -> does not need directory table
+			- There is no reason not to use contiguous allocation method
+				- Image size is fixed
+				- People usually does not erase photos-> no deallocation
+				- can use one location instead of inode
+	- ~2.5 iops / image read (file handle cache)
+		- Cache the filename-to-file-handle mapping
+		- Custom system call: open_by_filehandle
+		- A minor improvement (a low cache hit ratio)
+
+Haystack
+![[Pasted image 20240424140021.png|500]]
+- Addresses the critical bottleneck in NFS-based approach
+- Aims to limit the number of operations to only the ones necessary
+- Reduces the memory used for filesystem metadata
+- Stores multiple photos in a single file
+- Two kinds of metadata
+	- Application metadata
+		- Information needed to construct a URL
+	- Filesystem metadata
+		- Identify the data necessary for a host to retrieve the photos
+- Aims to retrieve the filename, offset, and size of a particular photo without any disk operations
+- On a disk, a single very large file (100GB) is saved as `/hay/haystack_<logical volume id>`
+
+Layout of Haystack Store file
+- A Haystack Store file is a logical storage, and a needle is for a single image
+- Main purpose: to reduce file system-level metadata (namespace directory and inode)
+  ![[Pasted image 20240424140152.png|500]]
+
+Haystack Index File
+- The index file provides the minimal metadata required to locate a particular needle in the store
+- Main purpose: allow quick loading of the needle metadata into memory without traversing the larger Haystack store file
+- Index is usually less than 1% the size of the store file
+  ![[Pasted image 20240424140207.png|500]]
+
+Haystack - Summary
+- Simplified metadata
+	- No directory structures/file names
+		- 64-bit ID
+	- Results in easier lookups
+- Reduced disk I/O
+	- Optimized for random reads (~1 I/O per object read)
+	- 1 MB of metadata for every 1GB of usable storage
+	- 10 TB/node results in 10 GB of metadata
+		- This amount is easily cacheable!
+- 8,500 LOC (C++)
+	- 2 engineers 4 months from inception to initial development
+
+# Mass-Storage Systems
+
+__Disk__
+![[Pasted image 20240429131105.png|300]]
+- Stack of magnetic platters
+	- Rotate together on a central spindle at 3,600-15,000 RPM
+- Disk arm assembly
+	- Arms rotate around pivot, all move together
+	- Arms contain disk heads – one for each recording surface
+	- Heads read and write data to platters
+
+__Properties of a Magnetic Hard Disk__
+![[Pasted image 20240429131122.png|400]]
+- Properties
+	- Independently addressable element: sector(smallest unit on disk available to write)
+		- OS always transfers groups of sectors together—“blocks”
+	- A disk can access directly any given block either sequentially or randomly.
+- Typical numbers (depending on the disk size):
+	- 500 to more than 20,000 tracks per surface
+	- 32 to 800 sectors per track
+- Zoned bit recording
+	- Constant bit density: more bits (sectors) on outer tracks
+- Properties
+	- Independently addressable element: sector
+		- OS always transfers groups of sectors together— “blocks”
+	- Cylinder: all the tracks under the head at a given point on all surfaces
+
+__Magnetic Disk Characteristic__
+- Read/write: three-stage process:
+	- Seek time: position the head/arm over the proper track (into proper cylinder)
+	- Rotational latency: wait for the desired sector to rotate under the read/write head
+	- Transfer time: transfer a block of bits (sector) under the read-write head
+- Disk Latency = Queuing Time + Controller time + Seek Time + Rotation Time + Xfer Time
+  ![[Pasted image 20240429131534.png|500]]
+- Highest Bandwidth:
+	- Transfer large group of blocks sequentially from one track
+
+__Typical Numbers of a Magnetic Disk__
+
+| **Parameter**              | **Info / Range**                                                                                                                                                                                                                             |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Average seek time          | Typically 5-10 milliseconds.<br>Depending on reference locality, actual cost may be 25-33% of this number                                                                                                                                    |
+| Average rotational latency | Most laptop/desktop disks rotate at 3600-7200 RPM (8- 16 ms/rotation). Server disks up to 15,000 RPM.<br>Average latency is halfway around disk yielding corresponding times of 4-8 milliseconds                                             |
+| Controller time            | Depends on controller hardware                                                                                                                                                                                                               |
+| Transfer time              | Typically 50 to 100 MB/s.<br>Depends on:<br>• Transfer size (usually a sector): 512B – 1KB per sector<br>• Rotation speed: 3600 RPM to 15000 RPM<br>• Recording density: bits per inch on a track<br>• Diameter: ranges from 1 in to 5.25 in |
+| Cost                       | Drops by a factor of two every 1.5 years (or even faster).<br>$0.01/GB in 2021 ($0.025/GB in 2019)                                                                                                                                           |
+
+__Disk Performance Examples__
+- Assumptions:
+	- Ignoring queuing and controller times for now
+	- Avg seek time of 5ms,
+	- 7200RPM -> Time for one rotation: 60000ms/7200 ~= 8ms
+	- Transfer rate of 4MByte/s, sector size of 1 KByte
+- Read sector from random place on disk:
+	- Seek (5ms) + Rot. Delay (4ms) + Transfer (0.25ms)
+	- Approx 10ms to fetch/put data: 100 KByte/sec
+- Read sector from random place in same cylinder:
+	- Rot. Delay (4ms) + Transfer (0.25ms)
+	- Approx 5ms to fetch/put data: 200 KByte/sec
+- Read next sector on same track:
+	- Transfer (0.25ms): 4 MByte/sec
+- Key to using disk effectively (especially for file systems) is to minimize seek and rotational delays
+
+__Disk Scheduling__
+- Disk can do only one request at a time; What order do you choose when handling queued requests?
+	- Request denoted by (track, sector)
+	  ![[Pasted image 20240429132634.png|500]]
+- Scheduling algorithms:
+	- First In First Out (FIFO)
+	- Shortest Seek Time First
+	- SCAN
+	- C-SCAN
+- In our examples we will ignore the sector
+	- Consider only track #
+	  ![[Pasted image 20240429132718.png|200]]
+
+__FIFO: First In First Out__
+- Schedule request in the order they arrive in the queue
+- Example:
+	- Request queue: 2, 1, 3, 6, 2, 5
+	- Scheduling order: 2, 1, 3, 6, 2, 5
+	- ![[Pasted image 20240429132926.png|200]]
+- Pros: Fair among requesters
+- Cons: Order of arrival may be to random spots on the disk -> Very long 
+
+__SSTF: Shortest Seek Time First__
+- Pick the request that’s closest to the head on the disk
+	- Although called SSTF, include rotational delay in calculation, as rotation can be as long as seek
+- Example:
+	- Request queue: 2, 1, 3, 6, 2, 5
+	- Scheduling order: 5, 6, 3, 2, 2, 1
+	- ![[Pasted image 20240429133052.png|200]]
+- Pros: reduce seeks
+- Cons: may lead to starvation(aging is a solution)
+
+__SCAN__
+- Implements an Elevator Algorithm: take the closest request in the direction of travel
+- Example:
+	- Request queue: 2, 1, 3, 6, 2, 5, 7
+	- Head is moving towards center
+	- Scheduling order: 5, 3, 2, 2, 1, 6, 7
+	- ![[Pasted image 20240429133517.png|200]]
+- Pros: No starvation, Low seek
+- Cons: favor middle tracks
+
+__C-SCAN__
+- Like SCAN but only serves request in only one direction
+- Example:
+	- Request queue: 2, 1, 3, 6, 2, 5, 7
+	- Head only servers request on its way from center towards edge
+	- Scheduling order: 5, 6, 7, 1, 2, 2, 3
+	- ![[Pasted image 20240429134131.png|200]]
+- Pros: Fairer than SCAN
+- Cons: longer seeks on the way back
+
+__Solid State Disks (SSDs)__
+- 1995 – Replace rotating magnetic media with non-volatile memory (battery backed DRAM)
+	- Since 2009, use NAND Flash: Single Level Cell (1-bit/cell), Multi-Level Cell (2-bit/cell)
+- Sector addressable, but stores 4-64 “sectors” per memory page
+	- page is the smallest unit of read/write in SSD(HDD: sector)
+- No moving parts (no rotate/seek motors)
+	- Eliminates seek and rotational delay (0.1-0.2ms access time)
+	- Very low power and lightweight
+
+__SSD Architecture – Reads__
+Reading data similar to memory read (25μs)
+- No seek or rotational latency
+- Transfer time: transfer a block of bits (sector)
+	- Limited by controller and disk interface (SATA: 300-600MB/s)
+- Latency = Queuing Time + Controller time + Xfer Time
+- Highest Bandwidth: Sequential OR Random reads
+
+__SSD Architecture – Writes__
+- Writing data is complex! (~200μs – 1.7ms )
+	- Can only write empty pages (erase takes ~1.5ms)
+		- HDD can overwrite on existing data
+		- SSD needs to erase first then write
+	- Controller maintains pool of empty pages by coalescing used sectors (read, erase, write), also reserve some % of capacity
+- Write and erase cycles require “high” voltage
+	- Damages memory cells, limits SSD lifespan
+	- Controller uses ECC, performs wear leveling
+- Result is very workload dependent performance
+	- Latency = Queuing Time + Controller time (Find Free Block) + Xfer Time
+	- Highest BW: Seq. OR Random writes (limited by empty pages)
+		- Sequential easier to implement since can write all data to same pg
+- __Rule of thumb__: writes 10x more expensive than reads, and erases 10x more expensive than writes
+
+__QUIZ__
+- Q1: The block is the smallest addressable unit on a disk: F
+- Q2: An SSD has zero seek time: T
+- Q3: For an HDD, the read and write latencies are similar: T
+- Q4: For an SSD, the read and write latencies are similar: F
+- Q5: Consider the following sequence of requests (2, 4, 1, 8), and assume the head position is on track 9. Then, the order in which SSTF services the requests is: 8, 4, 2, 1
+
+__SSD Summary__
+- Pros (vs. hard disk drives):
+	- Low latency, high throughput (eliminate seek/rotational delay)
+	- No moving parts: Very light weight, low power, silent, very shock insensitive
+	- Read at memory speeds (limited by controller and I/O bus)
+- Cons
+	- Expensive (3-20x disk)
+		- Hybrid alternative: combine small SSD with large HDD
+	- Asymmetric block write performance: read pg/erase/write pg
+		- Controller garbage collection (GC) algorithms have major effect on performance
+	- Limited drive lifetime
+		- 1-10K writes/page for MLC NAND
+		- Avg failure rate is 6 years, life expectancy is 9–11 years
+- These are changing rapidly!
+_________

@@ -2470,3 +2470,315 @@ __Dependency Preservation__
 	- Any decomposition will not include all the attributes in
 		- s_ID, dept_name ⟶ i_ID
 	- Thus, the decomposition will not be dependency preserving
+
+## Normal Forms
+
+__Boyce-Codd Normal Form__
+- A relation schema R is in BCNF with respect to a set F of functional dependencies if for all functional dependencies in F+ of the form α⟶β where α ⊆ R and β ⊆ R, at least one of the following holds:
+	- α⟶β is trivial (i.e., β ⊆ α)
+	- α is a superkey for R
+- An example schema that is not in BCNF:
+	- in_dep ( __ID__, name, salary, __dept_name__, building, budget ) because
+	- dept_name ⟶ building, budget holds on in_dep but
+	- dept_name is not a superkey
+- When decomposing in_dept into instructor and department
+	- instructor is in BCNF
+	- department is in BCNF
+
+__Decomposing a Schema into BCNF__
+- Let R be a schema R that is not in BCNF; let α⟶β be the FD that causes a violation of BCNF
+- We decompose R into: 
+	- (α∪β)
+	- (R – (β – α) )
+- In our example of in_dep,
+	- α = dept_name
+	- β = building, budget
+- and in_dep is replaced by
+	- (α ∪ β) = ( dept_name, building, budget )
+	- (R – (β – α) ) = ( ID, name, dept_name, salary )
+- Examples
+	- R = (A, B, C) F = {A⟶B, B⟶C}
+	- R1 = (A, B), R2 = (B, C)
+		- Lossless-join decomposition: R1 ∩ R2 = {B} and B⟶BC
+			- Always given using this method
+		- Dependency preserving
+			- Not always given in this method
+	- R1 = (A, B), R2 = (A, C)
+		- Lossless-join decomposition: R1 ∩ R2 = {A} and A⟶AB
+		- Not dependency preserving (cannot check B⟶C without computing R1 ⋈ R2)
+
+__BCNF and Dependency Preservation__
+- It is not always possible to achieve both BCNF and dependency preservation
+- Consider a schema: dept_advisor(s_ID, i_ID, dept_name)
+- With function dependencies:
+	- i_ID ⟶ dept_name
+	- s_ID, dept_name ⟶ i_ID
+- dept_advisor is not in BCNF
+	- i_ID is not a superkey
+- Following our rule for BCNF decomposition, we get:
+	- (s_ID, i_ID)
+	- (i_ID, dept_name)
+- Any decomposition of dept_advisor will not include all the attributes in
+	- s_ID, dept_name ⟶ i_ID
+- Thus, the decomposition is not dependency preserving
+
+__Third Normal Form__
+- A relation schema R is in third normal form (3NF) if for all: α⟶β in F+ where α ⊆ R and β ⊆ R, at least one of the following holds:
+	- α⟶β is trivial (i.e., β ⊆ α)
+	- α is a superkey for R
+	- Each attribute A in β – α is contained in a candidate key for R (NOTE: each attribute may be in a different candidate key)
+- If a relation is in BCNF, it is in 3NF (since in BCNF one of the first two conditions above must hold)
+- The third condition is a minimal relaxation of BCNF to ensure dependency preservation (will see why later)
+- Example
+	- Consider a schema: dept_advisor(s_ID, i_ID, dept_name)
+	- With function dependencies:
+		- i_ID ⟶ dept_name
+		- s_ID, dept_name ⟶ i_ID
+	- Two candidate keys: {s_ID, dept_name}, {s_ID, i_ID}
+	- We have seen before that dept_advisor is not in BCNF
+	- R, however, is in 3NF
+		- s_ID, dept_name is a superkey
+		- i_ID ⟶ dept_name and i_ID is not a superkey, but:
+			- {dept_name} – {i_ID} = {dept_name} and dept_name is contained in a candidate key
+
+__Redundancy in 3NF__
+- Consider the schema R below, which is in 3NF
+	- R = (J, L, K)
+	- F = {JK⟶L, L⟶K} 
+	- An instance table:
+	  ![[Pasted image 20240424143742.png|200]]
+- What is wrong with the table?
+	- Repetition of information
+	- Null values (e.g., to represent the relationship l2, k2, where there is no corresponding value for J)
+
+__Comparison of BCNF and 3NF__
+- Advantages to 3NF over BCNF
+	- It is always possible to obtain a 3NF design without sacrificing losslessness or dependency preservation
+- Disadvantages to 3NF
+	- We may have to use null values to represent some of the possible meaningful relationships among data items
+	- There is the problem of repetition of information
+
+__Goals of Normalization__
+- Let R be a relation scheme with a set F of functional dependencies
+- Decide whether a relation scheme R is in “good” form
+- In the case that a relation scheme R is not in “good” form, need to decompose it into a set of relation scheme {R1, R2, ..., Rn} such that:
+	- Each relation scheme is in good form
+	- The decomposition is a lossless decomposition
+	- Preferably, the decomposition should be dependency preserving
+
+__How Good Is BCNF?__
+- There are database schemas in BCNF that do not seem to be sufficiently normalized
+- Consider a relation inst_info (ID, child_name, phone)
+	- An instructor may have more than one phone and can have multiple children
+	- An instance of inst_info:
+	  ![[Pasted image 20240424144024.png|200]]
+	- There is no non-trivial functional dependency, and therefore the relation is in BCNF
+	- Insertion anomalies: if we add a phone 981-992-3443 to 99999, we need to add two tuples
+		- (99999, David, 981-992-3443)
+		- (99999, William, 981-992-3443)
+
+__Higher Normal Forms__
+- It is better to decompose inst_info into: 
+	- inst_child:
+	  ![[Pasted image 20240424144131.png|150]]
+	- inst_phone:
+	  ![[Pasted image 20240424144148.png|150]]
+- This suggests the need for higher normal forms, such as Fourth Normal Form (4NF), which we shall see later
+
+__Summary__
+![[Pasted image 20240424144223.png|600]]
+
+## Functional-Dependency Theory
+
+__Functional-Dependency Theory Roadmap__
+- We now consider the formal theory that tells us which functional dependencies are implied logically by a given set of functional dependencies
+- We then develop algorithms to generate lossless decompositions into BCNF and 3NF
+- We then develop algorithms to test if a decomposition is dependency-preserving
+
+__Closure of a Set of Functional Dependencies__
+- Given a set F of functional dependencies, there are certain other functional dependencies that are logically implied by F 
+	- If A⟶B and B⟶C, then we can infer that A⟶C
+	- etc.
+- The set of all functional dependencies logically implied by F is the closure of F
+- We denote the closure of F by F+
+- We can compute F+, the closure of F, by repeatedly applying Armstrong’s Axioms:
+	- Reflexive rule: if β ⊆ α, then α⟶β
+	- Augmentation rule: if α⟶β, then γα⟶γβ
+	- Transitivity rule: if α⟶β and β⟶γ, then α⟶γ
+- These rules are
+	- Sound: generating only functional dependencies that actually hold
+	- Complete: generating all functional dependencies that hold
+
+__Example of F+__
+- R = (A, B, C, G, H, I) F = {A⟶B, A⟶C, CG⟶H, CG⟶I, B⟶H}
+- Some members of F+ 
+	- A⟶H
+		- by transitivity from A⟶B and B⟶H 
+	- AG⟶I
+		- by augmenting A⟶C with G, to get AG⟶CG and then transitivity with CG⟶I
+	- CG⟶HI
+		- by augmenting CG⟶I to infer CG⟶CGI, and augmenting of CG⟶H to infer CGI⟶HI, and then transitivity
+- Additional rules:
+	- Union rule: If α⟶β holds and α⟶γ holds, then α⟶βγ holds
+	- Decomposition rule: If α⟶βγ holds, then α⟶β holds and α⟶γ holds
+	- Pseudotransitivity rule: If α⟶β holds and γβ⟶δ holds, then αγ⟶δ holds
+- The above rules can be inferred from Armstrong’s axioms
+	- e.g., pseudotransitivity: αγ⟶γβ (augmentation), then γβ⟶δ (transitivity), we obtain αγ⟶δ
+
+__Procedure for Computing F+__
+F+ = F 
+
+```
+repeat
+	for each functional dependency f in F+
+	apply reflexivity and augmentation rules on f add the resulting functional dependencies to F+
+	for each pair of functional dependencies f1 and f2 in F+ 
+		if f1 and f2 can be combined using transitivity
+			then add the resulting functional dependency to F+ 
+until F+ does not change any further
+```
+
+__Closure of Attribute Sets__
+- Given a set of attributes α, we define the closure of α under F (denoted by α+) as the set of attributes that are functionally determined by α under F
+```
+result := α;
+	while (changes to result) do
+		for each β⟶γ in F do 
+			begin
+				if β ⊆ result then result := result ∪γ; 
+			end
+```
+- Example
+	- R = (A, B, C, G, H, I) F = {A⟶B, A⟶C, CG⟶H, CG⟶I, B⟶H}
+	- (AG)+
+		- 1. result = AG
+		- 2. result = ABCG  (A⟶C and A⟶B)
+		- 3. result = ABCGH  (CG⟶H and CG ⊆ AGBC)
+		- 4. result = ABCGHI  (CG⟶I and CG ⊆ AGBCH)
+	- Is AG a candidate key? 
+		- 1. Is AG a super key?   
+			- Does AG⟶R? == Is R = (AG)+ (i.e., if (AG)+ is the set of all attributes) 
+		- 2. Is any subset of AG a superkey?
+			- Does A⟶R? == Is R = (A)+
+			- Does G⟶R? == Is R = (G)+
+			- In general: check for each subset of size n-1
+
+__Uses of Attribute Closure__
+- Testing for superkey
+	- To test if α is a superkey, we compute α+ and check if α+ contains all attributes of R
+- Testing functional dependencies
+	- To check if a functional dependency α⟶β holds (or, in other words, is in F+), just check if β ⊆ α+
+		- That is, we compute α+ by using attribute closure, and then check if it contains β, which is a simple and cheap test as well as very useful
+- Computing closure of F
+	- For each γ ⊆ R, we find the closure γ+, and for each S ⊆ γ+, we output a functional dependency γ⟶S
+
+__Canonical Cover__
+- Whenever a user performs an update on the relation, the database system must ensure that the update does not violate any functional dependencies; i.e., all the functional dependencies in F are satisfied in the new database state
+- If an update violates any functional dependencies in the set F, the system must roll back the update
+- We can reduce the effort spent in checking for violations by testing a simplified set of functional dependencies that has the same closure as the given set
+- This simplified set is termed the canonical cover
+- To define the canonical cover, we must first define extraneous attributes; an attribute of a functional dependency in F is extraneous if we can remove it without changing F+
+
+__Extraneous Attributes__
+- Removing an attribute from the left side of a functional dependency could make it a stronger constraint
+	- For example, if we have AB⟶C and remove B, we get the possibly stronger result A⟶C
+	- It may be stronger because A⟶C logically implies AB⟶C, but AB⟶C does not, on its own, logically imply A⟶C
+		- Due to AB⟶A (reflexivity) and A⟶C (transitivity), A⟶C logically implies AB⟶C
+- But, depending on what our set F of functional dependencies happens to be, we may be able to remove B from AB⟶C safely
+	- For example, suppose that F = {AB⟶C, A⟶D, D⟶C}
+	- Then, we can show that F logically implies A⟶C, making B extraneous in AB⟶C
+		- Due to A⟶D and D⟶C (transitivity), A⟶C i.e., {AB⟶C, A⟶D, D⟶C} implies {A⟶C, A⟶D, D⟶C} while AB⟶C does not A⟶C
+- Removing an attribute from the right side of a functional dependency could make it a weaker constraint
+	- For example, if we have AB⟶CD and remove C, we get the possibly weaker result AB⟶D
+	- It may be weaker because using just AB⟶D we can no longer infer AB⟶C
+	- But, depending on what our set F of functional dependencies happens to be,
+	we may be able to remove C from AB⟶CD safely
+	- For example, suppose that F = {AB⟶CD, A⟶C}
+	- Then, we can show that even after replacing AB⟶CD by AB⟶D, we can still infer AB⟶C and thus AB⟶CD
+		- Due to AB⟶A (reflexivity) and A⟶C (transitivity), AB⟶C; due to AB⟶D (union), AB⟶CD i.e., {AB⟶D, A⟶C} implies {AB⟶CD, A⟶C} while AB⟶D does not AB⟶CD
+- An attribute of a functional dependency in F is extraneous if we can remove it without changing F+
+- Consider a set F of functional dependencies and the functional dependency α⟶β in F
+	- Remove from the left side: Attribute A is extraneous in α if
+		- A ∈ α and stronger
+		- F logically implies (F – {α⟶β}) ∪ {(α – A)⟶β}
+	- Remove from the right side: Attribute A is extraneous in β if
+		- A ∈ β andweaker
+		- (F – {α⟶β}) ∪ {α⟶(β – A)} logically implies F
+- Note: implication in the opposite direction is trivial in each of the cases above, since a “stronger” functional dependency always implies a weaker one
+
+__Testing if an Attribute is Extraneous__
+- Let R be a relation schema and let F be a set of functional dependencies that hold on R; consider an attribute in the functional dependency α⟶β
+- To test if attribute A ∈ β is extraneous in β
+	- Consider the set: F' = (F – {α⟶β}) ∪ {α⟶(β – A)},
+	- Check that α+ contains A; if it does, A is extraneous in β
+- To test if attribute A ∈ α is extraneous in α
+	- Let γ = α – {A}. Check if γ⟶β can be inferred from F
+		- Compute γ+ using the dependencies in F
+		- If γ+ includes all attributes in β, A is extraneous in α
+- Example
+	- Let F = {AB⟶CD, A⟶E, E⟶C}
+	- To check if C is extraneous in AB⟶CD, we:
+		- Compute the attribute closure of AB under F' = {AB⟶D, A⟶E, E⟶C}
+		- The closure is ABCDE, which includes CD
+		- This implies that C is extraneous
+
+__Canonical Cover__
+- A canonical cover for F is a set of dependencies Fc such that
+	- F logically implies all dependencies in Fc , and
+	- Fc logically implies all dependencies in F, and
+	- No functional dependency in Fc contains an extraneous attribute, and
+	- Each left side of functional dependency in Fc is unique, i.e., there are no two dependencies in Fc
+		- α1⟶β1 and α2⟶β2 such that α1 = α2
+- To compute a canonical cover for F: 
+```
+  repeat
+	  Use the union rule to replace any dependencies in F of the form α1⟶β1 and α1⟶β2 with α1⟶β1 β2
+	  Find a functional dependency α⟶β in Fc with an extraneous attribute either in α or in β 
+	  /* Note: test for extraneous attributes done using Fc, not F */
+	  If an extraneous attribute is found, delete it from α⟶β 
+  until (Fc not change)
+```
+- Note: The union rule may become applicable after some extraneous attributes have been deleted, so it has to be re-applied
+- Example
+	- R = (A, B, C) F = {A⟶BC, B⟶C, A⟶B, AB⟶C}
+	- Combine A⟶BC and A⟶B into A⟶BC
+		- The set Fc is now {A⟶BC, B⟶C, AB⟶C}
+	- A is extraneous in AB⟶C
+		- Check if the result of deleting A from AB⟶C is implied by the other dependencies
+			- Yes: in fact, B⟶C is already present! - The set Fc is now {A⟶BC, B⟶C}
+	- C is extraneous in A⟶BC
+		- Check if A⟶C is logically implied by A⟶B and the other dependencies
+			- Yes: using transitivity on A⟶B and B⟶C
+			- The attribute closure of A can be used in more complex cases
+	- The canonical cover is: {A⟶B, B⟶C}
+
+__Dependency Preservation__
+- Let Fi be the set of dependencies F+ that include only attributes in Ri a decomposition is dependency preserving, if (F1 ∪ F2 ∪ ... ∪ Fn )+ = F+
+- Using the above definition, testing for dependency preservation takes exponential time
+- Not that if a decomposition is not dependency preserving then checking updates for violation of functional dependencies may require computing joins, which is expensive
+- Let F be the set of dependencies on schema R and let R1, R2, ... , Rn be a decomposition of R
+- The restriction of F to Ri is the set Fi of all functional dependencies in F+ that include only attributes of Ri
+- Since all functional dependencies in a restriction involve attributes of only one relation schema, it is possible to test such a dependency for satisfaction by checking only one relation
+- Note that the definition of restriction uses all dependencies in F+, not just those in F
+- The set of restrictions F1, F2, ... , Fn is the set of functional dependencies that can be checked efficiently
+
+__Testing for Dependency Preservation__
+- To check if a dependency α⟶β is preserved in a decomposition of R into R1, R2, ... , Rn, we test the following (with the attribute closure with respect to F)
+- result = α
+```
+  repeat
+	  for each Ri in the decomposition 
+		  t = (result ∩ Ri)+ ∩ Ri
+		  result = result ∪ t 
+  until (result does not change)
+```
+- If result contains all attributes in β, then the functional dependency α⟶β is preserved
+- We apply the test on all dependencies in F to check if a decomposition is dependency preserving
+- This procedure takes polynomial time, instead of the exponential time required to compute F+ and (F1 ∪ F2 ∪ ... ∪ Fn)+
+- Example
+	- R = (A, B, C) F = {A⟶B, B⟶C} Key = {A}
+	- R is not in BCNF
+	- Decomposition R1 = (A, B), R2 = (B, C)
+		- R1 and R2 in BCNF
+		- Lossless-join decomposition
+		- Dependency preserving

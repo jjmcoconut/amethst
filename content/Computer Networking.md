@@ -1317,6 +1317,7 @@ __Comparison with Link-State (LS) Algorithm__
 ## 5.3 Intra-AS Routing in the Internet: OSPF
 
 __Overview of Intra-AS Routing Challenges__
+- __INTRA__: inside AS
 - **Scale and Administrative Autonomy**:
   - **Scale**: The Internet's vast number of routers leads to prohibitive overhead for storing, computing, and communicating routing information. 
   - **Administrative Autonomy**: ISPs desire to independently manage their network of routers while connecting to other networks.
@@ -1338,7 +1339,11 @@ __Advanced OSPF Features__
 - **Security**: Supports authentication (simple and MD5) to secure exchanges between routers within an AS.
 - **Multiple Same-Cost Paths**: Allows the use of multiple equal-cost paths simultaneously, enhancing routing efficiency and load balancing.
 - **Multicast Support**: Integrated support through Multicast OSPF (MOSPF), which extends OSPF capabilities to handle multicast routing effectively.
-- **Hierarchical Organization**: OSPF can structure an AS into multiple areas to optimize routing; includes backbone areas for efficient inter-area routing.
+- **Hierarchical Organization**: OSPF can structure an AS into multiple areas to optimize routing; includes backbone areas for efficient inter-area routing
+	- Each area runs its own OSPF link-state routing algorithm, with each router in an area broadcasting its link state to all other routers in that area.
+	- Within each area, one or more area border routers are responsible for routing packets outside the area.
+	- Exactly one OSPF area in the AS is configured to be the backbone area.
+	- Primary role of the backbone area is to route traffic between the other areas in the AS.
 
 __OSPF Operational Mechanisms__
 - **Link-State Advertisements**: Periodic and event-driven updates that maintain routing accuracy and system robustness.
@@ -1347,7 +1352,8 @@ __OSPF Operational Mechanisms__
 ## 5.4 Routing Among the ISPs: BGP
 
 __Overview of BGP (Border Gateway Protocol)__
-- **Protocol Type**: Inter-autonomous system (inter-AS) routing protocol.
+- **Protocol Type**: _Inter-autonomous system (inter-AS)_ routing protocol.
+	- __INTER__: between AS
 - **Importance**: Considered one of the most crucial Internet protocols, essential for interconnecting thousands of ISPs globally.
 - **Functionality**: BGP manages how packets are routed across different autonomous systems (ASs) from source to destination across the internet.
 
@@ -1424,3 +1430,69 @@ __BGP Route-Selection Algorithm__
   - **Domain Name and DNS Registration**: Register a domain and set up DNS entries for accessible servers.
   - **BGP Advertising**: The local ISP advertises the company’s IP prefix using BGP, enabling global routing to the company’s servers.
 
+## 5.5 The SDN Control Plane
+
+__Overview of the SDN Control Plane__
+- **Purpose**: Control packet forwarding among SDN-enabled devices and manage device configuration and services.
+- **Key Components**: Divided into the data plane (network switches) and the control plane (servers and software).
+
+__Characteristics of SDN Architecture__
+- **Flow-based Forwarding**: In SDN, packet switches forward packets based on multiple header field values across different layers, unlike traditional IP forwarding based only on destination addresses.
+- **Separation of Data and Control Planes**: The data plane involves simple devices executing forwarding rules, while the control plane involves complex software managing these rules.
+- **External Network Control Functions**: Implemented via software on servers separate from network switches, enhancing flexibility and control.
+- **Programmable Network**: The network can be programmed through applications that interact with the SDN controller to manage and direct data plane behavior.
+
+__SDN Control Plane Components__
+- **SDN Controller**: Central or logically centralized server that maintains network state, informs control applications, and programs network devices.
+- **Network-Control Applications**: Utilize APIs provided by the controller to implement network functionalities such as routing, access control, and load balancing.
+
+### 5.5.1 The SDN Control Plane: SDN Controller and SDN Network-control Applications
+
+- **Communication Layer**: Facilitates information transfer between the controller and network devices, including event notifications (known as the southbound interface).
+- **Network-Wide State-Management Layer**: Maintains comprehensive state information necessary for configuring network-wide flow tables and other control functions.
+- **Interface to Network-Control Applications**: Provides an API (northbound interface) for applications to interact with the network state and control decisions.
+
+__SDN Protocols and Operations__
+- **OpenFlow**: A protocol enabling communication between the SDN controller and network devices, foundational for most SDN operations.
+- **Controller Operations**: Logically centralized but often physically distributed for resilience and performance, ensuring consistent and coordinated network functionality across different devices.
+
+__Evolution of SDN__
+- **Unbundling of Network Functions**: SDN separates network hardware and control logic, similar to the shift from mainframe to personal computers, fostering innovation in hardware, systems software, and applications.
+- **Challenges and Questions**: Includes how flow tables are computed, updated, and synchronized across the network to ensure consistent and efficient operations.
+
+### 5.5.2 OpenFlow Protocol
+
+**Purpose**: Facilitates communication between an SDN controller and SDN-controlled devices using the OpenFlow API.
+**Operation**: Utilizes TCP over default port 6653.
+**Key Messages from Controller to Switch**:
+  - **Configuration**: Queries and sets switch configuration parameters.
+  - **Modify-State**: Adds, deletes, or modifies entries in the switch's flow table and port properties.
+  - **Read-State**: Gathers statistics and counter values from the switch's flow table and ports.
+  - **Send-Packet**: Sends specific packets out of designated ports on the switch.
+
+**Key Messages from Switch to Controller**:
+  - **Flow-Removed**: Notifies the controller of flow table entry removals.
+  - **Port-Status**: Informs about changes in port status.
+  - **Packet-In**: Sends packets to the controller that do not match any flow table entries for further processing.
+
+### 5.5.3 Data and Control Plane Interaction: An Example
+
+**Scenario**: Utilizes Dijkstra’s algorithm for shortest path routing in an SDN environment.
+**Process**:
+  1. **Link Failure Notification**: Switch s1 reports a failed link to s2 via OpenFlow port-status message to the SDN controller.
+  2. **Link-State Update**: SDN controller updates the link-state database upon receiving the notification.
+  3. **Routing Application Notification**: A network-control application registered for link-state updates receives notification and accesses updated link-state data.
+  4. **Path Recalculation**: Uses updated link-state to compute new least-cost paths.
+  5. **Flow Table Management**: The flow table manager determines necessary updates to flow tables based on new paths.
+  6. **Flow Table Updates**: OpenFlow protocol is used to update flow table entries at affected switches to reroute traffic accordingly.
+
+**Impact**: Demonstrates the control efficiency in SDN, where routing decisions are centralized and can be dynamically adapted through software changes, contrasting with traditional per-router control systems.
+
+### 5.5.4 SDN: Past and Future
+
+**Origins and Evolution**:
+  - Early advocacy for separating data and control planes as seen in various projects and proposals from the early 2000s.
+  - The Ethane project evolved into the OpenFlow project, illustrating early practical implementations of flow-based control.
+**Future Directions**:
+  - Ongoing research into SDN architectures and the extension of SDN principles to broader networking contexts including network functions virtualization (NFV) and inter-AS settings.
+  - Emphasis on replacing traditional networking components with simplified hardware managed by sophisticated software controls.
