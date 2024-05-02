@@ -439,7 +439,6 @@ Section between Acquire() and Release() is the critical section
 
 # 9. File systems
 
-
 __Directory Structure__
 - Metadata are stored in the file control block (i.e., i-node)
 - For single indirect: 1000 can be linked, each data block is 4B then one single indirect block can cover up to 4MB
@@ -588,12 +587,93 @@ __File Sharing – Consistency Semantics__
 	- Semantics for concurrent accesses:
 		- What happens when one process reads while another writes?
 		- What happens when two processes open the same file?
+	- How much difference allowed?
+		- In some situation, different users may have different view on the shared file, then we may define the level of difference(e.g. Google Docs, SNS)
+			- For Google Docs we should make the change visible immediately
+			- For likes or comments in Facebook, YouTube does not need to be immediate
 - Unix file system (UFS) implements:
 	- Writes to an open file visible immediately to other users of the same open file
 	- Sharing file pointer to allow multiple users to read and write concurrently (i.e., fork())
 - AFS has session semantics (Andrew File System)
 	- A session begins/ends when a file is open/closed
 	- Writes only visible to sessions starting after the file is closed
+		- If conflict occurs when multiple people wants to write at same time -> Do not use AFS, use UFS
+
+__Protection__ _(Not Important?)_
+- File owner/creator should be able to control:
+	- what can be done
+	- by whom
+- Types of access
+	- Read
+	- Write
+	- Execute
+	- Append
+	- Delete
+	- List
+
+__Access Lists and Groups__ _(Not Important?)_
+- Mode of access: read, write, execute
+- Three classes of users
+  ![[Pasted image 20240501132113.png|300]]
+- Ask manager to create a group (unique name), say G, and add some users to the group.
+- For a particular file (say game) or subdirectory, define an appropriate access.
+  ![[Pasted image 20240501132147.png|300]]
+- Example
+	- Android is a single-user system using UNIX
+	- For UNIX: different users are not trusted, but application between one user is trusted.
+	- But there are situations where we do not want trust between applications(banking apps, ...)
+	- We use protection for these
+
+__Performance__
+- Keeping data and metadata close together
+- Buffer cache - separate section of main memory for frequently used blocks
+- Synchronous writes sometimes requested by apps or needed by OS
+	- No buffering / caching – writes must hit disk before acknowledgement
+	- Asynchronous writes more common, buffer-able, faster
+- free-behind and read-ahead – techniques to optimize sequential access
+
+__Page Cache__
+![[Pasted image 20240501140702.png|200]]
+- A page cache caches pages rather than disk blocks using virtual memory techniques
+- Memory-mapped I/O uses a page cache
+- Routine I/O through the file system uses the buffer (disk) cache
+- Caching file data using virtual address is far more efficient than caching through physical disk blocks
+
+__Unified Buffer Cache__
+![[Pasted image 20240501140731.png|200]]
+- A unified buffer cache uses the same page cache to cache both memory-mapped pages and ordinary file system I/O to avoid double caching
+
+__Reliability__
+- File system consistency
+	- File system can go into an inconsistent state if cached blocks are not written out due to the system crash
+	- It is especially critical if it happens to directory / i-node / free-block-list blocks
+	- Some utility programs for checking file system consistency
+	- scandisk (Windows), fsck (UNIX)
+- fsck : checking blocks
+  ![[Pasted image 20240501140915.png|400]]
+	- Read all the i-nodes and mark used blocks
+	- Examines the free list and mark free blocks
+
+__Recovery__
+- Recovery from backup
+	- Use system programs to back up data from disk to another storage device (magnetic tape, other magnetic disk, optical)
+	- Recover lost file or disk by restoring data from backup
+- Recovery from log
+
+__Log Structured File Systems__
+- Log structured (or journaling) file systems record each update to the file system as a transaction
+- All transactions are written to a log
+	- A transaction is considered committed once it is written to the log
+		- Sometimes to a separate device or section of disk
+	- However, the file system may not yet be updated
+- The transactions in the log are asynchronously written to the file system
+	- When the file system is modified, the transaction is removed from the log
+- If the file system crashes, all remaining transactions in the log must still be performed
+- For example, deleting a file on a Unix file system involves two steps:
+	1. Removing its directory entry.
+	2. Marking space for the file and its inode as free in the free space map.
+- If a crash occurs between steps 1 and 2, there will be an orphaned inode and hence a storage leak.
+- On the other hand, if only step 2 is performed first before the crash, the not-yet-deleted file will be marked free and possibly be overwritten by something else.
 
 __WrapUp__
 
@@ -619,7 +699,7 @@ __Directory Structure__
   ![[Pasted image 20240424131004.png|500]]
 - data blocks are another directory table(?, need checking)
 
-Naming
+__Naming__
 - How many disk accesses to resolve: “/users/i/insik.shin/thumbnail.jpg” (1KB)?
 1) Read in i-node for root (fixed spot on disk)
 2) Read in first data block for root
@@ -905,4 +985,5 @@ __SSD Summary__
 		- 1-10K writes/page for MLC NAND
 		- Avg failure rate is 6 years, life expectancy is 9–11 years
 - These are changing rapidly!
-_________
+
+

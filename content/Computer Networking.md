@@ -1465,34 +1465,397 @@ __Evolution of SDN__
 **Purpose**: Facilitates communication between an SDN controller and SDN-controlled devices using the OpenFlow API.
 **Operation**: Utilizes TCP over default port 6653.
 **Key Messages from Controller to Switch**:
-  - **Configuration**: Queries and sets switch configuration parameters.
-  - **Modify-State**: Adds, deletes, or modifies entries in the switch's flow table and port properties.
-  - **Read-State**: Gathers statistics and counter values from the switch's flow table and ports.
-  - **Send-Packet**: Sends specific packets out of designated ports on the switch.
+- **Configuration**: Queries and sets switch configuration parameters.
+- **Modify-State**: Adds, deletes, or modifies entries in the switch's flow table and port properties.
+- **Read-State**: Gathers statistics and counter values from the switch's flow table and ports.
+- **Send-Packet**: Sends specific packets out of designated ports on the switch.
 
 **Key Messages from Switch to Controller**:
-  - **Flow-Removed**: Notifies the controller of flow table entry removals.
-  - **Port-Status**: Informs about changes in port status.
-  - **Packet-In**: Sends packets to the controller that do not match any flow table entries for further processing.
+- **Flow-Removed**: Notifies the controller of flow table entry removals.
+- **Port-Status**: Informs about changes in port status.
+- **Packet-In**: Sends packets to the controller that do not match any flow table entries for further processing.
 
 ### 5.5.3 Data and Control Plane Interaction: An Example
 
 **Scenario**: Utilizes Dijkstra’s algorithm for shortest path routing in an SDN environment.
 **Process**:
-  1. **Link Failure Notification**: Switch s1 reports a failed link to s2 via OpenFlow port-status message to the SDN controller.
-  2. **Link-State Update**: SDN controller updates the link-state database upon receiving the notification.
-  3. **Routing Application Notification**: A network-control application registered for link-state updates receives notification and accesses updated link-state data.
-  4. **Path Recalculation**: Uses updated link-state to compute new least-cost paths.
-  5. **Flow Table Management**: The flow table manager determines necessary updates to flow tables based on new paths.
-  6. **Flow Table Updates**: OpenFlow protocol is used to update flow table entries at affected switches to reroute traffic accordingly.
+1. **Link Failure Notification**: Switch s1 reports a failed link to s2 via OpenFlow port-status message to the SDN controller.
+2. **Link-State Update**: SDN controller updates the link-state database upon receiving the notification.
+3. **Routing Application Notification**: A network-control application registered for link-state updates receives notification and accesses updated link-state data.
+4. **Path Recalculation**: Uses updated link-state to compute new least-cost paths.
+5. **Flow Table Management**: The flow table manager determines necessary updates to flow tables based on new paths.
+6. **Flow Table Updates**: OpenFlow protocol is used to update flow table entries at affected switches to reroute traffic accordingly.
 
 **Impact**: Demonstrates the control efficiency in SDN, where routing decisions are centralized and can be dynamically adapted through software changes, contrasting with traditional per-router control systems.
 
 ### 5.5.4 SDN: Past and Future
 
 **Origins and Evolution**:
-  - Early advocacy for separating data and control planes as seen in various projects and proposals from the early 2000s.
-  - The Ethane project evolved into the OpenFlow project, illustrating early practical implementations of flow-based control.
+- Early advocacy for separating data and control planes as seen in various projects and proposals from the early 2000s.
+- The Ethane project evolved into the OpenFlow project, illustrating early practical implementations of flow-based control.
 **Future Directions**:
-  - Ongoing research into SDN architectures and the extension of SDN principles to broader networking contexts including network functions virtualization (NFV) and inter-AS settings.
-  - Emphasis on replacing traditional networking components with simplified hardware managed by sophisticated software controls.
+- Ongoing research into SDN architectures and the extension of SDN principles to broader networking contexts including network functions virtualization (NFV) and inter-AS settings.
+- Emphasis on replacing traditional networking components with simplified hardware managed by sophisticated software controls.
+
+Here's how you can structure your notes for the article on SDN controllers, specifically focusing on the OpenDaylight and ONOS controllers, akin to the previous detailed note-taking style you used:
+
+### SDN Controller Case Studies: The OpenDaylight and ONOS Controllers
+___EXAM! 이 부분 퀴즈 시험예정(원래는 false 하지만 문제가 이상해서 paraphrase한 뒤 출제예정)___
+**Context and Evolution**:
+- Early SDN landscape featured limited protocols and controllers (e.g., OpenFlow, NOX).
+- Growth in SDN controllers, moving from proprietary to more open-source models in collaboration with the Linux Foundation.
+
+__OpenDaylight (ODL) Controller__
+- **Basic Components and Structure**:
+	- **Basic Network Functions**: Core of the controller, managing network-wide state.
+	- **Service Abstraction Layer (SAL)**: Acts as the central hub for communication between controller components and external applications, providing a uniform interface to various protocols.
+- **Protocols and Interfaces**:
+	- Includes OpenFlow, SNMP, NETCONF, and OVSDB.
+	- OVSDB is particularly used for data center switching management.
+- **Operational Modes**:
+	- **API-Driven (AD-SAL)**: Initial method using REST APIs for application-controller communication.
+	- **Model-Driven (MD-SAL)**: Later approach using the YANG data modeling language for device and network management through NETCONF protocol.
+
+__ONOS Controller__
+- **Architectural Overview**:
+	- Presented as a three-layer model:
+	    1. **Northbound Abstractions and Protocols**: Includes an intent framework allowing applications to request high-level services without knowing underlying details.
+	    2. **Distributed Core**: Maintains state of network elements like links and hosts; scales horizontally across servers.
+	    3. **Southbound Abstractions and Protocols**: Provides device and protocol agnosticism, enabling a uniform interface across diverse network devices.
+- **Unique Features**:
+	- **Intent Framework**: Simplifies application requests for network services.
+	- **Scalability and Redundancy**: Enhanced by a distributed deployment across multiple servers.
+- **Comparison with ODL**:
+	- ONOS offers a more scalable, distributed architecture.
+	- Emphasizes high-level service requests through its intent framework, contrasting with ODL’s more direct device management approach.
+- **Trends in SDN Controller Development**:
+	- Shift from proprietary to open-source solutions.
+	- Increased collaboration with larger foundations like the Linux Foundation.
+
+**Challenges and Considerations**:
+- Balancing between open-source flexibility and the need for secure, reliable network management.
+- Integrating with existing and legacy network infrastructures.
+
+**Future Directions**:
+- Potential developments in controller technologies and the standardization of protocols.
+- Enhancements in interoperability and ease of deployment for complex network environments.
+
+Here's your article organized into a structured note-taking format:
+
+## 5.6 ICMP: The Internet Control Message Protocol
+
+__Overview__
+**Internet Control Message Protocol (ICMP)**, defined in [RFC 792], is used to communicate network-layer information between hosts and routers, mainly for error reporting.
+
+__Context__
+- ICMP is part of, but architecturally above, IP, encapsulated within IP datagrams.
+- Key use: Communicating errors like "Destination network unreachable."
+- Unlike TCP/UDP, ICMP does not support user data transmission but manages error messages and operational information.
+
+__Operation and Structure__
+![[Pasted image 20240430135417.png|500]]
+- **Demultiplexing**: ICMP messages are distinguished from other IP payloads (like TCP or UDP) by an upper-layer protocol number of 1.
+- **Structure**: Each message contains a type and code field, along with the header and the first 8 bytes of the triggering IP datagram, allowing error diagnosis.
+- ___TEST!___: destination network unreachable, what if we cannot reach using BGP routing?
+- Nowadays ICMP is turned off in routers because of security issues(Hackers may do DDoS)
+
+__Key ICMP Messages__
+- **Echo Request and Reply**: Utilized by the ping program (type 8 code 0 for request, type 0 code 0 for reply).
+- **Source Quench**: Intended for congestion control by instructing a host to reduce its transmission rate (seldom used).
+- **Packet Too Big (IPv6)**: Indicates that a packet cannot be forwarded because it's too large to pass through a router without being fragmented (specific to ICMPv6).
+
+__Utilities Utilizing ICMP__
+- **Traceroute**:
+	- Uses ICMP messages to trace the route from a host to any destination across routers.
+	- Employs TTL (Time To Live) adjustments in IP headers to invoke time exceeded messages from each router (type 11 code 0).
+	- Receives final destination unreachable messages (type 3 code 3) indicating the end of the trace.
+
+__ICMP for IPv6 (RFC 4443)__
+- **Enhancements in ICMPv6**:
+	- Reorganized type and code definitions.
+	- Added functionalities specific to IPv6 needs, like handling unrecognized IPv6 options.
+
+__Practical Insights__
+- **Implementation**: Most systems integrate ICMP functionality directly within the operating system kernel, not as a separate process.
+- **Customization**: Developers can utilize ICMP's functionalities by coding at system level, as seen in the source code for the ping client in [Stevens 1990].
+
+
+
+# 6. The Link Layer and LANs
+
+## 6.1 Introduction to the Link Layer
+
+__Introduction to Link Layer Concepts__
+- **Nodes**: Devices that operate at the link layer, including hosts, routers, switches, and WiFi access points.
+- **Links**: Communication channels connecting adjacent nodes; crucial for datagram transmission across the network path.
+
+__Datagram Transmission Example__
+- **Transmission Path**: A datagram may traverse multiple links such as WiFi, Ethernet, and router connections to reach its destination.
+	- Example: Datagram from a wireless host to a server passes through six different links, including WiFi and multiple Ethernet connections.
+
+__Link Layer and Network Layer Interaction__
+- **Transportation Analogy**:
+  - **Tourist**: Represents a datagram.
+  - **Transportation Segments**: Different links each handled by different entities (e.g., limousine, airplane, train).
+  - **Travel Agent**: Acts as a routing protocol arranging the segments.
+
+### 6.1.1 Services Provided by the Link Layer
+- **Framing**: Encapsulation of network-layer datagrams within a link-layer frame for transmission.
+- **Link Access**: Medium Access Control (MAC) protocols dictate how frames are transmitted over a link. This is particularly complex in environments where multiple nodes share a single link.
+- **Reliable Delivery**: Ensures error-free transmission across the link, particularly useful for error-prone links like wireless connections. Not typically used for low-error links like fiber or coaxial.
+- **Error Detection and Correction**: Mechanisms to identify and correct bit errors in the frame, implemented in hardware for efficiency.
+
+### 6.1.2 Implementation of the Link Layer
+- **Implementation**: Primarily in hardware via a network adapter or network interface controller (NIC), which handles tasks such as framing and error detection.
+- **Software Role**: Handles higher-level functionalities such as assembling addressing information and managing hardware activations.
+- **Host Architecture**: Shows integration of Ethernet capabilities either directly on the motherboard or via a dedicated chip.
+- **Operational Flow**:
+	- **Sending Side**: Datagram is encapsulated in a link-layer frame and transmitted following the link-access protocol.
+	- **Receiving Side**: Frame is received, errors are checked, and the datagram is extracted and passed up to the network layer.
+.
+## 6.2 Error-Detection and -Correction Techniques
+
+__Overview of Error-Detection and Correction__
+- **Purpose**: Detect and correct bit errors in data transmitted between nodes, commonly implemented in both link and transport layers.
+- **Goal**: Develop an understanding of simple techniques used for error detection and correction in the link layer.
+
+__Techniques for Error Detection and Correction__
+- **Parity Checks**:
+	- **Single-bit Parity**: Adds one bit to data to make the number of 1s even (even parity) or odd (odd parity). Simple but can miss errors if an even number of bits are flipped.
+	- **Two-dimensional Parity**: Organizes data into a matrix of rows and columns, computing parity for each, enhancing error detection and enabling correction of single-bit errors.
+- **Checksumming Methods**:
+	- Data treated as sequence of k-bit integers; sum used for error detection.
+	- **Internet checksum**: Based on 1s complement of sums; utilized in TCP, UDP, and IP for error detection.
+- **Cyclic Redundancy Check (CRC)**:
+	- Polynomial code-based technique where data is viewed as a polynomial.
+	- Involves appending r bits to data so the combined data is divisible by a predefined polynomial (generator G) using modulo-2 arithmetic, enabling robust error detection.
+
+__Practical Application and Importance__
+- **Error Detection**: Critical for ensuring data integrity across transmissions; methods vary in complexity from simple parity checks to robust CRC.
+- **Error Correction**: Two-dimensional parity allows for correction of single-bit errors, crucial for real-time applications or in environments with long propagation delays.
+- **Forward Error Correction (FEC)**: Techniques that allow errors to be corrected at the receiver without needing retransmission, beneficial for real-time network applications and long-distance communications.
+
+## 6.3 Multiple Access Links and Protocols
+
+__Introduction__
+**Types of Network Links**:
+- **Point-to-point Links**: Involves a single sender and a single receiver. Examples include PPP (Point-to-Point Protocol) and HDLC (High-level Data Link Control).
+- **Broadcast Links**: Supports multiple senders and receivers using a shared channel, typical in local area networks (LANs).
+
+**Key Concept**:
+- The main challenge in broadcast links is the **multiple access problem**, where multiple nodes must coordinate to share the same broadcast channel without interference.
+
+**Analogy**:
+- Compared to a cocktail party or a classroom where participants must follow social protocols to communicate effectively without talking over each other.
+
+__The Multiple Access Problem__
+**Definition**:
+- Multiple nodes can transmit simultaneously on the same channel, which can lead to collisions, rendering the communication unintelligible.
+
+**Importance**:
+- Effective management of this access is crucial in networks, especially LANs, to maximize efficient use of bandwidth and minimize collisions.
+
+**Historical Context**:
+- Decades of research and development have led to the creation of numerous protocols to manage this problem, evidenced by numerous scholarly articles and PhD dissertations.
+
+**Types of Multiple Access Protocols**:
+- Broadly categorized into:
+	1. **Channel Partitioning Protocols**
+	2. **Random Access Protocols**
+	3. **Taking Turns Protocols**
+
+**Desirable Characteristics of Protocols**:
+- 1. Full channel throughput when only one node is transmitting.
+- 2. Fair bandwidth distribution among multiple nodes.
+- 3. Decentralized control to avoid single points of failure.
+- 4. Simplicity and cost-effectiveness in implementation.
+
+### 6.3.1 Channel Partitioning Protocols
+
+**Concepts**:
+- **Time-Division Multiplexing (TDM)**: Divides time into frames and slots, assigning slots to nodes.
+- **Frequency-Division Multiplexing (FDM)**: Divides the channel into frequency bands assigned to nodes.
+- **Code Division Multiple Access (CDMA)**: Assigns unique codes to each node allowing simultaneous transmissions.
+
+**Illustration**:
+- **TDM Example**: If N nodes are connected, each node gets one slot per frame to transmit, ensuring all have a chance without collision.
+- **FDM and CDMA**: Similar in sharing but use frequencies and codes, respectively, for data transmission.
+
+**Drawbacks**:
+- **TDM and FDM**: Limit bandwidth per node, even if fewer nodes wish to transmit.
+- **CDMA**: Technically complex but allows effective simultaneous transmissions.
+
+**Usage**:
+- TDM and FDM are used broadly in wired networks, while CDMA is prevalent in military and civilian wireless communications, such as cellular networks.
+
+**Next Steps**:
+- Detailed examination of CDMA will be covered in a later chapter, focusing on its implementation in various communication systems.
+
+Here's how your note-taking format might look for the section on random access protocols:
+
+### 6.3.2 Random Access Protocols
+
+**Definition**: Random access protocols allow nodes to transmit at the full rate of the channel, R bps, and employ a collision resolution mechanism where each node involved in a collision retransmits its frame after a random delay.
+
+__Slotted ALOHA__
+- **Frame Size**: Frames are of size L bits.
+- **Time Slots**: Transmission time is divided into slots of size L/R seconds.
+- **Transmission Rules**:
+	- Nodes transmit at the beginning of slots.
+	- Nodes must be synchronized.
+	- Collisions are detected before the slot ends.
+- **Re-transmission Probability**: If a collision occurs, the node retransmits its frame in each subsequent slot with a probability p.
+- **Efficiency**: When there are multiple active nodes, efficiency concerns arise due to collisions and empty slots. The maximum theoretical efficiency is 0.37 or 37% effective transmission rate.
+
+__Pure ALOHA__
+- **Decentralization**: Fully decentralized; nodes transmit immediately upon receiving a frame.
+- **Collision Handling**: After a collision, a node retransmits the frame with a probability p after waiting for one frame transmission time.
+- **Maximum Efficiency**: Half of slotted ALOHA, at 1/(2e) due to increased collision possibilities.
+
+__Basic CSMA__
+- **Carrier Sensing**: Nodes listen before transmitting. If the channel is busy, they wait until it becomes idle.
+- **Collision Detection**: Nodes stop transmitting when they detect another transmission interfering.
+
+__CSMA with Collision Detection (CSMA/CD)__
+- **Operation**: Nodes perform carrier sensing and abort transmission immediately upon detecting a collision.
+- **Binary Exponential Backoff**: Post-collision, nodes wait a random backoff time determined by the number of collisions encountered.
+- **Efficiency Variables**:
+	- **Propagation Delay (dprop)**: Time for a signal to reach from one node to another.
+	- **Transmission Time (dtrans)**: Time to transmit the maximum-size frame.
+- **Efficiency Formula**: Efficiency approximated as 1/(1 + 5(dprop/dtrans)), suggesting higher efficiency with lower propagation delay or longer transmission times.
+
+__Real-world Applications__
+- **Ethernet**: A popular CSMA/CD protocol used widely in local area networks.
+- **Wireless Networks**: Adaptations of CSMA for managing airwave transmissions.
+
+__Comparative Analysis__
+- **Slotted vs. Pure ALOHA**:
+	- Slotted ALOHA is more efficient due to synchronization and timed transmissions.
+	- Pure ALOHA has higher flexibility but lower efficiency due to the continuous possibility of collisions.
+- **CSMA/CD vs. ALOHA**:
+	- CSMA/CD is generally more efficient than ALOHA due to the use of collision detection and carrier sensing, reducing the number of collisions and thus improving throughput.
+
+
+### 6.3.3 Taking-Turns Protocols
+
+**Desirable Properties of Multiple Access Protocols**:
+- **Throughput for Single Active Node**: When only one node is active, it should achieve a throughput of R bps.
+- **Throughput for Multiple Active Nodes**: When M nodes are active, each should have a throughput of nearly R/M bps.
+
+ALOHA and CSMA protocols ensure high throughput for single active nodes but do not effectively manage multiple active nodes. This limitation has spurred the development of taking-turns protocols, which aim to balance throughput across multiple nodes.
+
+__Polling Protocol__
+- **Overview**:
+	- **Master Node**: Designated to control the protocol, polls other nodes in a round-robin manner.
+	- **Operation**: The master node invites each node sequentially to transmit a maximum number of frames. It monitors channel silence to determine the end of transmission before moving to the next node.
+- **Advantages**:
+	- Eliminates collisions and empty slots, common in random access protocols, thereby increasing efficiency.
+- **Drawbacks**:
+	- **Polling Delay**: Time taken to notify a node can decrease throughput, especially if fewer nodes are active.
+	- **Single Point of Failure**: If the master node fails, the entire channel becomes inoperative.
+- **Real-World Application**: The Bluetooth protocol is an example of a polling-based system.
+
+__Token-Passing Protocol__
+- **Overview**:
+	- **Decentralized Operation**: No master node. A token circulates among nodes dictating the transmission rights.
+	- **Token Mechanics**: Nodes transmit frames only when they possess the token. If no data needs to be sent, the token is immediately passed to the next node.
+- **Efficiency**: Highly efficient due to decentralized management of transmission rights.
+- **Challenges**:
+	- **Node Failure**: Can disrupt the entire network if a node fails to pass the token.
+	- **Token Management**: Lost or unpassed tokens require a recovery mechanism to maintain network functionality.
+- **Notable Implementations**:
+	- Fiber Distributed Data Interface (FDDI)
+	- IEEE 802.5 Token Ring
+
+### 6.3.4 DOCSIS: The Link-Layer Protocol for Cable Internet Access
+
+**Cable Access Networks**:
+- Connects thousands of residential modems to a Cable Modem Termination System (CMTS) using the DOCSIS standard.
+- **Downstream and Upstream Channels**:
+	- **Downstream**: High bandwidth (up to 1.6 Gbps), broadcast from CMTS to modems.
+	- **Upstream**: Shared channel with potential for collisions, managed via time-division multiplexing (TDM).
+
+__DOCSIS Specifications__
+- **Frequency Division**:
+	- **Downstream**: 24 MHz to 192 MHz channels.
+	- **Upstream**: 6.4 MHz to 96 MHz channels, with a maximum throughput of 1 Gbps.
+- **Transmission Management**:
+	- **Mini-Slots**: Time intervals allocated by the CMTS for specific modems to avoid collisions.
+	- **Control Messages (MAP)**: Direct which modem transmits in which mini-slot.
+
+__Dynamic Slot Allocation__
+- **Mini-Slot Requests**:
+	- Modems request transmission slots in a random access method during designated intervals.
+	- **Collision Handling**: Binary exponential backoff is used to manage collisions and retransmission attempts.
+
+__Integration of Multiple Access Protocols__
+- **Combination of Access Methods**:
+	- **Frequency Division Multiplexing (FDM)**: Separates downstream and upstream channels by frequency.
+	- **Time Division Multiplexing (TDM)**: Organizes transmission into timed mini-slots.
+	- **Random Access**: Used for mini-slot requests, where collisions can occur.
+
+## 6.4 Switched Local Area Networks
+
+### 6.4.1 Link-Layer Addressing and ARP
+
+__MAC Addresses__
+- **Adapters have MAC addresses**: Hosts and routers use multiple network and MAC addresses; link-layer switches, however, do not have MAC addresses for interfaces connected to hosts and routers.
+- **Permanent but changeable**: Traditionally fixed, MAC addresses can now be altered via software.
+- **Uniqueness**: Managed by IEEE, ensuring no two adapters have the same MAC address globally.
+- **Structure and notation**: Flat addressing structure; 6-byte long, expressed in hexadecimal format (e.g., AB-CD-EF-01-23-45).
+
+__Address Resolution Protocol (ARP)__
+- **Function**: Converts network-layer IP addresses to link-layer MAC addresses.
+- **Scope**: Operates only within the same subnet; would error out if used for nodes on different subnets.
+- **Mechanism**: 
+	- Sends an ARP query in a broadcast frame to all on the subnet.
+	- Receives the MAC address in a direct frame from the target device.
+- **Automation**: ARP tables are built automatically, entries removed when devices disconnect.
+- **Layer ambiguity**: ARP operates between the link and network layers, containing both MAC and IP addresses.
+
+__Sending a Datagram off the Subnet__
+- **Process**:
+	- **Internal Operation**: Host determines the MAC address of the router interface (first-hop router) using ARP for off-subnet communication.
+	- **Routing**: The router uses its forwarding table to forward the datagram to the appropriate subnet.
+- **Example**: A host on Subnet 1 sends a datagram to Subnet 2 by first sending it to its subnet's router interface, which forwards it further.
+- **ARP's Role**: Essential in acquiring MAC addresses for routing datagrams to and through routers.
+
+__ARP in Ethernet__
+- **Specification**: Defined in RFC 826.
+- **Tutorial**: Additional details in RFC 1180, which provides a foundational tutorial on ARP.
+
+### 6.4.2 Ethernet
+
+**Historical Dominance**:
+  - **Early Adoption**: Ethernet, first deployed in the mid-1970s, was the first widely adopted high-speed LAN technology.
+  - **Competitive Edge**: It maintained dominance over other LAN technologies like token ring and FDDI by being simpler and cheaper.
+  - **Adaptation and Growth**: Continuously evolved to match or exceed the data rates of competing technologies.
+
+__Ethernet Evolution__
+- **Initial Design and Topology**:
+	- **Inventors**: Bob Metcalfe and David Boggs.
+	- **Original Setup**: Utilized a coaxial bus topology.
+	- **Broadcast Mechanism**: Frames are sent to all adapters on the bus, which could lead to collisions.
+- **Technological Shifts**:
+	- **1990s Shift**: Transition from bus topology to hub-based star topology using twisted-pair copper wire.
+	- **2000s Development**: Replacement of hubs with switches, enhancing efficiency by eliminating collisions and enabling full-duplex communication.
+
+__Ethernet Frame Structure:__ **Components of an Ethernet Frame**:
+  - **Data Field**: Ranges from 46 to 1,500 bytes, carrying network-layer data like IP datagrams.
+  - **Addresses**: Includes 6-byte destination and source MAC addresses.
+  - **Type Field**: Identifies the network layer protocol being used.
+  - **Error Checking**: Uses a Cyclic Redundancy Check (CRC) to detect bit errors.
+  - **Preamble**: An 8-byte field used to synchronize the receiver's timing with the sender's.
+
+__Ethernet Functionality__: **Service Characteristics**:
+  - **Connectionless and Unreliable**: Does not require handshaking between sending and receiving nodes; does not perform retransmissions at the Ethernet layer.
+  - **Layer Compatibility**: Operates up through layer 2, using simple link-layer mechanisms to support network-layer protocols.
+
+__Ethernet Technologies__
+- **Speed and Media Types**:
+	- **Standard Evolution**: From 10 Mbps (10BASE-T) to 40 Gbps (40GBASE-T).
+	- **Media Diversity**: Operates over coaxial cable, twisted-pair copper wire, and fiber optics.
+	- **IEEE Standards**: Guided by IEEE 802.3 CSMA/CD protocols, accommodating a wide range of Ethernet configurations.
+- **Modern Ethernet Usage**:
+	- **Switch-Based Topologies**: Dominant use of switches in modern networks, which facilitate full-duplex and collision-less operations.
+	- **Frame Consistency**: Despite significant changes in technology and topology, Ethernet’s frame format has remained consistent, illustrating its enduring legacy in network design.

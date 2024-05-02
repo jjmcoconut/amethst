@@ -2348,7 +2348,7 @@ __ER Design Decisions__
 __Symbols Used in ER Notation__
 ![[Pasted image 20240422143426.png|350]]![[Pasted image 20240422143452.png|350]]
 
-# 7. Normalization
+# 7. Normalization EXAM! - EASY TO MAKE PROBLEMS
 
 ## Overview of Normalization
 
@@ -2623,12 +2623,14 @@ __Example of F+__
 	- Decomposition rule: If α⟶βγ holds, then α⟶β holds and α⟶γ holds
 	- Pseudotransitivity rule: If α⟶β holds and γβ⟶δ holds, then αγ⟶δ holds
 - The above rules can be inferred from Armstrong’s axioms
+	- ___EXAM! 4.29 14min___
+		- How to derive these rules
 	- e.g., pseudotransitivity: αγ⟶γβ (augmentation), then γβ⟶δ (transitivity), we obtain αγ⟶δ
 
 __Procedure for Computing F+__
-F+ = F 
 
 ```
+F+ = F 
 repeat
 	for each functional dependency f in F+
 	apply reflexivity and augmentation rules on f add the resulting functional dependencies to F+
@@ -2642,11 +2644,11 @@ __Closure of Attribute Sets__
 - Given a set of attributes α, we define the closure of α under F (denoted by α+) as the set of attributes that are functionally determined by α under F
 ```
 result := α;
-	while (changes to result) do
-		for each β⟶γ in F do 
-			begin
-				if β ⊆ result then result := result ∪γ; 
-			end
+while (changes to result) do
+	for each β⟶γ in F do 
+		begin
+			if β ⊆ result then result := result ∪ γ; 
+		end
 ```
 - Example
 	- R = (A, B, C, G, H, I) F = {A⟶B, A⟶C, CG⟶H, CG⟶I, B⟶H}
@@ -2678,6 +2680,7 @@ __Canonical Cover__
 - We can reduce the effort spent in checking for violations by testing a simplified set of functional dependencies that has the same closure as the given set
 - This simplified set is termed the canonical cover
 - To define the canonical cover, we must first define extraneous attributes; an attribute of a functional dependency in F is extraneous if we can remove it without changing F+
+	- smallest set G s.t. G+ = F+
 
 __Extraneous Attributes__
 - Removing an attribute from the left side of a functional dependency could make it a stronger constraint
@@ -2702,7 +2705,7 @@ __Extraneous Attributes__
 		- A ∈ α and stronger
 		- F logically implies (F – {α⟶β}) ∪ {(α – A)⟶β}
 	- Remove from the right side: Attribute A is extraneous in β if
-		- A ∈ β andweaker
+		- A ∈ β and weaker
 		- (F – {α⟶β}) ∪ {α⟶(β – A)} logically implies F
 - Note: implication in the opposite direction is trivial in each of the cases above, since a “stronger” functional dependency always implies a weaker one
 
@@ -2763,15 +2766,15 @@ __Dependency Preservation__
 - The set of restrictions F1, F2, ... , Fn is the set of functional dependencies that can be checked efficiently
 
 __Testing for Dependency Preservation__
-- To check if a dependency α⟶β is preserved in a decomposition of R into R1, R2, ... , Rn, we test the following (with the attribute closure with respect to F)
-- result = α
-```
+- To check if a dependency α⟶β is preserved in a decomposition of R into R1, R2, ... , Rn, we test the following (with the attribute closure with respect to F) 
+  ```
+  result = α
   repeat
 	  for each Ri in the decomposition 
 		  t = (result ∩ Ri)+ ∩ Ri
 		  result = result ∪ t 
   until (result does not change)
-```
+  ```
 - If result contains all attributes in β, then the functional dependency α⟶β is preserved
 - We apply the test on all dependencies in F to check if a decomposition is dependency preserving
 - This procedure takes polynomial time, instead of the exponential time required to compute F+ and (F1 ∪ F2 ∪ ... ∪ Fn)+
@@ -2782,3 +2785,229 @@ __Testing for Dependency Preservation__
 		- R1 and R2 in BCNF
 		- Lossless-join decomposition
 		- Dependency preserving
+
+## Algorithm for Decomposition Using Functional Dependencies
+
+__Testing for BCNF__
+- To check if a non-trivial dependency α⟶β causes a violation of BCNF
+	- 1. Compute α+ (the attribute closure of α), and
+	- 2. Verify that it includes all attributes of R, that is, it is a superkey of R
+- Simplified test: to check if a relation schema R is in BCNF, it suffices to check only the dependencies in the given set F for violation of BCNF, rather than checking all dependencies in F+
+	- If none of the dependencies in F causes a violation of BCNF, then none of the dependencies in F+ will cause a violation of BCNF either
+- However, simplified test using only F is incorrect when testing a relation in a decomposition of R
+	- Consider R = (A, B, C, D, E) with F = {A⟶B, BC⟶D}
+		- Decompose R into R1 = (A, B) and R2 = (A, C, D, E)
+		- Neither of the dependencies in F contain only attributes from (A, C, D, E) so we might be mislead into thinking R, satisfies BCNF
+		- In fact, dependency AC⟶D in F+ shows R2 is not in BCNF
+
+__Testing Decomposition for BCNF__
+- To check if a relation Ri in a decomposition of R is in BCNF
+- Either test Ri for BCNF with respect to the restriction of F+ to Ri (that is, all FDs in F+ that contain only attributes from Ri) or Use the original set of dependencies F that hold on R, with the following test:
+	- For every set of attributes α ⊆ Ri, check that α+ (the attribute closure of α) either includes no attribute of Ri – α, or includes all attributes of Ri
+	- If the condition is violated by some α, the dependency α⟶(α+ – α) ∩ Ri can be shown to be present in F+, and Ri violates BCNF
+	- We use above dependency to decompose Ri
+
+__BCNF Decomposition Algorithm__
+```
+result := { R }; done := false;
+compute F+;
+while (not done) do
+	if (there is a schema Ri in result that is not in BCNF) 
+		then begin
+			let α⟶β be a nontrivial functional dependency that holds on Ri such that α⟶Ri is not in F+, and α ∩ β = ∅;
+			result := (result – Ri) ∪ (Ri – β) ∪ (α, β); 
+		end
+	else done := true;
+```
+- Note: each Ri is in BCNF, and decomposition is lossless-join
+
+__Example of BCNF Decomposition__
+- class (course_id, title, dept_name, credits, sec_id, semester, year, building, room_number, capacity, time_slot_id)
+- Functional dependencies:
+	- course_id⟶title, dept_name, credits
+	- building, room_number⟶capacity
+	- course_id, sec_id, semester, year⟶building, room_number, time_slot_id
+- A candidate key: {course_id, sec_id, semester, year}
+- BCNF decomposition:
+	- course_id⟶title, dept_name, credits holds
+		- but course_id is not a superkey 
+	- We replace class by:
+		- course (course_id, title, dept_name, credits)
+	- course is in BCNF
+		- How do we know this?
+			- (course_id)+ = {course_id, title, dept_name, credits}
+			- (title)+ = {title}
+			- (dept_name)+ = {dept_name}
+			- (credits)+ = {credits}
+			-  For every set of attributes α ⊆ {course_id, title, dept_name, credits}, α+ either includes no attribute of {course_id, title, dept_name, credits} – α, or includes all attributes of {course_id, title, dept_name, credits} -> BCNF
+	- building, room_number⟶capacity holds on class-1
+		- but {building, room_number} is not a superkey for class-1
+	- We replace class-1 by:
+		- classroom (building, room_number, capacity)
+		- section (course_id, sec_id, semester, year, building, room_number, time_slot_id)
+		- classroom and section are in BCNF
+
+__Third Normal Form__
+- Efficient checking for FD violation on updates is important, but BCNF is not guaranteed to be dependency preserving
+- Solution: a weaker normal form, called Third Normal Form (3NF)
+	- Some redundancy is introduced (with resultant problems; we will see examples later)
+	- Functional dependencies can be checked on individual relations without computing a join
+	- There is always a lossless-join, dependency-preserving decomposition into 3NF
+- Example
+	- dept_advisor (s_ID, i_ID, dept_name) F = {s_ID, dept_name⟶i_ID, i_ID⟶dept_name}
+	- Two candidate keys: {s_ID, dept_name} and {i_ID, s_ID}
+	- dept_advisor is in 3NF
+		- s_ID, dept_name⟶i_ID
+			- s_ID, dept_name is a superkey 
+		- i_ID⟶dept_name
+			- dept_name is contained in a candidate key
+
+__Testing for 3NF__
+- We need to check only FDs in F, not necessarily in F+
+- For each dependency α⟶β, check if α is a superkey using its attribute closure
+- If α is not a superkey, we have to verify if each attribute in β is contained in a candidate key of R
+	- This test is rather more expensive, since it involves finding candidate keys
+	- Testing for 3NF has been shown to be NP-complete (see the next slide)
+		- Jiann H. Jou and Patrick C. Fischer, "The complexity of recognizing 3NF relation schemes," Information Processing Letters 14(4): 187--190, 1982 https://www.sciencedirect.com/science/article/pii/0020019082900345
+	- Interestingly, decomposition into third normal form (described shortly) can be done in polynomial time
+- Proof: a quick summary from the paper (see the paper for details)
+	- Any attribute that is a member of a key is called a prime attribute
+	- To show that, for all dependencies α⟶β in F, either α is a superkey or β is prime
+	- One way to do this is to first find all of the keys
+	- Unfortunately the problem of finding all of the keys of a relation has been shown to be NP-complete; the problem of determining if a given attribute is prime is also NP-complete
+- ___EXAM! 5.1 33min___
+	- 3NF decomposition is available in polynomial time but testing 3NF is NP-complete
+
+__3NF Decomposition__
+```
+Let Fc be a cononical cover for F;
+i:=0;
+for each functional dependency a->b in Fc do
+	if none of the schemas Rj, 1<=j<=i contains ab
+		then begin
+			i = i+1
+			Rj = ab
+		end
+if none of the schemas Rj, q<=j<=i contains a candidate jey for R
+	then begin 
+		i = i+1
+		Ri = any candidate key for R
+	end
+repeat
+if any schema Rj is contained in another schema Rk
+	then 
+		Rj = Ri
+		i = i-1
+return (R1,R2,...,Rj)
+```
+- The above algorithm ensures
+	- Each relation schema Ri is in 3NF
+	- The decomposition is dependency preserving and lossless-join
+	- Proof of correctness is in Section 7.5.3 of the textbook
+- Example
+	- Relation schema:
+		- cust_banker_branch = (customer_id, employee_id, branch_name, type)
+	- The functional dependencies for this relation schema are:
+		- customer_id, employee_id⟶branch_name, type
+		- employee_id⟶branch_name
+		- customer_id, branch_name⟶employee_id
+	- We first compute a canonical cover
+		- branch_name is extraneous in the r.h.s. of the 1st dependency
+		- No other attribute is extraneous, so we get FC = 
+		  customer_id, employee_id⟶type 
+		  employee_id⟶branch_name 
+		  customer_id, branch_name⟶employee_id
+	- The for loop generates the following 3NF schema: 
+		- (customer_id, employee_id, type) 
+		  (employee_id, branch_name) 
+		  (customer_id, branch_name, employee_id)
+		- Observe that (customer_id, employee_id, type) contains a candidate key of the original schema, so no further relation schema needs be added
+	- At end of the for loop, detect and delete schemas, such as (employee_id, branch_name), which are subsets of other schemas
+		- The result will not depend on the order in which FDs are considered
+	- The resultant simplified 3NF schema is:
+		- (customer_id, employee_id, type) 
+		  (customer_id, branch_name, employee_id)
+
+__Comparison of BCNF and 3NF__
+- It is always possible to decompose a relation into a set of relations that are in 3NF such that:
+	- The decomposition is lossless
+	- The dependencies are preserved
+- It is always possible to decompose a relation into a set of relations that are in BCNF such that:
+	- The decomposition is lossless
+	- It may not be possible to preserve dependencies
+
+__Design Goals__
+- The first goal for a relational database design is:
+	- BCNF
+	- Lossless join
+	- Dependency preservation
+- If we cannot achieve this, we accept one of
+	- Lack of dependency preservation
+	- Redundancy due to use of 3NF
+- Interestingly, SQL does not provide a direct way of specifying functional dependencies other than superkeys
+	- FDs could be specified using assertions, but they are expensive to test (and currently not supported by any of the widely used databases)
+- Even if we had a dependency preserving decomposition, using SQL we would not be able to efficiently test a FD whose left hand side is not a key
+
+## Multivalued Dependencies
+
+__Multivalued Dependencies (MVDs)__
+- Suppose we record names of children, and phone numbers for instructors:
+	- inst_child (ID, child_name)
+	- inst_phone (ID, phone_number)
+- If we were to combine these schemas to get
+	- inst_info (ID, child_name, phone_number)
+	- Example data:
+	  (99999, David, 512-555-1234) 
+	  (99999, David, 512-555-4321) 
+	  (99999, William, 512-555-1234) 
+	  (99999, William, 512-555-4321)
+- This relation is in BCNF
+	- Why?
+- Let R be a relation schema and let α ⊆ R and β ⊆ R; The multivalued dependency α↠β holds on R if in any legal relation r(R), for all pairs for tuples t1 and t2 in r such that t1[α] = t2[α], there exist tuples t3 and t4 in r such that: 
+	- t1[α] = t2[α] = t3[α] = t4[α]
+	  t3[β] = t1[β]
+	  t3[R – β] = t1[R –β]
+	  t4[β] = t2[β]
+	  t4[R–β] = t2[R – β]
+- MVD: Tabular Representation of α↠β
+  ![[Pasted image 20240501151907.png|300]]
+- Let R be a relation schema with a set of attributes that are partitioned into 3 nonempty subsets Y, Z, W
+- We say that Y↠Z (Y multidetermines Z ) if and only if for all possible relations r(R)
+	- < y1, z1, w1 > ∈ r and < y1, z2, w2 > ∈ r
+	  then
+	  < y1, z1, w2 > ∈ r and < y1, z2, w1 > ∈ r
+- Note that since the behavior of Z and W are identical, it follows that Y↠Z if Y↠W
+- Example
+	- ID↠child_name 
+	  ID↠phone_number
+		- The above formal definition is supposed to formalize the notion that given a particular value of Y (ID) it has associated with it a set of values of Z (child_name) and a set of values of W (phone_number), and these two sets are in some sense independent of each other
+
+__Use of MVDs__
+- We use multivalued dependencies in two ways:
+	- To test relations to determine whether they are legal under a given set of functional and multivalued dependencies
+	- To specify constraints on the set of legal relations; we shall concern ourselves only with relations that satisfy a given set of functional and multivalued dependencies
+- If a relation r fails to satisfy a given multivalued dependency, we can construct a relations r’ that satisfies the multivalued dependency by adding tuples to r
+
+__Theory MVDs__
+- From the definition of MVDs, we can derive the following rule:
+	- If α⟶β, then α↠β
+	- That is, every functional dependency is also a multivalued dependency
+- Proof: ___EXAM! 5.1 65min___
+	- Suppose α⟶β. t1 = (a, b, c) and t2 = (a, d, e) are given. By the functional dependency, b = d. Thus, t3 = t1 = (a, d, c) and t4 = t2 = (a, b, e) naturally exist without considering additional tuples.
+	- Wikipedia: Every FD is an MVD because if α⟶β, then swapping β's between tuples that agree on α doesn't create new tuples.
+- The closure D+ of D is the set of all functional and multivalued dependencies logically implied by D
+	- We can compute D+ from D, using the formal definitions of functional dependencies and multivalued dependencies
+		- We can manage with such reasoning for very simple multivalued dependencies, which seem to be most common in practice
+	- For complex dependencies, it is better to reason about sets of dependencies using a system of inference rules (Armstrong's axioms for MVD):
+		- Complementation: If α↠β, then α↠R - β
+		- Augmentation: If α↠β and γ⊆δ, then αδ↠βγ
+		- Transitivity: If α↠β and β↠γ, then α↠γ - β
+		- Replication: If α⟶β, then α↠β
+		- Coalescence: If α↠β and ∃ δ s.t. δ∩β = ∅, δ⟶γ, and γ⊆β, then α⟶γ
+
+__Fourth Normal Form__
+- A relation schema R is in 4NF with respect to a set D of functional and multivalued dependencies if for all multivalued dependencies in D+ of the form α↠β, where α ⊆ R and β ⊆ R, at least one of the following hold:
+	- α↠β is trivial (i.e., β ⊆ α or α ∪ β = R)
+	- α is a superkey for the schema R ⇐ The definition of 4NF differs from that of BCNF only in the use of multivalued dependencies
+- If a relation is in 4NF, it is in BCNF
+	- Proof: Note that if a schema R is not in BCNF, there is a non-trivial functional dependency α⟶β holding on R, where α is not a superkey. Since α⟶β implies α↠β by the replication rule, R cannot be in 4NF.
