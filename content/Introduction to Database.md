@@ -3055,12 +3055,16 @@ __JSON__
 	- Example of JSON data 
 ```
 {
-"ID": "22222", "name": {
-"firstname": "Albert",
-"lastname": "Einstein" },
-"deptname": "Physics", "children": [
-{"firstname": "Hans", "lastname": "Einstein" },
-{"firstname": "Eduard", "lastname": "Einstein" } ]
+	"ID": "22222", 
+	"name": {
+		"firstname": "Albert",
+		"lastname": "Einstein" 
+	},
+	"deptname": "Physics", 
+	"children": [
+		{"firstname": "Hans", "lastname": "Einstein" },
+		{"firstname": "Eduard", "lastname": "Einstein" } 
+	]
 }
 ```
 	- Objects are key-value maps, i.e., sets of (attribute name, value) pairs
@@ -3081,6 +3085,14 @@ __JSON__
 	
 __XML__
 - XML uses tags to markup the text 
+```
+<course>  
+    <course id> CS-101 </course id>  
+    <title> Intro. to Computer Science </title> 
+    <dept name> Comp. Sci. </dept name> 
+    <credits> 4 </credits>
+</course>
+```
 - Tags make the data self-documenting
 - Tags can be hierarchical
 - XQuery language developed to query nested XML structures - Not widely used currently
@@ -3089,8 +3101,34 @@ __XML__
 	- Generating XML data from relational data
 	- Extracting data from XML data types
 		- Path expressions
+- Example
+```
+<purchase order>
+	<identifier> P-101 </identifier>
+	<purchaser>
+		<name> Cray Z. Coyote </name>
+		<address> Route 66, Mesa Flats, Arizona 86047, USA</address>
+	</purchaser> 
+	<supplier>
+		<name> Acme Supplies </name>
+		<address> 1 Broadway, New York, NY, USA </address> 
+	</supplier>
+	<itemlist> 
+		<item>
+			<identifier> RS1 </identifier>
+			<description> Atom powered rocket sled </description> 
+			<quantity> 2 </quantity>
+			<price> 199.95 </price>
+		</item>
+		<item>...</item> 
+	</itemlist>
+	<total cost> 429.85 </total cost> 
+	....
+</purchase order>
+```
 
-Knowledge Representation
+__Knowledge Representation__
+![[Pasted image 20240512231800.png|400]]![[Pasted image 20240512231820.png|300]]
 - RDF: Resource Description Format
 	- Simplified representation for facts, represented as triples (subject, predicate, object)
 		- e.g., (NBA-2019, winner, Raptors)
@@ -3114,9 +3152,30 @@ Knowledge Representation
 	- DBPedia, Yago, Freebase, WikiData, ...
 - Linked Open Data project aims to connect different knowledge graphs to allow queries to span databases
 
+__Querying RDF: SPARQL__
+-  Triple patterns
+	-  ?cid title "Intro. to Computer Science"
+	-  ?cid title "Intro. to Computer Science"
+	  ?sid course ?cid
+-  SPARQL queries
+	- Select the names of the students who took the section of the course titled as "Intro. to Computer Science"
+	- Aggregation, optional joins (similar to outer joins), subqueries, etc.
+	-  Transitive closure on paths
+		-  e.g., where { ?a :partOf+ ?b }
+```
+select ?name 
+where {
+	?cid title "Intro. to Computer Science" . 
+	?sid course ?cid .
+	?id takes ?sid . 
+	?id name ?name .
+}
+```
+
+
 ## Object Orientation
 
-Object Orientation
+__Object Orientation__
 - Object-relational data model provides a richer type system, with complex data types and object orientation
 - Applications are often written in object-oriented programming languages
 	- The type system does not match the relational type system
@@ -3126,45 +3185,75 @@ Object Orientation
 	- Automatically convert data between the programming language model and the relational model; data conversion specified by object-relational mapping
 	- Build an object-oriented database that natively supports object-oriented data and direct access from the programming language
 
-Object-Relational Database Systems
+__Object-Relational Database Systems__
 - User-defined types
-- create type Person
-(ID varchar(20) primary key,
-name varchar(20),
-address varchar(20)) ref from(ID); /* More on this later */ create table people of Person;
+```
+create type Person
+	(ID varchar(20) primary key,
+	name varchar(20),
+	address varchar(20)) ref from(ID); /* More on this later */ 
+create table people of Person;
+```
 - Table types
-- create type interest as table ( topic varchar(20),
-degree_of_interest int); create table users (
-ID varchar(20), name varchar(20), interests interest);
-- Array, multiset data types also supported by many databases - Syntax varies by database
+```
+create type interest as table ( 
+	topic varchar(20),
+	degree_of_interest int); 
+create table users (
+	ID varchar(20), 
+	name varchar(20), 
+	interests interest);
+```
+- Array, multiset data types also supported by many databases 
+	- Syntax varies by database
 
-Type and Table Inheritance
+__Type and Table Inheritance__
 - Type inheritance
-- create type Student under Person (degree varchar(20));
-create type Teacher under Person (salary integer);
+```
+create type Student under Person 
+(degree varchar(20));
+create type Teacher under Person 
+(salary integer);
+```
 - Table inheritance syntax in PostgreSQL and Oracle
-- create table students (degree varchar(20))
-inherits people; create table teachers
-(salary integer)
-inherits people;
-- create table people of Person;
-create table students of Student under people;
-create table teachers of Teacher under people;
+```
+create table students 
+	(degree varchar(20))
+	inherits people; 
+create table teachers
+	(salary integer)
+	inherits people;
+```
+```
+create table people of Person;
+create table students of Student 
+	under people;
+create table teachers of Teacher 
+	under people;
+```
 
-Reference Types
+__Reference Types__
 - Creating reference types
-- create type Person
-(ID varchar(20) primary key,
-name varchar(20), address varchar(20)) ref from(ID);
-create table people of Person; create type Department (
-dept_name varchar(20),
-head ref(Person) scope people); create table departments of Department;
+```
+create type Person
+	(ID varchar(20) primary key,
+	name varchar(20), 
+	address varchar(20)) ref from(ID);
+create table people of Person; 
+create type Department (
+	dept_name varchar(20),
+	head ref(Person) scope people); 
+create table departments of Department;
+```
 - System generated references can be retrieved using subqueries
-- (select ref(p) from people as p where ID = '12345')
+	- `(select ref(p) from people as p where ID = '12345')`
 - Using references in path expressions
-- select head->name, head->address from departments;
+```
+select head->name, head->address 
+from departments;
+```
 
-Object-Relational Mapping
+__Object-Relational Mapping__
 - Object-relational mapping (ORM) systems allow
 	- Specification of mapping between programming language objects and database tuples
 	- Automatic creation of database tuples upon creation of objects
@@ -3175,22 +3264,27 @@ Object-Relational Mapping
 	- Hibernate ORM for Java
 	- Django ORM for Python
 
-Django’s ORM
+__Django’s ORM__
 - Allowing developers to interact with the database using Python code rather than writing SQL statements
 	- Model definition
-- e.g.,
-from django.db import models class Book(models.Model):
-title = models.CharField(max_length=200)
-author = models.ForeignKey('Author', on_delete=models.CASCADE) published_date = models.DateField()
-price = models.DecimalField(max_digits=6, decimal_places=2)
+```
+from django.db import models 
+class Book(models.Model):
+	title = models.CharField(max_length=200)
+	author = models.ForeignKey('Author', on_delete=models.CASCADE) 
+	published_date = models.DateField()
+	price = models.DecimalField(max_digits=6, decimal_places=2)
+```
 - Querying the database 
-- e.g.,
+```
 from myapp.models import Book
 books = Book.objects.all()
 books = Book.objects.filter(price__lt=10) # all books that cost less than $10
+```
+
 ## Textual Data
 
-Textual Data
+__Textual Data__
 - Information retrieval: querying of unstructured data
 	- Simple models of keyword queries, given query keywords, retrieve documents containing all
 	the keywords
@@ -3200,21 +3294,21 @@ Textual Data
 - Relevance ranking
 	- Essential since there are usually many documents matching keywords
 
-Ranking using TF-IDF
+__Ranking using TF-IDF__
 - Term: keyword occurring in a document/query
 - Term Frequency: TF(d, t), the relevance of a term t to a document d
-	- A definition: TF(d, t) = log(1 + n(d, t) ) n(d) where
-		- n(d, t) = number of occurrences of term t in document d
+	- A definition: $TF(d, t) = log(1 + \frac{n(d, t)}{n(d)})$ where
+		- n(d,t) = number of occurrences of term t in document d
 		- n(d) = number of terms in document d
 - Inverse Document Frequency: IDF(t)
 	- A definition:$IDF(t) = \frac{1}{n(t)}$
 - Relevance of a document d to a set of terms Q
-	- A definition: r(d, Q) = ∑t∈Q TF(d, t) x IDF(t)
+	- A definition: $r(d, Q) = ∑_{t∈Q} TF(d, t) \cdot IDF(t)$
 	- Other definitions
 		- Proximity of words is taken into account
 		- Stop words are often ignored
 
-Ranking Using Hyperlinks
+__Ranking Using Hyperlinks__
 - PageRank
 	- A measure of popularity/importance based on hyperlinks to pages, developed by Google
 		- Hyperlinks provide very useful clues to the importance of a web page
@@ -3224,19 +3318,20 @@ Ranking Using Hyperlinks
 		- Formalized by the random walk model 
 - Formulation
 	- Let T[i, j] be the probability that a random walker who is on page i will click on the link to page j
-		- Assuming all links are equal, , where Ni = number of links out of page i 
+		- Assuming all links are equal $T[i,j] = 1/N_i$ where $N_i$ = number of links out of page i 
 	- Then, PageRank[j] for each page j can be defined as
-		- where N = total number of pages, and δ = a constant usually set to 0.15
+		- $P[j] = \frac{\delta}{N}+(1-\delta)\sum_{i=1}^N(T[i,j]\cdot P[i])$
+		  where N = total number of pages, and δ = a constant usually set to 0.15
 - The definition of PageRank is circular, but can be solved as a set of linear equations
 	- A simple iterative technique works well
-		- Initialize all
-		- In each iteration, apply to update P
+		- Initialize all $P[j]=\frac{1}{N}$
+		- In each iteration, apply $P[j]=\frac{\delta}{N} + (1-\delta)\sum_{i=1}^N(T[i,j]\cdot P[i])$ to update P
 		- Stop iteration when changes are small, or a certain limit (e.g., 30 iterations) is reached
 - Other measures of relevance are also important
 	- Keywords in the anchor text
 	- Number of times users click on a link if it is returned as an answer
 
-Retrieval Effectiveness
+__Retrieval Effectiveness__
 - Measures of effectiveness
 	- Precision: what percentage of returned results are actually relevant
 	- Recall: what percentage of relevant results are returned
