@@ -987,3 +987,151 @@ __SSD Summary__
 - These are changing rapidly!
 
 
+# 12. I/O Systems
+![[Pasted image 20240508123546.png|500]]
+
+__I/O Subsystem__
+- I/O subsystem is a major concern of OS design
+	- Two conflicting trends with I/O device technology
+		- Increasing standardization of s/w and h/w interfaces
+			- We do not need to care about the I/O devices we use.(We can use SSD, RAM from any kind of company)
+			- Good to incorporate advanced device generations
+		- Increasingly broad variety of I/O devices
+			- Imposing difficulties: some new devices are unlike previous ones
+
+__I/O Hardware__
+- Incredible variety of I/O devices
+	- Storage devices: disks, tapes, SSDs
+	- Transmission devices: network cards, modems
+	- Human-interface devices: screen, keyboard, mouse
+	- Sensors in mobile devices: camera, GPS, accelerometer, gyro, temperature, blood pressure
+	- Despite of variety, we need only a few concepts to understand how the devices are attached and how S/W can control H/W
+
+__I/O Subsystem__
+![[Pasted image 20240508123640.png|200]]
+- Approaches
+	- Basic I/O H/W accommodate a wide variety of devices
+		- Ports, buses, device controllers
+	- S/W: OS is structured to use device-driver modules
+		- device drivers present a uniform device access interface to I/O subsystem, like system calls btw OS and applications
+	- OS = File systems + Device Driver(In this image)
+
+__I/O Hardware - Common concepts__
+- Port
+	- Connection point
+- Bus (daisy chain or shared direct access)
+	- ![[Pasted image 20240508131530.png|400]]
+	- A set of wires (to connect different devices)
+	- A protocol specifying messages sent on the wires
+	- PCI bus (the common PC system bus)
+- Controller (host adapter)
+	- A collection of electronics that operates a port, a bus, or a device
+
+__I/O Hardware – Controller Examples__
+- A serial-port controller (simple)
+	- ![[Pasted image 20240508123843.png|500]]
+	- A single chip (or its portion) in computer that controls the signals on the wires of a serial port
+- A SCSI bus controller (complex)
+	- ![[Pasted image 20240508123921.png|500]]
+	- A separate circuit board that plugs into computer
+	- Contains a processor, microcode, private memory to process the SCSI protocol messages
+	- Disk can have its own built-in (disk) controller that implements the disk side of the SCSI protocol, as well as many disk tasks (bad-sector mapping, prefetching, buffering, caching)
+	- SCSI bus is good for adopting a new device
+		- However the performance is focused on HDD.
+		- Therefore if we put devices like SSD we can loose performance
+
+__I/O Hardware__
+- Communication btw CPU & devices
+	- Controller has registers for data and control signals
+	- CPU reads/writes bit patterns in these registers
+- Devices have addresses, used by
+	- Direct I/O instructions
+		- Via I/O port address, bus lines, device registers
+	- Memory-mapped I/O
+		- Device registers are mapped into address space of the CPU
+		- Example: graphics controller
+		- Transfer of millions of byte: faster to write them directly into memory than to issue millions of I/O instructions for
+
+Device I/O Port Locations on PCs(partial)
+
+| I/O address range(hexadecimal) | device                    |
+| ------------------------------ | ------------------------- |
+| 000-00F                        | DMA controller            |
+| 020-021                        | interrupt controller      |
+| 040-043                        | timer                     |
+| 200-20F                        | game controller           |
+| 2F8-2FF                        | serial port(secondary)    |
+| 320-32F                        | hard-disk controller      |
+| 378-37F                        | parallel prot             |
+| 3D0-3DF                        | graphics controller       |
+| 3F0-3F7                        | diskette-drive controller |
+| 3F8-3FF                        | serial port(primary)      |
+
+
+__I/O Port Registers__
+- Four categories for I/O port registers
+	- Data-in registers
+	- Data-out registers
+	- Status registers
+		- Host reads status, such as whether the current command has completed, whether a byte is available to be read, whether an error has occurred
+	- Control registers
+		- Host writes to start a command or to change the mode of a device
+
+__Communication btw Host & Controller__
+- Handshaking communication
+	- ![[Pasted image 20240508124313.png|300]]
+	- Complete protocol for interaction between host and controller is intricate, but its basic handshaking notion is simple
+	- Host ’s writing a byte through a port
+		1. Host repeatedly reads “busy” bit until it becomes clear
+		2. Host sets “write” bit in the “command” register and writes a byte into “data-out” register
+		3. Host sets “command-ready” bit
+		4. When controller notices “command-ready” bit, it sets “busy” bit
+		5. Controller reads “command” register, reads “data-out” register to get the byte, and does I/O to the device
+		6. Controller clears “command-ready” bit, “error” bit (indicating successful I/O operation), and “busy” bit
+
+__Polling__
+- The previous loop is repeated for each byte
+- In step 1, host is busy-waiting or polling
+	- The basic polling operation is efficient
+		- Can be done only with three CPU-instruction cycles
+	- But polling becomes inefficient when it rarely finds a device to be ready
+		- Then it may be more efficient to arrange for the controller to notify CPU when it becomes ready
+
+__Interrupts__
+- Hardware mechanism for interrupt
+	- CPU has interrupt-request line that it senses after executing every instruction
+	- I/O device controller raises an interrupt by asserting a signal on the line
+	- CPU catches the interrupt and dispatches it to the interrupt handler
+		- Interrupt handlers are usually device drivers(using Interrupt vector table to reach it)
+		- We make Interrupt vector table when we boot the system
+	- Handler clears the interrupt by servicing the device
+- How to service interrupts: immediately or later
+	- CPU often has two interrupt request lines
+	- Non-maskable for urgent interrupts
+	- maskable to ignore or delay some interrupts (I/O devices) to do some critical processing without any interrupts
+
+__Inerrupt-Driven I/O Cycle__
+- ![[Pasted image 20240508124415.png|500]]
+
+
+__Direct Memory Access__
+- Programmed I/O (PIO)
+	- Task of watching status bits and feeding data into control register one byte at a time
+	- Wasteful for an expensive general-purpose CPU to do PIO for large data movement, i.e., with a disk drive
+- DMA Controller (Direct-Memory-Access)
+	- Special-purpose processor(device) that transfers data directly between memory and I/O device bypassing CPU
+	- It offloads the burden of CPU to do PIO for large transfer
+
+__6 Step Process to Perform DMA Transfer__
+- ![[Pasted image 20240508124512.png|500]]
+
+# Abstraction for Multi-Device sound (loudspeaker) coordination for 5.1ch surround sound reproduction
+
+ - Many home theater systems require pre-defined speaker layouts for better sound experience
+ - If sound arrival time is less than 1ms then people recognizes as a same sound.
+ - If bigger then we recognize it as a different sound
+ - Goal: provide an illusion that MMA applications run over conventional loudspeaker configurations in mobile environments
+
+__Moblie Maestro: Challenges__
+- For high quality sound reproduction, Devices should be synchronized in terms of sound arrival time and level
+- 

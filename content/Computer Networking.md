@@ -977,6 +977,9 @@ __Dynamic Host Configuration Protocol (DHCP)__
   - DHCP allows for lease renewal, which lets a host extend its IP address allocation beyond the initial lease duration.
   - Provides a mechanism to manage network configurations over time efficiently.
 
+- DHCP returns
+	- The addressed IP, subnet mask, address of first-hop router
+
 #### 4.3.3 Network Address Translation (NAT)
 ![[Pasted image 20240415210846.png|500]]
 - **Context and Necessity**:
@@ -1595,9 +1598,9 @@ __Datagram Transmission Example__
 
 __Link Layer and Network Layer Interaction__
 - **Transportation Analogy**:
-  - **Tourist**: Represents a datagram.
-  - **Transportation Segments**: Different links each handled by different entities (e.g., limousine, airplane, train).
-  - **Travel Agent**: Acts as a routing protocol arranging the segments.
+	- **Tourist**: Represents a datagram.
+	- **Transportation Segments**: Different links each handled by different entities (e.g., limousine, airplane, train).
+	- **Travel Agent**: Acts as a routing protocol arranging the segments.
 
 ### 6.1.1 Services Provided by the Link Layer
 - **Framing**: Encapsulation of network-layer datagrams within a link-layer frame for transmission.
@@ -1637,10 +1640,15 @@ __Practical Application and Importance__
 
 ## 6.3 Multiple Access Links and Protocols
 
-__Introduction__
 **Types of Network Links**:
 - **Point-to-point Links**: Involves a single sender and a single receiver. Examples include PPP (Point-to-Point Protocol) and HDLC (High-level Data Link Control).
 - **Broadcast Links**: Supports multiple senders and receivers using a shared channel, typical in local area networks (LANs).
+
+__XCast__
+- Unicast: point-to-point (usual connection)
+- Multicast: multiple receivers (Use IP of 224.~(A), every packet sent to A will be sent to every device connected A)
+- Broadcast: receiver is not limited. Everyone inside the subnet must receive it.
+- Anycast: way of serving DNS servers
 
 **Key Concept**:
 - The main challenge in broadcast links is the **multiple access problem**, where multiple nodes must coordinate to share the same broadcast channel without interference.
@@ -1649,26 +1657,22 @@ __Introduction__
 - Compared to a cocktail party or a classroom where participants must follow social protocols to communicate effectively without talking over each other.
 
 __The Multiple Access Problem__
-**Definition**:
-- Multiple nodes can transmit simultaneously on the same channel, which can lead to collisions, rendering the communication unintelligible.
-
-**Importance**:
-- Effective management of this access is crucial in networks, especially LANs, to maximize efficient use of bandwidth and minimize collisions.
-
-**Historical Context**:
-- Decades of research and development have led to the creation of numerous protocols to manage this problem, evidenced by numerous scholarly articles and PhD dissertations.
-
-**Types of Multiple Access Protocols**:
-- Broadly categorized into:
-	1. **Channel Partitioning Protocols**
-	2. **Random Access Protocols**
-	3. **Taking Turns Protocols**
-
-**Desirable Characteristics of Protocols**:
-- 1. Full channel throughput when only one node is transmitting.
-- 2. Fair bandwidth distribution among multiple nodes.
-- 3. Decentralized control to avoid single points of failure.
-- 4. Simplicity and cost-effectiveness in implementation.
+- **Definition**:
+	- Multiple nodes can transmit simultaneously on the same channel, which can lead to collisions, rendering the communication unintelligible.
+- **Importance**:
+	- Effective management of this access is crucial in networks, especially LANs, to maximize efficient use of bandwidth and minimize collisions.
+- **Historical Context**:
+	- Decades of research and development have led to the creation of numerous protocols to manage this problem, evidenced by numerous scholarly articles and PhD dissertations.
+- **Types of Multiple Access Protocols**:
+	- Broadly categorized into:
+		1. **Channel Partitioning Protocols**
+		2. **Random Access Protocols**
+		3. **Taking Turns Protocols**
+- **Desirable Characteristics of Protocols**:
+	- 1. Full channel throughput when only one node is transmitting.
+	- 2. Fair bandwidth distribution among multiple nodes.
+	- 3. Decentralized control to avoid single points of failure.
+	- 4. Simplicity and cost-effectiveness in implementation.
 
 ### 6.3.1 Channel Partitioning Protocols
 
@@ -1706,6 +1710,10 @@ __Slotted ALOHA__
 	- Collisions are detected before the slot ends.
 - **Re-transmission Probability**: If a collision occurs, the node retransmits its frame in each subsequent slot with a probability p.
 - **Efficiency**: When there are multiple active nodes, efficiency concerns arise due to collisions and empty slots. The maximum theoretical efficiency is 0.37 or 37% effective transmission rate.
+	- prob given node has success in slot: $p(1-p)^{N-1}$
+	- prob any node has success in slot: $Np(1-p)^{N-1}$
+	- find p that maximizes $Np(1-p)^{N-1}$
+	- $(1-p)^{N-1}-(N-1)p(1-p)^{N-2}=(1-p-(N-1)p)(1-p)^{N-2}=0$
 
 __Pure ALOHA__
 - **Decentralization**: Fully decentralized; nodes transmit immediately upon receiving a frame.
@@ -1734,7 +1742,6 @@ __Comparative Analysis__
 	- Pure ALOHA has higher flexibility but lower efficiency due to the continuous possibility of collisions.
 - **CSMA/CD vs. ALOHA**:
 	- CSMA/CD is generally more efficient than ALOHA due to the use of collision detection and carrier sensing, reducing the number of collisions and thus improving throughput.
-
 
 ### 6.3.3 Taking-Turns Protocols
 
@@ -1814,6 +1821,8 @@ __Address Resolution Protocol (ARP)__
 - **Layer ambiguity**: ARP operates between the link and network layers, containing both MAC and IP addresses.
 
 __Sending a Datagram off the Subnet__
+- ![[Pasted image 20240509133712.png|500]]
+	- MAC address changes every subnet
 - **Process**:
 	- **Internal Operation**: Host determines the MAC address of the router interface (first-hop router) using ARP for off-subnet communication.
 	- **Routing**: The router uses its forwarding table to forward the datagram to the appropriate subnet.
@@ -1827,9 +1836,9 @@ __ARP in Ethernet__
 ### 6.4.2 Ethernet
 
 **Historical Dominance**:
-  - **Early Adoption**: Ethernet, first deployed in the mid-1970s, was the first widely adopted high-speed LAN technology.
-  - **Competitive Edge**: It maintained dominance over other LAN technologies like token ring and FDDI by being simpler and cheaper.
-  - **Adaptation and Growth**: Continuously evolved to match or exceed the data rates of competing technologies.
+- **Early Adoption**: Ethernet, first deployed in the mid-1970s, was the first widely adopted high-speed LAN technology.
+- **Competitive Edge**: It maintained dominance over other LAN technologies like token ring and FDDI by being simpler and cheaper.
+- **Adaptation and Growth**: Continuously evolved to match or exceed the data rates of competing technologies.
 
 __Ethernet Evolution__
 - **Initial Design and Topology**:
@@ -1840,16 +1849,17 @@ __Ethernet Evolution__
 	- **1990s Shift**: Transition from bus topology to hub-based star topology using twisted-pair copper wire.
 	- **2000s Development**: Replacement of hubs with switches, enhancing efficiency by eliminating collisions and enabling full-duplex communication.
 
-__Ethernet Frame Structure:__ **Components of an Ethernet Frame**:
-  - **Data Field**: Ranges from 46 to 1,500 bytes, carrying network-layer data like IP datagrams.
-  - **Addresses**: Includes 6-byte destination and source MAC addresses.
-  - **Type Field**: Identifies the network layer protocol being used.
-  - **Error Checking**: Uses a Cyclic Redundancy Check (CRC) to detect bit errors.
-  - **Preamble**: An 8-byte field used to synchronize the receiver's timing with the sender's.
+__Ethernet Frame Structure:__ **Components of an Ethernet Frame**
+- ![[Pasted image 20240509134111.png|400]]
+- **Data Field**: Ranges from 46 to 1,500 bytes, carrying network-layer data like IP datagrams.
+- **Addresses**: Includes 6-byte destination and source MAC addresses.
+- **Type Field**: Identifies the network layer protocol being used.
+- **Error Checking**: Uses a Cyclic Redundancy Check (CRC) to detect bit errors.
+- **Preamble**: An 8-byte field used to synchronize the receiver's timing with the sender's.
 
 __Ethernet Functionality__: **Service Characteristics**:
-  - **Connectionless and Unreliable**: Does not require handshaking between sending and receiving nodes; does not perform retransmissions at the Ethernet layer.
-  - **Layer Compatibility**: Operates up through layer 2, using simple link-layer mechanisms to support network-layer protocols.
+- **Connectionless and Unreliable**: Does not require handshaking between sending and receiving nodes; does not perform retransmissions at the Ethernet layer.
+- **Layer Compatibility**: Operates up through layer 2, using simple link-layer mechanisms to support network-layer protocols.
 
 __Ethernet Technologies__
 - **Speed and Media Types**:
@@ -1859,3 +1869,86 @@ __Ethernet Technologies__
 - **Modern Ethernet Usage**:
 	- **Switch-Based Topologies**: Dominant use of switches in modern networks, which facilitate full-duplex and collision-less operations.
 	- **Frame Consistency**: Despite significant changes in technology and topology, Ethernet’s frame format has remained consistent, illustrating its enduring legacy in network design.
+
+### 6.4.3 Link-Layer Switches
+
+__Role and Functionality of Link-Layer Switches__
+**Function**: Switches at the link layer are responsible for receiving link-layer frames and forwarding them to the appropriate outgoing links. They operate transparently to hosts and routers, which continue to address frames directly to each other, oblivious to the switch's role in frame handling.
+
+**Buffer Management**: To manage instances where incoming frame rates exceed an interface's capacity, switches are equipped with buffers similar to those in router interfaces, which temporarily store frames until they can be processed.
+
+__Detailed Switch Operations: Forwarding and Filtering__
+- **Switch Table Utilization**: 
+	- Switch itself does not have a MAC address & IP address(Router does)
+	- Switches use a dedicated table to manage frame forwarding and filtering.
+	- **Table Contents**: Each entry includes a MAC address, the corresponding switch interface, and the timestamp marking the entry’s creation.
+- **Operational Details**:
+	- **Filtering**: Determines if incoming frames should be dropped or forwarded. If a frame's destination MAC address matches an interface from which the frame originated, the switch filters out the frame.
+	- **Forwarding**: If the table points to a different interface than the incoming one for a given MAC address, the frame is forwarded to that interface. Frames with no specific table entry are broadcast to all interfaces except the source.
+
+__Self-Learning Capabilities of Switches__
+- **Automatic Table Configuration**: Switches autonomously populate their switch table based on incoming frames, which prevents the need for manual configuration:
+	1. **Initial State**: The switch table starts empty.
+	2. **Learning Process**: Each incoming frame leads to a new entry or updates an existing entry in the switch table with the frame's source MAC address, the receiving interface, and the time of reception.
+		1. If there is a match with the output send it using the table
+		2. If there is no match, flood(send it to all connected hosts)
+	3. **Aging and Cleanup**: Entries in the switch table that do not see corresponding incoming frames within a specified aging time are automatically purged.
+- **Example of Self-Learning**:
+	- Suppose a frame from MAC address 01-12-23-34-45-56 arrives on interface 2 at 9:39. If this address is not already in the switch table, the switch adds it with the current timestamp.
+
+__Benefits and Features of Link-Layer Switches__
+- **Advantages**:
+	- **Collision Avoidance**: By managing frame transmissions and buffering, switches eliminate collisions and maximize available bandwidth.
+	- **Support for Diverse Link Types**: Switches can handle different speeds and types of media, enabling a mix of legacy and modern equipment within the same network.
+	- **Enhanced Network Management**: Switches can autonomously manage issues such as faulty adapters and cable problems without manual intervention, significantly reducing network downtime and maintenance.
+
+__Comparative Analysis: Switches vs. Routers__
+- **Functional Differences**:
+	- **Layer Operation**: Switches operate at Layer 2 using MAC addresses for decisions, whereas routers operate at Layer 3 and use IP addresses.
+	- **Data Handling**: Switches perform store-and-forward packet switching up to Layer 2, whereas routers process up through Layer 3, adding more overhead.
+- **Network Design Considerations**:
+	- For smaller, simpler networks, switches are preferred due to their plug-and-play nature and local traffic management capabilities.
+	- In larger or more complex networks, routers are employed alongside switches to provide enhanced traffic isolation, intelligent routing, and security against network-wide disruptions like broadcast storms.
+- **Strategic Deployment**:
+	- Smaller networks benefit from the high throughput and simplicity of switches.
+	- Larger networks often require the robust traffic segmentation and advanced routing capabilities provided by routers, despite the need for more complex configuration and management. 
+
+### 6.4.4 Virtual Local Area Networks (VLANs)
+
+__Context and Network Challenges__
+- **Hierarchical LAN Configuration**: Institutional LANs structured with departmental switched LANs linked via a switch hierarchy.
+- **Identified Drawbacks**:
+	1. **Lack of Traffic Isolation**: Broadcast traffic traverses entire network, impacting performance and potentially compromising security.
+	2. **Inefficient Switch Use**: Requires multiple switches even for small groups, leading to underutilized resources.
+	3. **Complex User Management**: Moving employees between groups necessitates physical cabling changes.
+
+__VLAN Introduction and Benefits__
+- **Definition**: Virtual networks configured over a single physical LAN infrastructure, isolating group communications.
+- **Port-Based VLANs**: Switch ports are grouped, each group forming a separate broadcast domain.
+	- **Example**: Ports 2-8 for EE VLAN; Ports 9-15 for CS VLAN (Figure 6.25).
+	- **Advantages**:
+		- Solves isolation issues by confining broadcast traffic within VLAN groups.
+		- Reduces the need for multiple physical switches.
+		- Simplifies management; reconfiguring a port's VLAN assignment is software-driven.
+
+__VLAN Isolation and Inter-VLAN Communication__
+- **Complete Isolation Issue**: VLANs initially prevent any inter-department communication.
+- **Interconnection via Router**: A switch port (e.g., port 1 in Figure 6.25) can connect to a router to facilitate communication between VLANs.
+- **Integrated Switch-Routers**: Modern solutions often include combined VLAN switch and router hardware for streamlined management.
+
+__VLAN Extension and Management__
+- **Extended VLANs**: Connecting remote users to their respective department VLANs.
+- **Scalable Interconnection - VLAN Trunking**:
+	- **Concept**: Use trunk ports to interconnect VLAN switches, carrying frames for all VLANs across a single port.
+	- **IEEE 802.1Q Standard**: Frames tagged with VLAN identifiers to maintain separation across trunk links.
+	    - **VLAN Tag Components**:
+			- **TPID**: Tag Protocol Identifier, fixed hexadecimal (81-00).
+			- **TCI**: Tag Control Information, includes a 12-bit VLAN ID and a 3-bit priority field.
+- **Diverse VLAN Definitions**:
+	- **MAC-Based VLANs**: Assign VLANs based on device MAC addresses.
+	- **Protocol-Based VLANs**: Define VLANs through network layer protocols like IPv4 or IPv6.
+	- **Global VLANs**: Potential for VLANs to span globally, connecting disparate LANs into a single VLAN network.
+
+__Standards and Future Directions__
+- **802.1Q Standard**: Provides detailed protocols for VLAN tagging and management.
+- **Evolutionary Potential**: Continuous improvement in VLAN technology, aiming to simplify network management and enhance security and performance across institutional LANs.

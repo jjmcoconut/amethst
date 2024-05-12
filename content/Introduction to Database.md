@@ -3011,3 +3011,252 @@ __Fourth Normal Form__
 	- α is a superkey for the schema R ⇐ The definition of 4NF differs from that of BCNF only in the use of multivalued dependencies
 - If a relation is in 4NF, it is in BCNF
 	- Proof: Note that if a schema R is not in BCNF, there is a non-trivial functional dependency α⟶β holding on R, where α is not a superkey. Since α⟶β implies α↠β by the replication rule, R cannot be in 4NF.
+
+# 8. Complex Data Types
+
+## Semi-Structured Data
+
+__Semi-Structured Data__
+- Many applications require storage of complex data, whose schema changes often
+- The relational model’s requirement of atomic data types may be an overkill
+	- e.g., storing set of interests as a set-valued attribute of a user profile may be simpler than normalizing it
+- Data exchange can benefit greatly from semi-structured data
+	- Exchange can be between applications, or between back-end and front-end of an application
+	- Web-services are widely used today, with complex data fetched to the front-end and displayed using a mobile app or JavaScript
+- JSON and XML are widely used semi-structured data models
+
+__Features of Semi-Structured Data Models__
+- Flexible schema
+	- Wide column representation: each tuple is allowed to have a different set of attributes, and new attributes can be added at any time
+	- Sparse column representation: schema has a fixed but large set of attributes, where each tuple may store only a subset of attributes
+- Multivalued data types
+	- Sets, multisets
+		- e.g., set of interests {‘basketball’, ‘La Liga’, ‘cooking’, ‘anime’, ‘jazz’} - Key-value map (or just map for short)
+		- A set of key-value pairs
+		- e.g., {(brand, Apple), (ID, MacBook Air), (size, 13), (color, silver)}
+		- Operations on maps: put(key, value), get(key), delete(key)
+- Arrays
+	- Widely used for scientific and monitoring applications
+	- e.g., readings taken at regular intervals can be represented as array of values instead of (time,value) pairs
+		- [5, 8, 9, 11] instead of {(1, 5), (2, 8), (3, 9), (4, 11)}
+- Array database: a database that provides specialized support for arrays
+	- e.g., compressed storage, query language extensions, etc.
+	- Oracle GeoRaster, PostGIS, SciDB, etc.
+
+__Nested Data Types__
+- Hierarchical data is common in many applications
+- JSON: JavaScript Object Notation
+	- Being widely used today
+- XML: Extensible Markup Language
+	- Earlier generation notation, still used extensively
+
+__JSON__
+- Textual representation widely used for data exchange
+	- Example of JSON data 
+```
+{
+"ID": "22222", "name": {
+"firstname": "Albert",
+"lastname": "Einstein" },
+"deptname": "Physics", "children": [
+{"firstname": "Hans", "lastname": "Einstein" },
+{"firstname": "Eduard", "lastname": "Einstein" } ]
+}
+```
+	- Objects are key-value maps, i.e., sets of (attribute name, value) pairs
+	- Arrays are also key-value maps (from an offset to a value)
+- JSON is ubiquitous in data exchange today 
+	- Especially being widely used for Web services
+		- Most modern applications are architected around on Web services
+- SQL extensions are available for
+	- JSON types for storing JSON data
+	- Extracting data from JSON objects using path expressions
+		- e.g., v->ID, or v.ID
+	- Generating JSON from relational data
+		- e.g., json.build_object(‘ID’, 12345, ‘name’, ‘Einstein’) - Creating JSON collections using aggregation
+		- e.g., json_agg aggregate function in PostgreSQL # returns a JSON array
+	- Syntax varies greatly across databases (see https://www.sqlite.org/json1.html for SQLite3)
+- JSON is verbose
+	- Compressed representations such as BSON (Binary JSON) used for efficient data storage
+	
+__XML__
+- XML uses tags to markup the text 
+- Tags make the data self-documenting
+- Tags can be hierarchical
+- XQuery language developed to query nested XML structures - Not widely used currently
+- SQL extensions to support XML
+	- Storing XML data
+	- Generating XML data from relational data
+	- Extracting data from XML data types
+		- Path expressions
+
+Knowledge Representation
+- RDF: Resource Description Format
+	- Simplified representation for facts, represented as triples (subject, predicate, object)
+		- e.g., (NBA-2019, winner, Raptors)
+		(Washington-DC, capital-of, USA)
+		(Washington-DC, population, 6,200,000)
+	- Modeling objects having attributes and relationships with other objects
+		- Like the ER model, but with a flexible schema
+		- (ID, attribute-name, value)
+		- (ID1, relationship-name, ID2)
+	- Having a natural graph representation
+- RDF triples represent binary relationships
+- How to represent n-ary relationships?
+	- Approach 1 (from Section 6.9.4): creating an artificial entity and linking to each of the n entities
+		- e.g., (Barack Obama, president-of, USA, 2008-2016) can be represented as 
+		(e1, person, Barack Obama), (e1, country, USA),
+		(e1, president-from, 2008) (e1, president-till, 2016)
+	- Approach 2: using quads instead of triples, with context entities 
+		- e.g., (Barack Obama, president-of, USA, c1)
+		(c1, president-from, 2008) (c1, president-till, 2016)
+- RDF is widely used as knowledge base representation
+	- DBPedia, Yago, Freebase, WikiData, ...
+- Linked Open Data project aims to connect different knowledge graphs to allow queries to span databases
+
+## Object Orientation
+
+Object Orientation
+- Object-relational data model provides a richer type system, with complex data types and object orientation
+- Applications are often written in object-oriented programming languages
+	- The type system does not match the relational type system
+	- Switching between an imperative language and SQL is troublesome
+- Object-orientation can be incorporated into relational databases
+	- Build an object-relational database, adding object-oriented features to a relational database
+	- Automatically convert data between the programming language model and the relational model; data conversion specified by object-relational mapping
+	- Build an object-oriented database that natively supports object-oriented data and direct access from the programming language
+
+Object-Relational Database Systems
+- User-defined types
+- create type Person
+(ID varchar(20) primary key,
+name varchar(20),
+address varchar(20)) ref from(ID); /* More on this later */ create table people of Person;
+- Table types
+- create type interest as table ( topic varchar(20),
+degree_of_interest int); create table users (
+ID varchar(20), name varchar(20), interests interest);
+- Array, multiset data types also supported by many databases - Syntax varies by database
+
+Type and Table Inheritance
+- Type inheritance
+- create type Student under Person (degree varchar(20));
+create type Teacher under Person (salary integer);
+- Table inheritance syntax in PostgreSQL and Oracle
+- create table students (degree varchar(20))
+inherits people; create table teachers
+(salary integer)
+inherits people;
+- create table people of Person;
+create table students of Student under people;
+create table teachers of Teacher under people;
+
+Reference Types
+- Creating reference types
+- create type Person
+(ID varchar(20) primary key,
+name varchar(20), address varchar(20)) ref from(ID);
+create table people of Person; create type Department (
+dept_name varchar(20),
+head ref(Person) scope people); create table departments of Department;
+- System generated references can be retrieved using subqueries
+- (select ref(p) from people as p where ID = '12345')
+- Using references in path expressions
+- select head->name, head->address from departments;
+
+Object-Relational Mapping
+- Object-relational mapping (ORM) systems allow
+	- Specification of mapping between programming language objects and database tuples
+	- Automatic creation of database tuples upon creation of objects
+	- Automatic update/delete of database tuples when objects are update/deleted
+	- Interface to retrieve objects satisfying specified conditions
+		- Tuples in database are queried, and object are created from the tuples
+- Details in Section 9.6.2
+	- Hibernate ORM for Java
+	- Django ORM for Python
+
+Django’s ORM
+- Allowing developers to interact with the database using Python code rather than writing SQL statements
+	- Model definition
+- e.g.,
+from django.db import models class Book(models.Model):
+title = models.CharField(max_length=200)
+author = models.ForeignKey('Author', on_delete=models.CASCADE) published_date = models.DateField()
+price = models.DecimalField(max_digits=6, decimal_places=2)
+- Querying the database 
+- e.g.,
+from myapp.models import Book
+books = Book.objects.all()
+books = Book.objects.filter(price__lt=10) # all books that cost less than $10
+## Textual Data
+
+Textual Data
+- Information retrieval: querying of unstructured data
+	- Simple models of keyword queries, given query keywords, retrieve documents containing all
+	the keywords
+	- More advanced models rank the documents according to their relevance
+	- Today, keyword queries return many types of information as answers
+		- e.g., a query “Son Heung-min” returns information about early life, club career, ...
+- Relevance ranking
+	- Essential since there are usually many documents matching keywords
+
+Ranking using TF-IDF
+- Term: keyword occurring in a document/query
+- Term Frequency: TF(d, t), the relevance of a term t to a document d
+	- A definition: TF(d, t) = log(1 + n(d, t) ) n(d) where
+		- n(d, t) = number of occurrences of term t in document d
+		- n(d) = number of terms in document d
+- Inverse Document Frequency: IDF(t)
+	- A definition:$IDF(t) = \frac{1}{n(t)}$
+- Relevance of a document d to a set of terms Q
+	- A definition: r(d, Q) = ∑t∈Q TF(d, t) x IDF(t)
+	- Other definitions
+		- Proximity of words is taken into account
+		- Stop words are often ignored
+
+Ranking Using Hyperlinks
+- PageRank
+	- A measure of popularity/importance based on hyperlinks to pages, developed by Google
+		- Hyperlinks provide very useful clues to the importance of a web page
+- Rationale (see the next slide)
+	- Pages hyperlinked from many pages should have a higher PageRank
+	- Pages hyperlinked from the pages with a higher PageRank should have a higher PageRank
+		- Formalized by the random walk model 
+- Formulation
+	- Let T[i, j] be the probability that a random walker who is on page i will click on the link to page j
+		- Assuming all links are equal, , where Ni = number of links out of page i 
+	- Then, PageRank[j] for each page j can be defined as
+		- where N = total number of pages, and δ = a constant usually set to 0.15
+- The definition of PageRank is circular, but can be solved as a set of linear equations
+	- A simple iterative technique works well
+		- Initialize all
+		- In each iteration, apply to update P
+		- Stop iteration when changes are small, or a certain limit (e.g., 30 iterations) is reached
+- Other measures of relevance are also important
+	- Keywords in the anchor text
+	- Number of times users click on a link if it is returned as an answer
+
+Retrieval Effectiveness
+- Measures of effectiveness
+	- Precision: what percentage of returned results are actually relevant
+	- Recall: what percentage of relevant results are returned
+		- At some number of answers, e.g., precision@10, recall@10
+## Spatial Data
+
+Spatial Data
+- Spatial databases store information related to spatial locations, and support efficient storage, indexing, and querying of spatial data
+	- Geographic data: road maps, land-usage maps, topographic elevation maps, political maps showing boundaries, land-ownership maps, and so on
+		- Geographic information systems (GISs) are special-purpose databases tailored for storing geographic data
+		- A round-earth coordinate system may be used, e.g., (latitude, longitude, elevation)
+	- Geometric data: design information about how objects are constructed, e.g., designs of buildings, aircraft, layouts of integrated-circuits
+		- 2 or 3 dimensional Euclidean space with (X, Y, Z) coordinates
+
+Geometric Information
+- Various geometric constructs can be represented in a database in a normalized fashion (see the next slide)
+- A line segment can be represented by the coordinates of its endpoints
+- A polyline or linestring consists of a connected sequence of line segments and can be represented by a list containing the coordinates of the endpoints of the segments, in sequence
+	- In order to approximate a curve, it is divided into a series of segments
+		- Useful for two-dimensional features such as roads
+- A polygon is represented by a list of vertices in order
+	- The list of vertices specifies the boundary of a polygonal region
+	- A polygon can also be represented as a set of triangles (triangulation)
