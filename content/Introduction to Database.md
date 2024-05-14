@@ -3008,10 +3008,96 @@ __Theory MVDs__
 __Fourth Normal Form__
 - A relation schema R is in 4NF with respect to a set D of functional and multivalued dependencies if for all multivalued dependencies in D+ of the form α↠β, where α ⊆ R and β ⊆ R, at least one of the following hold:
 	- α↠β is trivial (i.e., β ⊆ α or α ∪ β = R)
-	- α is a superkey for the schema R ⇐ The definition of 4NF differs from that of BCNF only in the use of multivalued dependencies
+	- α is a superkey for the schema R
+		- The definition of 4NF differs from that of BCNF only in the use of multivalued dependencies
 - If a relation is in 4NF, it is in BCNF
 	- Proof: Note that if a schema R is not in BCNF, there is a non-trivial functional dependency α⟶β holding on R, where α is not a superkey. Since α⟶β implies α↠β by the replication rule, R cannot be in 4NF.
 
+__4NF Decomposition Algorithm__
+```
+result:={R}
+done:=false
+compute D+
+Let Di denote the restriction of D+ to Rj
+while(not done)
+	if(there is a schema Ri in result that is not in 4NF) then
+		begin
+			let a↠b be a nontrivial multivalued dpendency that holds on Ri such that a⟶Ri is not in Di and a∩b!=∅
+			result:= (result-Ri) ∪ (Ri-b) ∪ (a,b)
+		end
+	else done:=true
+```
+
+__Example__
+- R=(A,B,C,G,H,I)
+  F = { A↠B, B↠HI, CG↠H }
+- R is not in 4NF since A↠B and A is not a superkey for R
+- Decomposition
+	- a) R1 = (A, B) (R1 is in 4NF)
+	- b) R2 = (A, C, G, H, I) (R2 is not in 4NF, decompose into R3 and R4)
+	- c) R3 = (C, G, H) (R3 is in 4NF)
+	- d) R4 = (A, C, G, I) (R4 is not in 4NF, decompose into R5 and R6)
+		- A↠B and B↠HI ⇒ A↠HI (MVD transitivity) and
+		- and hence A↠I (MVD restriction to R4)
+	- e) R5 = (A, I) (R5 is in 4NF)
+	- f) R6 = (A, C, G) (R6 is in 4NF)
+
+## Other Issues
+
+__First Normal Form (1NF)__
+![[Pasted image 20240513012804.png|500]]
+- A domain is atomic if its elements are considered to be indivisible units 
+	- Examples of non-atomic domains:
+		- Set of names, composite attributes
+		- Identification numbers like CS101 that can be broken up into parts
+- A relational schema R is in the first normal form if the domains of all attributes of R are atomic
+- Non-atomic values complicate storage and introduce repeating groups
+- Atomicity is actually a property of how the elements of the domain are used
+	- Example: Strings would normally be considered indivisible
+	- Suppose that students are given roll numbers which are strings of the form CS0012 or EE1127
+		- If the first two characters are extracted to find the department, the domain of roll numbers is not atomic; not recommended because encoding of information exists in an application program rather than in the database
+- Typical relational databases satisfy the first normal form - Nested tables are not originally supported in relational databases
+
+__Second Normal Form (2NF)__
+![[Pasted image 20240513012836.png|500]]
+- A relation that is in the first normal form, and every non-primary-key attribute is fully functionally dependent on the primary key, then the relation is in the second normal form
+- Candidate key: { Manufacturer, Model } FD: Manufacturer ⟶ Manufacturer country
+
+__Overall Database Design Process__
+We have assumed a schema R is given:
+- R could have been generated when converting an E-R diagram to a set of tables
+- R could have been a single relation containing all attributes that are of interest (called a universal relation)
+	- Normalization breaks R into smaller relations
+- R could have been the result of some ad hoc design of relations, which we then test/convert to a normal form
+
+__ER Model and Normalization__
+- When an E-R diagram is carefully designed, identifying all entities correctly, the tables generated from the E-R diagram should not need further normalization
+- However, in a real (imperfect) design, there can be functional dependencies from non-key attributes of an entity to other attributes of the entity
+	- Example: an employee entity with
+		- Attributes department_name and building
+		- Functional dependency department_name⟶building
+	- Good design would have made department an entity
+- Functional dependencies from non-key attributes of a relationship set possible, but rare; most relationships are binary
+
+__Denormalization for Performance__
+- One may want to use non-normalized schema for performance
+- For example, displaying prerequisites along with course_id and title requires join of course with prereq
+- Alternative 1: Use a denormalized relation containing the attributes of course as well as prereq with all above attributes
+	- Faster lookup
+	- Extra space and extra execution time for updates
+	- Extra coding work for programmers and possibility of error in extra code
+- Alternative 2: Use a materialized view defined as course ⋈ prereq
+	- Same as above, except the third one
+
+__Other Design Issues__
+- Some aspects of database design are not caught by normalization
+- Examples of bad database design, to be avoided: Instead of earnings (company_id, year, amount), use
+	- earnings_2023, earnings_2024, earnings_2025, etc., all on the schema (company_id, earnings)
+		- In BCNF, but needs a new table for each year
+	- company_year (company_id, earnings_2023, earnings_2024, earnings_2025)
+		- Also in BCNF, but requires a new attribute for each year
+		- Mainly used in spreadsheets
+ 
 # 8. Complex Data Types
 
 ## Semi-Structured Data
@@ -3132,8 +3218,8 @@ __Knowledge Representation__
 - RDF: Resource Description Format
 	- Simplified representation for facts, represented as triples (subject, predicate, object)
 		- e.g., (NBA-2019, winner, Raptors)
-		(Washington-DC, capital-of, USA)
-		(Washington-DC, population, 6,200,000)
+		  (Washington-DC, capital-of, USA)
+		  (Washington-DC, population, 6,200,000)
 	- Modeling objects having attributes and relationships with other objects
 		- Like the ER model, but with a flexible schema
 		- (ID, attribute-name, value)
@@ -3143,11 +3229,11 @@ __Knowledge Representation__
 - How to represent n-ary relationships?
 	- Approach 1 (from Section 6.9.4): creating an artificial entity and linking to each of the n entities
 		- e.g., (Barack Obama, president-of, USA, 2008-2016) can be represented as 
-		(e1, person, Barack Obama), (e1, country, USA),
-		(e1, president-from, 2008) (e1, president-till, 2016)
+		  (e1, person, Barack Obama), (e1, country, USA),
+		  (e1, president-from, 2008) (e1, president-till, 2016)
 	- Approach 2: using quads instead of triples, with context entities 
 		- e.g., (Barack Obama, president-of, USA, c1)
-		(c1, president-from, 2008) (c1, president-till, 2016)
+		  (c1, president-from, 2008) (c1, president-till, 2016)
 - RDF is widely used as knowledge base representation
 	- DBPedia, Yago, Freebase, WikiData, ...
 - Linked Open Data project aims to connect different knowledge graphs to allow queries to span databases
@@ -3156,7 +3242,7 @@ __Querying RDF: SPARQL__
 -  Triple patterns
 	-  ?cid title "Intro. to Computer Science"
 	-  ?cid title "Intro. to Computer Science"
-	  ?sid course ?cid
+	   ?sid course ?cid
 -  SPARQL queries
 	- Select the names of the students who took the section of the course titled as "Intro. to Computer Science"
 	- Aggregation, optional joins (similar to outer joins), subqueries, etc.
@@ -3245,6 +3331,8 @@ create type Department (
 	head ref(Person) scope people); 
 create table departments of Department;
 ```
+- `ref(Person)`: physical pointer to a tuple of the person type
+	- join is not needed, we can directly get the name of head of department
 - System generated references can be retrieved using subqueries
 	- `(select ref(p) from people as p where ID = '12345')`
 - Using references in path expressions
@@ -3286,8 +3374,7 @@ books = Book.objects.filter(price__lt=10) # all books that cost less than $10
 
 __Textual Data__
 - Information retrieval: querying of unstructured data
-	- Simple models of keyword queries, given query keywords, retrieve documents containing all
-	the keywords
+	- Simple models of keyword queries, given query keywords, retrieve documents containing all the keywords
 	- More advanced models rank the documents according to their relevance
 	- Today, keyword queries return many types of information as answers
 		- e.g., a query “Son Heung-min” returns information about early life, club career, ...
@@ -3301,8 +3388,7 @@ __Ranking using TF-IDF__
 		- n(d,t) = number of occurrences of term t in document d
 		- n(d) = number of terms in document d
 - Inverse Document Frequency: IDF(t)
-	- A definition:$IDF(t) = \frac{1}{n(t)}$
-- Relevance of a document d to a set of terms Q
+	- A definition:$IDF(t) = \frac{1}{n(t)}$, where n(t) is the number of documents containing term t
 	- A definition: $r(d, Q) = ∑_{t∈Q} TF(d, t) \cdot IDF(t)$
 	- Other definitions
 		- Proximity of words is taken into account
@@ -3321,7 +3407,8 @@ __Ranking Using Hyperlinks__
 		- Assuming all links are equal $T[i,j] = 1/N_i$ where $N_i$ = number of links out of page i 
 	- Then, PageRank[j] for each page j can be defined as
 		- $P[j] = \frac{\delta}{N}+(1-\delta)\sum_{i=1}^N(T[i,j]\cdot P[i])$
-		  where N = total number of pages, and δ = a constant usually set to 0.15
+			- N = total number of pages
+			- δ = probability to directly access a page(typing in url) a constant usually set to 0.15
 - The definition of PageRank is circular, but can be solved as a set of linear equations
 	- A simple iterative technique works well
 		- Initialize all $P[j]=\frac{1}{N}$
@@ -3332,13 +3419,15 @@ __Ranking Using Hyperlinks__
 	- Number of times users click on a link if it is returned as an answer
 
 __Retrieval Effectiveness__
+![[Pasted image 20240513151857.png|500]]
 - Measures of effectiveness
 	- Precision: what percentage of returned results are actually relevant
 	- Recall: what percentage of relevant results are returned
 		- At some number of answers, e.g., precision@10, recall@10
+
 ## Spatial Data
 
-Spatial Data
+__Spatial Data__
 - Spatial databases store information related to spatial locations, and support efficient storage, indexing, and querying of spatial data
 	- Geographic data: road maps, land-usage maps, topographic elevation maps, political maps showing boundaries, land-ownership maps, and so on
 		- Geographic information systems (GISs) are special-purpose databases tailored for storing geographic data
@@ -3346,7 +3435,7 @@ Spatial Data
 	- Geometric data: design information about how objects are constructed, e.g., designs of buildings, aircraft, layouts of integrated-circuits
 		- 2 or 3 dimensional Euclidean space with (X, Y, Z) coordinates
 
-Geometric Information
+__Geometric Information__
 - Various geometric constructs can be represented in a database in a normalized fashion (see the next slide)
 - A line segment can be represented by the coordinates of its endpoints
 - A polyline or linestring consists of a connected sequence of line segments and can be represented by a list containing the coordinates of the endpoints of the segments, in sequence
@@ -3355,3 +3444,54 @@ Geometric Information
 - A polygon is represented by a list of vertices in order
 	- The list of vertices specifies the boundary of a polygonal region
 	- A polygon can also be represented as a set of triangles (triangulation)
+- Representation of points and line segments in 3-D is similar to 2-D, except that points have an extra z component
+- Polyhedra are represented by tetrahedrons, which is analogous to how triangulating polygons
+- Geometry and geography data types are supported by many databases, e.g., SQL Server and PostGIS
+	- point, linestring, curve, polygons
+		- LINESTRING(1 1, 2 3, 4 4)
+		- POLYGON((1 1, 2 3, 4 4, 1 1))
+	- Collections: multipoint, multilinestring, multicurve, multipolygon
+	- Type conversions: ST GeometryFromText() and ST GeographyFromText()
+	- Operations: ST Union(), ST Intersection(), ...
+
+__Representation of Geometric Constructs__
+![[Pasted image 20240513152044.png|400]]
+
+__Design Databases__
+- Design components are represented as objects (generally geometric objects); the connections between the objects indicate how the design is structured
+	- Simple two-dimensional objects: points, lines, triangles, rectangles, polygons
+	- Complex two-dimensional objects: construction from simple objects via union, intersection, and difference operations
+	- Complex three-dimensional objects: construction from simpler objects such as spheres, cylinders, and cuboids, by union, intersection, and difference operations
+- Wireframe models represent three-dimensional surfaces as a set of simpler objects
+	- e.g., see the right
+
+__Representation of Geometric Constructs__
+- Design databases also store non-spatial information about objects (e.g., construction material, color, etc.)
+- Spatial integrity constraints are important
+	- e.g., pipes should not intersect, wires should not be too close to each other, etc.
+	  ![[Pasted image 20240513153114.png|400]]
+		
+__Geographic Data__
+![[Pasted image 20240513153202.png|500]]
+- Raster data consist of bitmaps or pixel maps, in two or more dimensions
+	- An example 2-D raster image is a satellite image of cloud cover, where each pixel stores the cloud visibility in a particular area
+		- Additional dimensions might include the temperature at different altitudes at different regions, or measurements taken at different points in time
+		  ![[Pasted image 20240513153134.png|300]]
+- Design databases generally do not store raster data
+- Vector data are constructed from basic geometric objects: points, line segments, triangles, and other polygons in two dimensions, and cylinders, spheres, cuboids, and other polyhedrons in three dimensions 
+	- The vector format is often used to represent map data
+		- Roads can be considered as two-dimensional and represented by lines and curves
+		- Some features, such as rivers, may be represented either as complex curves or as complex polygons, depending on whether their width is relevant
+		- Features such as regions and lakes can be depicted as polygons
+
+
+__Spatial Queries__
+- Region queries deal with spatial regions, e.g., ask for objects that lie partially or fully inside a specified region
+	- e.g., PostGIS ST_Contains(), ST_Overlaps(), ...
+- Nearness queries request objects that lie near a specified location
+- Nearest neighbor queries, given a point or an object, find the nearest object that satisfies given conditions
+- Spatial graph queries request information based on spatial graphs
+	- e.g., shortest path between two points via a road network
+- Spatial join of two spatial relations with the location playing the role of join attribute
+- Queries that compute intersections or unions of regions
+ 

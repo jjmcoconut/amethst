@@ -475,13 +475,12 @@ __Directory Organization__
 	- (e.g., /classes/cs330/lecture01.pdf)
 
 __Directory Structure__
-![[Pasted image 20240422132140.png|400]]
+![[Pasted image 20240422132140.png|400]]![[Pasted image 20240422132335.png|100]]
 - Not really a hierarchy!
 	- Many systems allow directory structure to be organized as an acyclic graph or even a (potentially) cyclic graph
 	- Link: another name (pointer) to an existing file
 	- we have a cycle structure in the picture: book->avi->book
 
-![[Pasted image 20240422132335.png|100]]
 - How many disk accesses to resolve “/classes/cs330/lecture01.pdf” (1MB)?
 	- Where are the following informations stored?
 		- we need 256 blocks(1MB/4KB=256)
