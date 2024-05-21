@@ -1133,4 +1133,97 @@ __6 Step Process to Perform DMA Transfer__
 
 __Moblie Maestro: Challenges__
 - For high quality sound reproduction, Devices should be synchronized in terms of sound arrival time and level
-- 
+
+
+# Virtualization
+
+__Concept of Virtualization__
+- The common theme of all virtualization technologies is the hiding of technical detail, through encapsulation,
+	- by multiplexing access
+		- a single physical resource appears to function as multiple logical resources
+	- by combining multiple physical resources as a single logical resource
+	- by simplifying the control of resources (even in one-to-one
+- Abstraction
+	- by multiplexing access
+		- a single physical resource appears to function as multiple logical resources
+	- by combining multiple physical resources as a single logical resource
+- “(OS) Virtualization” refers to the creation of a virtual machine
+- A virtual machine is a software implementation of a machine (i.e., a computer) that executes programs like a physical machine
+
+__Terminology__
+- “Virtual machine” is a loaded term
+	- E.g. Java Virtual Machine refers to a runtime environment (software) that can execute Java bytecode
+- “VM” is a loaded abbreviation
+	- JVM (Java Virtual Machine), Virtual Memory
+- For our purposes, we will talk about Virtual Machine Monitors (VMM)
+	- VMM is software that allows multiple guest OSes to run concurrently on one physical machine
+		- Each guest runs on a virtual machine
+	- VMM is sometimes called a hypervisor
+
+__Virtual Hardware Examples__
+- VMM exports a simple disk interface
+	- Reads/writes are translated to a virtual filesystem on the real disk
+		- Just like Pintos on QEMU
+- Simple network interface
+	- VMM acts like a NAT, multiplexing packets to and from multiple guests
+
+__Virtualization Architecture__
+- Type 1 (native/bare-metal)
+	- Hypervisor runs directly on the host’s hardware to control the hardware and to monitor guest OSes. A guest OS runs on another level above the hardware
+- Type 2 (hosted)
+	- Hypervisor runs within a conventional operating system environment. (with in “Host OS”)
+
+__Goal of Virtualization__
+- Popek and Goldberg, 1974
+1. Fidelity (Transparency): software on the VMM executes identically to its execution on hardware
+	- Except for timing effects
+2. Performance: A majority of guest instructions are executed by the hardware without VMM intervention
+	- Counterexample: the JVM
+3. Safety: the VMM manages all hardware resources
+	- Guests cannot impact each other
+
+__Advantages of Virtualization__
+- Compatibility and functionality
+	- Guests are oblivious to low-level hardware changes
+	- Windows apps on Linux or vice-versa
+- Consolidation
+	- Multiple machines can be combined into one by running the OSes as guests
+- Isolation, security and reliability of applications
+	- A virtual machine for each (potentially untrusted) app
+	- If a virtual machine crashes, all others are unaffected.
+	- Data does not leak across virtual machines
+- Checkpointing and migration
+	- A guest OS can be written to disk or sent across the network, reloaded later or on a different machine
+- OS debugging
+	- Crash on developing OS do not (typically) affect Host OS
+	- Debug : Memory dumps, CPU Registers, Serial / Parallel Port dumps
+- Multiplatform debugging
+	- App writers often target multiple platforms
+		- E.g. Android, Windows, and Linux
+	- Would you rather debug on three separate machines, or one machine with two guests?
+
+Cloud Computing
+- Cloud computing
+	- The delivery of various computing services over the internet, allowing users to access and use computing resources without owning and maintaining physical hardware and infrastructure.
+		- These services include storage, processing power, databases, networking, software, and more.
+- Similar to the electricity grid
+- Cloud computing takes virtualization to the next step
+	- You don’t have to own hardware.
+	- You can “rent” it as needed from a cloud.
+	- Public cloud
+		- e.g. Amazon EC2.
+	- Also a company can create a private cloud.
+
+Types of virtualization
+- Full Virtualization
+	- No Guest OS modification
+	- Software approach
+		- Binary translation
+		- VMware
+	- Hardware-assisted Virtualization
+		- New privilege mode
+- Paravirtualization
+	- Guest OS modification
+	- Software approach
+		- Hypercalls
+		- Xen

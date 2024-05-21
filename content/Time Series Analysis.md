@@ -29,3 +29,7 @@
 
 ### [[Spectogram]]
 
+
+5. [[Detect Alzheimer's Disease]]
+
+6. [[AIDS Analysis]]

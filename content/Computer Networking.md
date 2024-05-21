@@ -2178,3 +2178,620 @@ Before diving into the topical chapters in the second part of this book, we take
 
 23. **Receiving HTTP Response**:
     - Bob’s laptop receives the HTTP response, extracts the HTML content, and displays the web page.
+
+# 7. Wireless and Mobile Networks
+
+## 7.2 Wireless Links and Network Characteristics
+
+**Differences from Wired Links**:
+- **Decreasing Signal Strength**:
+	- Electromagnetic radiation attenuates through matter (e.g., walls).
+	- Signal disperses in free space, decreasing strength (path loss) with distance.
+- **Interference from Other Sources**:
+	- Radio sources in the same frequency band interfere (e.g., 2.4 GHz phones and 802.11b LANs).
+	- Electromagnetic noise (e.g., motors, microwaves) also causes interference.
+	- Newer 802.11 standards use the 5GHz band to mitigate interference.
+- **Multipath Propagation**:
+	- Electromagnetic waves reflect off objects, taking different paths.
+	- Causes signal blurring at the receiver.
+	- Moving objects can change multipath propagation over time.
+
+**Impacts on Wireless Communication**:
+- **Bit Errors**:
+	- More common in wireless links.
+	- Wireless protocols (e.g., 802.11) use CRC error detection and reliable-data-transfer protocols for retransmitting corrupted frames.
+
+**Host Receiving Wireless Signal**:
+- **Signal-to-Noise Ratio (SNR)**:
+	- Measure of received signal strength relative to background noise.
+	- Measured in decibels (dB).
+	- Larger SNR makes it easier to extract the transmitted signal from noise.
+
+**Bit Error Rate (BER) vs. SNR**:
+- **Modulation Techniques**:
+	- Higher SNR results in lower BER for a given modulation scheme.
+	- Increasing transmission power can reduce BER but has diminishing returns and potential downsides (e.g., energy consumption, interference).
+
+- **BER and Transmission Rate**:
+	- Higher bit transmission rate increases BER for a given SNR.
+	- Example: BPSK at 1 Mbps has lower BER than QAM16 at 4 Mbps with the same SNR.
+	- Adaptive modulation can optimize transmission rate and BER based on channel conditions (used in 802.11 WiFi, 4G, 5G).
+
+**Challenges in Wireless Networks**:
+- **Hidden Terminal Problem**:
+	- Physical obstructions prevent nodes from hearing each other's transmissions, causing interference at the receiver.
+- **Signal Fading**:
+	- Signal strength fades with distance, leading to undetectable collisions at the receiver.
+- **Complexity in Multiple Access**:
+	- Hidden terminal problem and signal fading make wireless multiple access more complex than in wired networks.
+
+### 7.2.1 CDMA
+**Introduction to CDMA**:
+- CDMA (Code Division Multiple Access) is a channel partitioning protocol.
+- Used in wireless LAN and cellular technologies.
+- Encodes each bit by multiplying it by a fast-changing signal (the code).
+
+**CDMA Encoding and Decoding**:
+- **Encoding**: Each bit is multiplied by a sequence of values (the code) that changes faster than the data bits.
+- **Decoding**: The receiver recovers the original data by multiplying the received encoded bits by the same code.
+
+**Mathematical Representation**:
+- Each data bit, \(d_i\), is multiplied by the corresponding code bit \(c_m\) for each mini-slot \(m\):
+ $Z_{i,m} = d_i \times c_m$
+- The receiver computes the original data bit by summing the product of the received encoded bits \(Z_{i,m}\) and the code bits \(c_m\):
+  $d_i = \frac{1}{M} \sum_{m=1}^{M} Z_{i,m} \times c_m$
+
+**Interference Handling**:
+- **Additive Signal**: Interference from multiple senders is additive.
+- Example: If three senders send a 1 and a fourth sends a -1, the received signal is 2 (1 + 1 + 1 - 1 = 2).
+- **Receiver Decoding**: Even with multiple senders, the receiver can recover the data using the sender's unique code.
+
+**Example**:
+- Two senders using different CDMA codes:
+  - Sender 1: Code (1, 1, 1, -1, 1, -1, -1, -1)
+  - Sender 2: Code (1, -1, 1, 1, 1, -1, 1, 1)
+- The receiver can decode the data from sender 1 despite the interference from sender 2.
+
+**Analogy**:
+- CDMA is like partygoers speaking different languages; each person can filter out the conversations in languages they don't understand, similar to how a CDMA receiver isolates the signal using the specific code.
+
+**Practical Considerations**:
+- **Code Selection**: CDMA codes must be carefully chosen for effective communication.
+- **Signal Strength**: Assumes equal signal strengths from all senders, which can be challenging in practice.
+- **Further Reading**: For more detailed information, refer to sources like Pickholtz (1982) and Viterbi (1995).
+
+## 7.3 WiFi: 802.11 Wireless LANs
+
+**Pervasiveness**:
+  - Widely used in workplaces, homes, educational institutions, cafés, airports, and public places.
+  - Crucial access network technology in today's Internet.
+
+**Dominant Standard**:
+  - **IEEE 802.11 (WiFi)**: The leading standard for wireless LANs developed in the 1990s.
+
+__802.11 Standards Overview__
+- **Generations**:
+  - **802.11 b, g, n, ac, ax**: Successive generations for WLANs, typically under 70m range.
+  - **Branding**:
+    - **WiFi 4**: 802.11n
+    - **WiFi 5**: 802.11ac
+    - **WiFi 6**: 802.11ax
+  - **Special Standards**:
+    - **802.11 af, ah**: For Internet of Things, sensor networks, and metering applications.
+- **Common Characteristics**:
+  - **Frame Format**: Shared across all 802.11 standards.
+  - **Backward Compatibility**: Older devices (e.g., 802.11g) can interact with newer base stations (e.g., 802.11ac, 802.11ax).
+  - **Medium Access Protocol**:
+    - **CSMA/CA**: Used by all standards.
+    - **802.11ax**: Also supports centralized scheduling by the base station.
+
+__Physical Layer Differences__
+ - **Frequency Ranges**:
+  - **2.4–2.485 GHz (2.4 GHz range)**:
+    - Unlicensed frequency band.
+    - Competes with devices like 2.4 GHz phones and microwave ovens.
+  - **5.1–5.8 GHz (5 GHz range)**:
+    - Shorter transmission distance for a given power level.
+    - More affected by multipath propagation.
+- **Advanced Technologies**:
+	- **MIMO Antennas**:
+	    - Used in 802.11n, 802.11ac, and 802.11ax.
+	    - Multiple antennas on sending and receiving sides for different signals.
+  - **Smart Antennas**:
+    - In 802.11ac and 802.11ax base stations.
+    - Enable simultaneous transmission to multiple stations.
+    - Adaptive beamforming to target specific receivers, reducing interference and increasing range at a given data rate.
+- **Performance**:
+	- **Data Rates**: Ideal rates shown in Table 7.1 assume optimal conditions (e.g., close proximity to base station, no interference).
+	- **Real-World Variability**: Actual data rates may vary due to environmental factors.
+- **Note**: 
+	- YMMV (Your Mileage May Vary) highlights the variability in real-world wireless data rates compared to ideal scenarios.
+
+### 7.3.1 The 802.11 Wireless LAN Architecture
+
+**Principal Components**:
+- **Basic Service Set (BSS)**: Fundamental building block containing wireless stations and a central base station (Access Point, AP).
+- **Access Point (AP)**: Connects BSS to the Internet via interconnection devices (e.g., switch or router).
+- **MAC Addresses**: Each 802.11 wireless station and AP have a unique 6-byte MAC address administered by IEEE.
+
+**Infrastructure Wireless LANs**:
+- **Infrastructure**: Comprises APs and wired Ethernet infrastructure connecting APs and a router.
+- **Ad Hoc Networks**: Formed without central control, no external connections, created by devices in proximity needing communication.
+
+__Channels and Association__
+- **Association Process**:
+	- Wireless stations must associate with an AP to send/receive data.
+	- **SSID**: Assigned by the network administrator to identify the AP.
+	- **Channel Numbers**: APs operate in 2.4 GHz to 2.4835 GHz range with 11 partially overlapping channels. Channels 1, 6, and 11 are non-overlapping.\
+- **WiFi Jungle**:
+	- **Definition**: Location where a device receives signals from multiple APs.
+	- **Association**: Device must join one subnet by associating with one AP.
+	- **Beacon Frames**: APs send periodic frames with SSID and MAC address, scanned by devices for association.
+- **AP Selection**:
+	- Devices typically select the AP with the highest signal strength, though signal strength isn’t the only performance factor.
+	- **Alternative Selection Methods**: Various algorithms exist to choose APs based on factors beyond signal strength.
+
+__Scanning Methods__
+- **Passive Scanning**:
+	- Devices scan channels and listen for beacon frames.
+- **Active Scanning**:
+	- Devices broadcast a probe frame, APs respond with a probe response frame.
+	- Device sends an association request frame, AP responds with an association response frame.
+- **IP Address Assignment**:
+	- After association, device sends a DHCP discovery message to obtain an IP address from the subnet.
+
+__Authentication__
+- **Authentication Methods**:
+	- **MAC Address-Based**: Common in company networks.
+	- **Username and Password**: Common in public networks like cafés.
+	- **Authentication Servers**: APs communicate with servers using protocols like RADIUS or DIAMETER for authentication.
+- **Security**:
+	- **Centralized Authentication**: Reduces AP complexity and centralizes sensitive decisions.
+	- **IEEE 802.11i**: New protocol defining security aspects, follows centralized authentication approach.
+
+### 7.3.2 The 802.11 MAC Protocol
+
+__Association with AP__
+- **Process**: Wireless device associates with an Access Point (AP).
+- **Multiple Access Protocol**: Needed to coordinate transmissions from multiple devices/APs over the same channel.
+
+__CSMA/CA Protocol__
+- **Choice**: Random access protocol inspired by Ethernet.
+- **Definition**: Carrier Sense Multiple Access with Collision Avoidance (CSMA/CA).
+
+__Key Differences from Ethernet__
+- **Collision Avoidance**: Instead of collision detection.
+- **Link-layer Acknowledgment**: Due to high bit error rates in wireless channels.
+
+__Collision Detection Challenges__
+- **Hardware Limitation**: Difficult to detect collisions due to signal strength differences.
+- **Hidden Terminal Problem**: Not all collisions can be detected.
+
+__Collision Avoidance Techniques__
+- **Transmission Protocol**:
+	1. **Sense Channel Idle**: If idle, transmit after Distributed Inter-frame Space (DIFS).
+	2. **Backoff**: If busy, choose a random backoff value using binary exponential backoff.
+	3. **Transmit Frame**: When counter reaches zero and channel is idle.
+	4. **Acknowledgment**: Wait for acknowledgment; if received, proceed; otherwise, reenter backoff.
+
+__Hidden Terminals: RTS/CTS Scheme__
+- **Purpose**: To avoid collisions in the presence of hidden terminals.
+- **Process**:
+	1. **RTS Frame**: Sender requests to send data.
+	2. **CTS Frame**: AP grants permission and notifies other stations.
+- **Advantages**:
+	- Mitigates hidden station problem.
+	- Reduces collision duration.
+- **Usage**: Typically for long data frames due to introduced delay and resource consumption.
+
+__Point-to-Point Link__
+- **Directional Antennas**: Can use 802.11 protocol over a point-to-point link.
+- **Applications**: Inexpensive wireless point-to-point connections over long distances.
+
+__Detailed Process Breakdown__
+
+**1. Channel Sensing and Idle Detection**:
+- Station senses the channel.
+- If idle, waits DIFS then transmits.
+
+**2. Backoff Mechanism**:
+- If busy, station waits using binary exponential backoff.
+- Countdown starts when channel is idle.
+- Transmits when countdown reaches zero.
+
+**3. Frame Transmission**:
+- Transmit entire frame without collision detection.
+- Wait for acknowledgment from receiver.
+
+**4. Acknowledgment Handling**:
+- If acknowledgment received, proceed to next frame.
+- If not, retransmit using backoff.
+
+**5. RTS/CTS for Collision Avoidance**:
+- Sender sends RTS to AP.
+- AP responds with CTS.
+- Other stations defer transmission upon receiving CTS.
+
+**6. Point-to-Point 802.11 Links**:
+- Directional antennas create a point-to-point connection.
+- Enables long-distance, low-cost wireless connections.
+
+### 7.3.3 The IEEE 802.11 Frame
+
+**Overview**:
+- Similar to Ethernet frames, but with additional fields for wireless links.
+- Frame fields include payload, CRC, address fields, sequence number, duration, and frame control.
+
+**Payload and CRC Fields**:
+- **Payload**: Contains an IP datagram or ARP packet, typically fewer than 1,500 bytes, but can be up to 2,312 bytes.
+- **CRC**: 32-bit cyclic redundancy check to detect bit errors, more crucial in wireless LANs.
+
+**Address Fields**:
+- **Four address fields**: Each holds a 6-byte MAC address.
+	- **Address 2**: MAC address of the transmitting station (wireless station or AP).
+	- **Address 1**: MAC address of the receiving station (destination AP or wireless station).
+	- **Address 3**: MAC address of the router interface connecting subnets.
+	- **Address 4**: Used in ad hoc mode (not discussed here).
+
+**Internetworking Example**:
+1. **Router to Station H1**:
+	- Router R1 uses ARP to find H1's MAC address, encapsulates the datagram in an Ethernet frame.
+	- AP converts the Ethernet frame to an 802.11 frame, setting Address 1 (H1’s MAC), Address 2 (AP’s MAC), and Address 3 (R1’s MAC).
+1. **Station H1 to Router R1**:
+	- H1 creates an 802.11 frame, setting Address 1 (AP’s MAC), Address 2 (H1’s MAC), and Address 3 (R1’s MAC).
+	- AP converts the 802.11 frame back to an Ethernet frame for transmission to R1.
+
+**Sequence Number, Duration, and Frame Control Fields**:
+- **Sequence Number**: Distinguishes between new transmissions and retransmissions.
+- **Duration**: Indicates the time required to transmit the frame and its acknowledgment.
+- **Frame Control Field**:
+	- **Type and Subtype**: Identify the frame type (association, RTS, CTS, ACK, data).
+	- **To and From Fields**: Define the meanings of address fields, varying by mode and sender.
+	- **WEP Field**: Indicates whether encryption is used (discussed in Chapter 8).
+
+### 7.3.4 Mobility in the Same IP Subnet
+
+**Increasing Wireless LAN Range**:
+- Multiple BSSs are deployed within the same IP subnet to extend physical range.
+- Key issue: Seamless mobility among BSSs while maintaining ongoing TCP sessions.
+
+**Example of Mobility Between BSSs**:
+- **Scenario**: Host H1 moves from BSS1 to BSS2 (Fig. 7.15).
+- **Same Subnet**: Interconnection device is not a router; all stations and APs share the same IP subnet.
+	- **Result**: H1 keeps its IP address and TCP connections when moving between BSSs.
+- **Router Scenario**: If the interconnection device were a router, H1 would need a new IP address, disrupting TCP connections.
+
+**Movement Process**:
+- **Detecting Signal Weakening**: H1 detects weakening signal from AP1.
+- **Scanning for Stronger Signal**: H1 scans and finds stronger signal from AP2.
+- **Association Change**: 
+	- H1 disassociates from AP1.
+	- H1 associates with AP2.
+	- Maintains IP address and ongoing TCP sessions.
+
+**Switch Considerations**:
+- **Self-Learning Switches**:
+	- Switches build forwarding tables automatically (self-learning).
+	- Suitable for occasional moves but not highly mobile users with ongoing TCP sessions.
+- **Forwarding Table Issue**:
+	- Before the move: Switch pairs H1’s MAC address with AP1’s interface.
+	- After the move: Frames should be directed to AP2.
+- **Solution**:
+	- AP2 sends a broadcast Ethernet frame with H1’s source address to the switch.
+	- Switch updates its forwarding table to direct frames to AP2.
+	- 802.11f standards group developing inter-AP protocol for these issues.
+
+**VLANs and Mobility**:
+- **VLAN Connectivity**: VLANs can connect islands of LANs into a large virtual LAN spanning a wide region.
+- **Handling Mobility**: Mobility among base stations within a VLAN handled similarly to the process above.
+
+### 7.3.5 Advanced Features in 802.11
+
+__802.11 Rate Adaptation__
+- **Concept**:
+	- Different modulation techniques are appropriate for different Signal-to-Noise Ratio (SNR) scenarios.
+	- Modulation technique should adapt as SNR changes due to user mobility to maintain low Bit Error Rate (BER).
+- **Mechanism**:
+	- Adaptive selection of physical-layer modulation based on channel characteristics.
+	- **Fallback**: If two consecutive frames are not acknowledged (indicating bit errors), the transmission rate decreases.
+	- **Increase**: If 10 consecutive frames are acknowledged, or a timer expires, the transmission rate increases.
+	- **Philosophy**: Similar to TCP’s congestion-control mechanism—probing for higher rates when conditions are good, backing off when errors occur.
+	- **Comparison**: Like a child asking for more until told "Enough!" and then trying again later.
+- **Other Schemes**:
+	- Additional improvements proposed by Kamerman (1997), Holland (2001), Lacage (2004).
+
+__Power Management__
+- **Importance**:
+	- Critical for conserving power in mobile devices.
+- **Operation**:
+	- **Sleep/Wake States**: Nodes can alternate between sleep and wake states.
+	- **Sleep Notification**: Node sets the power-management bit in the frame header to 1 to notify the AP it’s going to sleep.
+	- **Beacon Frame Timing**: Node sets a timer to wake up just before the AP sends its beacon frame (typically every 100 msec).
+- **AP Role**:
+	- **Frame Buffering**: AP buffers frames for the sleeping node and avoids sending frames to it during sleep.
+	- **Beacon Frames**: Contain a list of nodes with buffered frames.
+- **Node Actions**:
+	- **Wake Up**: Just before the beacon, enter fully active state quickly (250 microseconds).
+	- **Check for Buffered Frames**: If no frames are buffered, node goes back to sleep. Otherwise, it requests buffered frames by sending a polling message.
+- **Efficiency**:
+	- With a wakeup time of 250 microseconds and minimal time to receive and check the beacon frame, nodes can be asleep 99% of the time if there are no frames to send or receive, leading to significant energy savings.
+
+### 7.3.6 Personal Area Networks: Bluetooth
+
+**Everyday Use**:
+  - Cable replacement technology for peripherals (keyboard, mouse, earbuds, speakers, watches, health bands).
+  - Connects smartphones to car audio systems.
+  - Operates over short ranges (tens of meters), at low power, and low cost.
+  - Known as Wireless Personal Area Networks (WPANs) or piconets.
+
+**Technical Details**:
+  - **Link-Level Techniques**: Includes TDM, frequency division, randomized backoff, polling, error detection/correction, and reliable data transfer via ACKs/NAKs.
+  - **Frequency Band**: Operates in the unlicensed 2.4 GHz ISM band with devices like microwaves, garage door openers, and cordless phones.
+  - **Noise and Interference**: Designed to handle noise/interference with Frequency-Hopping Spread Spectrum (FHSS).
+  - **Data Rates**: Can reach up to 3 Mbps.
+
+**Ad Hoc Network Structure**:
+  - No network infrastructure needed.
+  - Devices form a piconet with up to eight active devices.
+  - **Master Node**: Controls the piconet, including clock, frequency hopping, client entry, transmission power, and polling.
+  - **Client Devices**: Can be active or parked (up to 255 parked devices).
+  - **Parked Devices**: Sleep mode to conserve energy, wake periodically to receive beacon messages, must be activated by the master to communicate.
+
+**Network Formation (Bootstrap Process)**:
+  - **Neighbor Discovery**: Master broadcasts 32 inquiry messages on different frequencies, repeated up to 128 times.
+    - Clients listen for inquiry messages, back off randomly to avoid collisions, and respond with device ID.
+  - **Paging Process**: Master invites discovered clients to join the piconet.
+    - Master sends 32 identical paging invitations on different frequencies.
+    - Clients respond with ACK, receive frequency-hopping info, clock sync, and active member address.
+    - Master polls the client to ensure connection.
+
+**Higher-Level Protocols**:
+  - Provide reliable data transfer, circuit-like streaming for audio/video.
+  - Allow changes in transmission power levels and device states (active/parked).
+  - Address low energy and security considerations in newer versions.
+
+**References for Further Reading**:
+  - Bisdikian 2001, Colbach 2017, Bluetooth 2020.
+
+## 7.4 Cellular Networks: 4G and 5G
+
+__Ubiquity and Performance of 4G__
+- **Coverage**:
+	- 4G network access is pervasive.
+	- Over 90% coverage in the US with download speeds of 20 Mbps and higher.
+	- Korea’s major carriers provide 95-99.5% coverage.
+- **Applications**:
+	- Streaming HD videos, videoconferences while on the move.
+	- Enabled new IoT applications: Internet-connected bikes, scooters.
+	- Smartphone applications: Mobile payments, Internet messaging (WeChat, WhatsApp).
+
+__Cellular Network Structure__
+- **Cells**:
+	- Region covered by a cellular network is divided into cells.
+	- Each cell has a base station for signal transmission and reception.
+	- Coverage area depends on:
+		- Transmitting power of base station and devices.
+		- Obstructing buildings.
+		- Height and type of base station antennas.
+
+__Overview of 4G and 5G Networks__
+- **Wireless First Hop**:
+	- Connection between the mobile device and the base station.
+- **All-IP Core Network**:
+	- Connects the wireless first hop to the carrier’s network.
+	- Links to other carrier networks and the larger Internet.
+
+__Architectural Principles in 4G Networks__
+- **Protocol Layering**:
+	- Similar to Internet-focused architectures.
+- **Edge/Core Distinction**:
+	- Clear separation of data and control planes.
+	- Logically centralized control.
+- **Global Network Interconnection**:
+	- Multiple provider networks form a global "network of networks."
+- **Internet Protocols**:
+	- Many Internet protocols are used in the all-IP core of 4G networks.
+
+__Additional Resources__
+- **Mobility Management**: Covered in Section 7.6.
+- **4G Security**: Covered in Section 8.8.
+
+### 7.4.1 4G LTE Cellular Networks: Architecture and Elements
+
+__Mobile Device (User Equipment, UE)__
+- **Function**: Connects to the cellular carrier’s network.
+- **Applications**: Web browsers, map apps, voice/video apps, mobile payment apps.
+- **Network Endpoint**: Implements full 5-layer Internet protocol stack.
+- **Identification**: 
+	- IP address (via NAT).
+	- International Mobile Subscriber Identity (IMSI) stored on SIM card.
+	- IMSI is globally unique and analogous to a MAC address.
+- **Role**: Stores subscriber services and encryption key information.
+
+__Base Station (eNode-B)__
+- **Function**: Manages wireless radio resources and mobile devices within its coverage area.
+- **Roles**:
+	- Device authentication and resource allocation.
+	- Creates device-specific IP tunnels.
+	- Coordinates with nearby base stations to manage radio spectrum.
+- **Comparison**: Similar to APs in wireless LANs but with additional responsibilities.
+
+__Home Subscriber Server (HSS)__
+- **Role**: Control-plane element.
+- **Function**: Stores information about mobile devices in its home network.
+- **Usage**: Works with MME for device authentication.
+
+__Serving Gateway (S-GW) and Packet Data Network Gateway (P-GW)__
+- **Function**: Routers on the data path between mobile device and Internet.
+- **P-GW Specific Roles**:
+	- Provides NAT IP addresses.
+	- Performs NAT functions.
+	- Last LTE element before Internet.
+- **Network Role**: Hides mobility of mobile nodes from the outside world.
+
+__Mobility Management Entity (MME)__
+- **Role**: Control-plane element.
+- **Functions**:
+	- Device authentication with HSS.
+	- Sets up IP tunnels on data paths.
+	- Maintains active device’s cell location.
+- **Not In Data Path**: Does not forward datagrams.
+
+__Authentication Process__
+- **Importance**: Network and mobile device must authenticate each other.
+- **Process**: 
+	- MME acts as a middleman between mobile device and HSS.
+	- MME contacts HSS in the mobile’s home network after an attach request.
+	- HSS provides encrypted information for mutual authentication.
+
+__Path Setup__
+- **Data Path Components**:
+	- Wireless first hop (mobile device to base station).
+	- IP tunnels (base station to S-GW, S-GW to P-GW).
+- **Tunnels**: Controlled by MME to facilitate mobility; endpoint changes with device movement.
+
+__Cell Location Tracking__
+- **Movement**: Base stations update MME on device’s location.
+- **Sleep Mode**: MME locates device through paging when moving between cells.
+
+### 7.4.2 LTE Protocols Stacks
+
+**Overview**:
+- Focus on link and physical layers, and mobility management due to LTE's all-IP architecture.
+- Higher-layer protocols (IP, TCP, UDP) are already familiar from previous chapters.
+
+**User-Plane Protocol Stacks**:
+- **Figure 7.21**: Shows stacks at LTE mobile node, base station, and serving gateway.
+- **Control-Plane Protocols**: Discussed later in mobility management (Section 7.6) and security (Section 8.8).
+
+**Link Layer Sublayers**:
+1. **Packet Data Convergence Protocol (PDCP)**:
+	- Sits below IP.
+	- Performs IP header compression to reduce bits over the wireless link.
+	- Handles encryption/decryption using keys established via signaling messages between the LTE mobile device and the Mobility Management Entity (MME).
+2. **Radio Link Control (RLC) Protocol**:
+	- Fragmentation and reassembly of IP datagrams too large for link-layer frames.
+	- Provides link-layer reliable data transfer using an ACK/NAK-based ARQ protocol.
+3. **Medium Access Control (MAC)**:
+	- Performs transmission scheduling.
+	- Handles error detection/correction with redundant bit transmission as a forward error-correction technique.
+	- Adapts redundancy based on channel conditions.
+
+**Tunnels in User Data Path**:
+- Established under MME control when the device first attaches to the network.
+- Unique tunnel endpoint identifier (TEID) for each tunnel.
+- Base station encapsulates datagrams using the GPRS Tunneling Protocol (GTP), sends them in UDP segments to the Serving Gateway, and decapsulates them for the mobile device.
+
+### 7.4.3 LTE Radio Access Network
+
+**Orthogonal Frequency Division Multiplexing (OFDM)**:
+- Uses frequency division and time division multiplexing on the downstream channel.
+- Allocates 0.5 ms time slots in one or more channel frequencies to mobile devices.
+- **Figure 7.22**: Illustrates allocation of eight time slots over four frequencies.
+
+**Time Slot Allocation**:
+- Not mandated by LTE standard.
+- Determined by LTE equipment vendor or network operator using scheduling algorithms.
+- Opportunistic scheduling optimizes the use of the wireless medium based on channel conditions.
+- User priorities and service levels (silver, gold, platinum) influence scheduling.
+
+**LTE-Advanced**:
+- Allows for downstream bandwidths of hundreds of Mbps by allocating aggregated channels to a mobile device.
+
+### 7.4.4 Additional LTE Functions: Network Attachment and Power Management
+
+__Network Attachment__
+- **Process Phases**:
+	1. **Attachment to a Base Station**:
+		- Similar to 802.11 association but different in practice.
+		- Mobile device searches for a primary synchronization signal broadcast by a base station.
+		- Locates secondary synchronization signal for additional information like channel bandwidth and carrier information.
+		- Establishes control-plane signaling connection with the base station.
+	2. **Mutual Authentication**:
+		- Base station contacts local MME for mutual authentication.
+		- Ensures the device is associated with a given IMSI and the network is a legitimate carrier.
+		- MME configures the Mobile-device-to-PDN-gateway data path.
+	3. **Data Path Configuration**:
+		- MME establishes tunnels between the mobile device, Serving Gateway, and base station.
+		- Mobile device can send/receive IP datagrams via these tunnels to/from the Internet.
+
+__Power Management: Sleep Modes__
+- **Sleep States**:
+	1. **Discontinuous Reception State**:
+		- Entered after several hundred milliseconds of inactivity.
+		- Mobile device schedules periodic wake-up times to monitor the channel for transmissions.
+	2. **Idle State**:
+		- Entered after 5 to 10 seconds of inactivity.
+		- Mobile device wakes up less frequently.
+		- No need to inform previous base station if moving to a new cell.
+		- Mobile device re-establishes association with a base station to check for paging messages broadcast by the MME.
+
+### 7.4.5 The Global Cellular Network: A Network of Networks
+
+**Overview**:
+  - The global cellular network is a "network of networks" similar to the Internet.
+  - A user’s mobile device connects via a 4G base station to the home network, operated by carriers like Verizon, AT&T, T-Mobile, etc.
+  - The home network connects to other cellular networks and the global Internet through gateway routers.
+  - Mobile networks interconnect via the public Internet or an Internet Protocol Packet eXchange (IPX) Network.
+  - 4G networks can also peer with 3G and earlier networks.
+
+**Future Topics**:
+  - Mobility management in Section 7.6.
+  - 4G security in Section 8.8.2.
+  - Emerging 5G networks.
+
+### 7.4.6 5G Cellular Networks
+
+**Ultimate Wide-Area Data Service**:
+  - Goal: Gigabit connection speeds, low latency, unlimited users/devices.
+  - Applications: Augmented reality, virtual reality, autonomous vehicles, factory robots, fixed wireless Internet services.
+
+**5G Advancements**:
+  - Expected improvements: 10x increase in peak bitrate, 10x decrease in latency, 100x increase in traffic capacity over 4G.
+  - 5G NR (New Radio): Standard adopted by 3GPP.
+  - Other technologies: Verizon’s 5G TF network on 28 and 39 GHz for fixed wireless Internet.
+
+**Frequency Groups**:
+  - FR1: 450 MHz–6 GHz.
+  - FR2: 24 GHz–52 GHz (millimeter wave frequencies).
+
+**Drawbacks of Millimeter Wave**:
+  - Shorter range, requiring denser base station deployment.
+  - Susceptible to atmospheric interference (foliage, rain).
+
+**Three Co-existing Standards**:
+  - **eMBB (Enhanced Mobile Broadband)**:
+    - Increased bandwidth, higher speeds, moderate latency reduction.
+    - Supports rich media applications (AR, VR, 4K video).
+  - **URLLC (Ultra Reliable Low-Latency Communications)**:
+    - Targeted at latency-sensitive applications (factory automation, autonomous driving).
+    - Aims for latencies of 1ms.
+  - **mMTC (Massive Machine Type Communications)**:
+    - Narrowband for IoT applications (sensing, metering, monitoring).
+    - Focus on reducing power requirements and latency for IoT devices.
+
+**5G and Millimeter Wave Frequencies**:
+  - Potential for 100x increase in capacity over 4G.
+  - **Capacity Equation**: 
+    - Capacity = cell density * available spectrum * spectral efficiency.
+    - Increased cell density due to shorter range.
+    - Larger available spectrum in FR2 band.
+    - Improved spectral efficiency using MIMO technology (multiple antennas and beamforming).
+
+**Challenges**:
+  - Millimeter wave signals blocked by buildings and trees.
+  - Need for small cell stations in populous regions (10 to 100 meters apart).
+
+**5G Core Network**:
+  - Redesigned for better integration with Internet and cloud services.
+  - Includes distributed servers and caches to reduce latency.
+  - Utilizes network function virtualization and network slicing.
+
+**New 5G Core Network Functions**:
+  - **User-Plane Function (UPF)**: Distributes packet processing to the network edge.
+  - **Access and Mobility Management Function (AMF)**: Manages connection and mobility tasks.
+  - **Session Management Function (SMF)**: Handles session management, IP address management, and acts as DHCP.
+
+**Current Status**:
+  - Early stages of deployment with ongoing standardization.
+  - Future impact on broadband wireless service, indoor wireless service competition, factory automation, autonomous vehicles, and wide-area wireless service.
