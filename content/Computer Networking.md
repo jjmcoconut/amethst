@@ -1246,14 +1246,14 @@ __Practical Application of the Bellman-Ford Equation__
   
 __Mechanism of the DV Algorithm__
 - **Initial Setup**:
-  - Each node $x$ starts with $Dx(y)$, an estimate of the path cost from itself to all nodes $y$ in $N$.
+	- Each node $x$ starts with $Dx(y)$, an estimate of the path cost from itself to all nodes $y$ in $N$.
 - **Distance Vectors**:
-  - $Dx = [Dx(y): y \in N]$: Node $x$’s vector of cost estimates to all nodes $y$.
-  - $Dv = [Dv(y): y \in N]$ for each neighbor $v$: Neighbors’ cost estimates.
+	- $Dx = [Dx(y): y \in N]$: Node $x$’s vector of cost estimates to all nodes $y$.
+	- $Dv = [Dv(y): y \in N]$ for each neighbor $v$: Neighbors’ cost estimates.
 - **Asynchronous Updates**:
-  - Nodes periodically send their distance vectors to neighbors.
-  - Upon receiving a new distance vector from a neighbor $w$, node $x$ updates its distance vector using the Bellman-Ford equation: $Dx(y) = \min_{v}(c(x, v) + Dv(y))$.
-  - If $Dx(y)$ changes, $x$ broadcasts its updated vector to its neighbors, triggering potential updates.
+	- Nodes periodically send their distance vectors to neighbors.
+	- Upon receiving a new distance vector from a neighbor $w$, node $x$ updates its distance vector using the Bellman-Ford equation: $Dx(y) = \min_{v}(c(x, v) + Dv(y))$.
+	- If $Dx(y)$ changes, $x$ broadcasts its updated vector to its neighbors, triggering potential updates.
 
 __Convergence__
 - **Outcome**: As nodes exchange distance vectors asynchronously, each $Dx(y)$ converges to $dx(y)$, the actual cost of the least-cost path from node $x$ to node $y$, as proven by Bertsekas in 1991.
@@ -1285,15 +1285,15 @@ forever
 ```
 - **Function**: Each node x calculates the shortest-path distance to all destinations within a network graph consisting of nodes and edges with associated costs.
 - **Initialization**:
-  - **For each destination y in N**: Set initial distance Dx(y) = c(x,y). If y is not a neighbor, c(x,y) = ∞.
-  - **For each neighbor w**: Initialize distance vector Dw(y) for all destinations y in N as unknown.
+	- **For each destination y in N**: Set initial distance Dx(y) = c(x,y). If y is not a neighbor, c(x,y) = ∞.
+	- **For each neighbor w**: Initialize distance vector Dw(y) for all destinations y in N as unknown.
 
 __Operation Cycle__
 - **Distance Vector Exchange**: Each node x sends its distance vector Dx = [Dx(y): y in N] to each neighbor w.
 - **Update Cycle**:
-  - Wait for a change in link cost or a new distance vector from any neighbor.
-  - Update Dx(y) for each destination y by calculating the minimum cost through all possible paths via neighbors using Dx(y) = min{c(x,v) + Dv(y)}.
-  - If Dx(y) changes, send the updated distance vector to all neighbors.
+	- Wait for a change in link cost or a new distance vector from any neighbor.
+	- Update Dx(y) for each destination y by calculating the minimum cost through all possible paths via neighbors using Dx(y) = min{c(x,v) + Dv(y)}.
+	- If Dx(y) changes, send the updated distance vector to all neighbors.
 
 __Algorithm Details__
 - **Next-Hop Determination**: Node x identifies the next-hop router v*(y) for each destination y, which is the neighbor that provides the minimum path cost in the updated Dx.
@@ -1302,8 +1302,8 @@ __Algorithm Details__
 __Practical Implementation and Effects__
 - **Real-world Use**: Employed in various routing protocols including RIP and BGP.
 - **Behavior in Network Changes**:
-  - **Decrease in Link Cost**: Quick propagation through the network, updating routing tables efficiently.
-  - **Increase in Link Cost**: Potential slow updates and temporary routing loops, leading to the count-to-infinity problem.
+	- **Decrease in Link Cost**: Quick propagation through the network, updating routing tables efficiently.
+	- **Increase in Link Cost**: Potential slow updates and temporary routing loops, leading to the count-to-infinity problem.
 
 __Advanced Techniques: Poisoned Reverse__
 - **Purpose**: Mitigate routing loops by informing neighbors of infinite costs for certain routes.
@@ -1311,19 +1311,19 @@ __Advanced Techniques: Poisoned Reverse__
 
 __Comparison with Link-State (LS) Algorithm__
 - **Message Complexity**:
-  - DV: Exchanges information only with directly connected neighbors, less initial traffic but potential delays in convergence.
-  - LS: Requires global network knowledge, more initial messages but typically faster convergence.
+	- DV: Exchanges information only with directly connected neighbors, less initial traffic but potential delays in convergence.
+	- LS: Requires global network knowledge, more initial messages but typically faster convergence.
 - **Robustness**:
-  - DV: Susceptible to propagation of incorrect routing information across the network.
-  - LS: More contained impact of incorrect data due to localized computation.
+	- DV: Susceptible to propagation of incorrect routing information across the network.
+	- LS: More contained impact of incorrect data due to localized computation.
 
 ## 5.3 Intra-AS Routing in the Internet: OSPF
 
 __Overview of Intra-AS Routing Challenges__
 - __INTRA__: inside AS
 - **Scale and Administrative Autonomy**:
-  - **Scale**: The Internet's vast number of routers leads to prohibitive overhead for storing, computing, and communicating routing information. 
-  - **Administrative Autonomy**: ISPs desire to independently manage their network of routers while connecting to other networks.
+	- **Scale**: The Internet's vast number of routers leads to prohibitive overhead for storing, computing, and communicating routing information. 
+	- **Administrative Autonomy**: ISPs desire to independently manage their network of routers while connecting to other networks.
 
 __Autonomous Systems (AS)__
 - **Definition**: A group of routers under the same administrative control within an ISP.
@@ -1364,18 +1364,18 @@ __Overview of BGP (Border Gateway Protocol)__
 - **Routing Across ASs**: BGP is responsible for determining the routes packets follow from one AS to another, crucial for global internet connectivity.
 - **Prefix-based Routing**: Unlike routing within an AS, BGP routes packets to CIDRized prefixes representing subnets or groups of subnets (e.g., 138.16.68/22).
 - **Primary Tasks of BGP**:
-  1. **Prefix Reachability Information**: Allows subnets to advertise their presence across the internet, ensuring they are not isolated.
-  2. **Best Route Determination**: Determines the optimal route to a prefix based on information received from neighboring ASs and local routing policies.
+	1. **Prefix Reachability Information**: Allows subnets to advertise their presence across the internet, ensuring they are not isolated.
+	2. **Best Route Determination**: Determines the optimal route to a prefix based on information received from neighboring ASs and local routing policies.
 
 ### 5.4.2 Advertising BGP Route Information
 - **BGP Message Exchange**:
-  - **External BGP (eBGP)**: Manages the exchange of routing information between ASs.
-  - **Internal BGP (iBGP)**: Manages the distribution of routing information within an AS.
+	- **External BGP (eBGP)**: Manages the exchange of routing information between ASs.
+	- **Internal BGP (iBGP)**: Manages the distribution of routing information within an AS.
 - **Routing Information Propagation**:
-  - **Example**: A subnet with prefix x in AS3 advertises its reachability to AS2 and AS1 sequentially, informing them of a path through AS3 and AS2.
+	- **Example**: A subnet with prefix x in AS3 advertises its reachability to AS2 and AS1 sequentially, informing them of a path through AS3 and AS2.
 - **Connection Types**:
-  - **eBGP Connections**: Between gateway routers in different ASs.
-  - **iBGP Connections**: Between all routers within an AS, typically forming a mesh of TCP connections.
+	- **eBGP Connections**: Between gateway routers in different ASs.
+	- **iBGP Connections**: Between all routers within an AS, typically forming a mesh of TCP connections.
   
 __BGP Session and Connection Overview__
 - **BGP Sessions**: Conducted over semi-permanent TCP connections, crucial for the stability and reliability of internet routing.
@@ -1390,8 +1390,8 @@ __BGP Routing: Determining Optimal Paths__
 __BGP Terminology and Attributes__
 - **Route Definition**: In BGP, a route is defined as a prefix along with several BGP attributes.
 - **Key Attributes**:
-  - **AS-PATH**: Lists Autonomous Systems (AS) a route advertisement has passed through, used for loop prevention.
-  - **NEXT-HOP**: IP address of the router interface starting the AS-PATH, crucial for linking inter-AS and intra-AS routing protocols.
+	- **AS-PATH**: Lists Autonomous Systems (AS) a route advertisement has passed through, used for loop prevention.
+	- **NEXT-HOP**: IP address of the router interface starting the AS-PATH, crucial for linking inter-AS and intra-AS routing protocols.
 
 __Hot Potato Routing__
 - **Principle**: Choose the route that minimizes the cost to the NEXT-HOP router.
@@ -1402,36 +1402,35 @@ __Hot Potato Routing__
 __BGP Route-Selection Algorithm__
 - **Overview**: More complex than hot potato routing, incorporates several selection criteria.
 - **Selection Process**:
-  1. **Local Preference**: Routes with higher local preference values are prioritized, reflecting policy decisions within the AS.
-  2. **Shortest AS-PATH**: Among equally preferred routes, the route with the fewest AS hops is selected.
-  3. **Hot Potato**: If routes still tie, the one with the closest NEXT-HOP is chosen.
-  4. **BGP Identifiers**: Used as a last resort to break ties among routes.
-
+	1. **Local Preference**: Routes with higher local preference values are prioritized, reflecting policy decisions within the AS.
+	2. **Shortest AS-PATH**: Among equally preferred routes, the route with the fewest AS hops is selected.
+	3. **Hot Potato**: If routes still tie, the one with the closest NEXT-HOP is chosen.
+	4. **BGP Identifiers**: Used as a last resort to break ties among routes.
 - **Algorithm Behavior**: Transitions from purely self-interested routing (hot potato) to considering route efficiency and policy via AS-PATH length and local preferences.
 - **Impact and Statistics**: BGP is the standard for inter-AS routing with vast routing tables in major ISPs, illustrating the global scale and complexity of Internet routing dynamics.
 
 ### 5.4.4 IP-Anycast
 - **Context**: Utilized within DNS systems, IP-anycast allows users to access the nearest server hosting replicated content.
 - **Implementation via BGP**:
-  - **Setup**: CDNs assign the same IP address to multiple servers globally and advertise this via BGP.
-  - **Operation**: BGP routers select the closest server based on the shortest AS-hop count, guiding user requests to the nearest server.
+	- **Setup**: CDNs assign the same IP address to multiple servers globally and advertise this via BGP.
+	- **Operation**: BGP routers select the closest server based on the shortest AS-hop count, guiding user requests to the nearest server.
 - **Use in DNS**: Extensively used to direct queries to the closest DNS root server among potentially hundreds worldwide.
 - **Limitations**: Not typically used by CDNs for content delivery due to potential issues with TCP connections receiving packets from different server instances.
 
 ### 5.4.5 Routing Policy
 - **Influence of AS Routing Policy**: Can override other routing considerations like shortest AS path or "hot potato" routing.
 - **Example Scenario**:
-  - **Network Setup**: Interconnected ASs, some acting as backbone providers and others as access ISPs.
-  - **Routing Control**: Access ISPs like X advertise routes only for traffic originating or terminating within their network to prevent transit traffic, following a selective route advertisement policy.
+	- **Network Setup**: Interconnected ASs, some acting as backbone providers and others as access ISPs.
+	- **Routing Control**: Access ISPs like X advertise routes only for traffic originating or terminating within their network to prevent transit traffic, following a selective route advertisement policy.
 - **Commercial Relationships and Routing**:
-  - **Backbone Networks**: Prefer not to carry transit traffic for other networks to avoid additional costs.
-  - **Peering Agreements**: Govern how ISPs manage routing among themselves, typically ensuring traffic either originates from or is destined to the ISP’s customers.
+	- **Backbone Networks**: Prefer not to carry transit traffic for other networks to avoid additional costs.
+	- **Peering Agreements**: Govern how ISPs manage routing among themselves, typically ensuring traffic either originates from or is destined to the ISP’s customers.
 
 ### 5.4.6 Obtaining Internet Presence
 - **Steps for a New Company**:
-  - **Internet Connectivity**: Contract with a local ISP, obtain a range of IP addresses.
-  - **Domain Name and DNS Registration**: Register a domain and set up DNS entries for accessible servers.
-  - **BGP Advertising**: The local ISP advertises the company’s IP prefix using BGP, enabling global routing to the company’s servers.
+	- **Internet Connectivity**: Contract with a local ISP, obtain a range of IP addresses.
+	- **Domain Name and DNS Registration**: Register a domain and set up DNS entries for accessible servers.
+	- **BGP Advertising**: The local ISP advertises the company’s IP prefix using BGP, enabling global routing to the company’s servers.
 
 ## 5.5 The SDN Control Plane
 
@@ -1489,8 +1488,6 @@ __Evolution of SDN__
 5. **Flow Table Management**: The flow table manager determines necessary updates to flow tables based on new paths.
 6. **Flow Table Updates**: OpenFlow protocol is used to update flow table entries at affected switches to reroute traffic accordingly.
 
-**Impact**: Demonstrates the control efficiency in SDN, where routing decisions are centralized and can be dynamically adapted through software changes, contrasting with traditional per-router control systems.
-
 ### 5.5.4 SDN: Past and Future
 
 **Origins and Evolution**:
@@ -1499,8 +1496,6 @@ __Evolution of SDN__
 **Future Directions**:
 - Ongoing research into SDN architectures and the extension of SDN principles to broader networking contexts including network functions virtualization (NFV) and inter-AS settings.
 - Emphasis on replacing traditional networking components with simplified hardware managed by sophisticated software controls.
-
-Here's how you can structure your notes for the article on SDN controllers, specifically focusing on the OpenDaylight and ONOS controllers, akin to the previous detailed note-taking style you used:
 
 ### SDN Controller Case Studies: The OpenDaylight and ONOS Controllers
 ___EXAM! 이 부분 퀴즈 시험예정(원래는 false 하지만 문제가 이상해서 paraphrase한 뒤 출제예정)___
@@ -1542,8 +1537,6 @@ __ONOS Controller__
 **Future Directions**:
 - Potential developments in controller technologies and the standardization of protocols.
 - Enhancements in interoperability and ease of deployment for complex network environments.
-
-Here's your article organized into a structured note-taking format:
 
 ## 5.6 ICMP: The Internet Control Message Protocol
 
@@ -2197,25 +2190,23 @@ Before diving into the topical chapters in the second part of this book, we take
 	- Moving objects can change multipath propagation over time.
 
 **Impacts on Wireless Communication**:
+![[Pasted image 20240521140853.png|300]]
 - **Bit Errors**:
 	- More common in wireless links.
 	- Wireless protocols (e.g., 802.11) use CRC error detection and reliable-data-transfer protocols for retransmitting corrupted frames.
-
-**Host Receiving Wireless Signal**:
 - **Signal-to-Noise Ratio (SNR)**:
 	- Measure of received signal strength relative to background noise.
 	- Measured in decibels (dB).
 	- Larger SNR makes it easier to extract the transmitted signal from noise.
-
-**Bit Error Rate (BER) vs. SNR**:
-- **Modulation Techniques**:
-	- Higher SNR results in lower BER for a given modulation scheme.
-	- Increasing transmission power can reduce BER but has diminishing returns and potential downsides (e.g., energy consumption, interference).
-
-- **BER and Transmission Rate**:
-	- Higher bit transmission rate increases BER for a given SNR.
-	- Example: BPSK at 1 Mbps has lower BER than QAM16 at 4 Mbps with the same SNR.
-	- Adaptive modulation can optimize transmission rate and BER based on channel conditions (used in 802.11 WiFi, 4G, 5G).
+- **Bit Error Rate (BER) vs. SNR**:
+	- **Modulation Techniques**:
+		- Higher SNR results in lower BER for a given modulation scheme.
+		- Increasing transmission power can reduce BER but has diminishing returns and potential downsides (e.g., energy consumption, interference).
+			- Also transmission power is fixed for most cases, standardized by the government.
+	- **BER and Transmission Rate**:
+		- Higher bit transmission rate increases BER for a given SNR.
+		- Example: BPSK at 1 Mbps has lower BER than QAM16 at 4 Mbps with the same SNR.
+		- Adaptive modulation can optimize transmission rate and BER based on channel conditions (used in 802.11 WiFi, 4G, 5G).
 
 **Challenges in Wireless Networks**:
 - **Hidden Terminal Problem**:
@@ -2236,10 +2227,8 @@ Before diving into the topical chapters in the second part of this book, we take
 - **Decoding**: The receiver recovers the original data by multiplying the received encoded bits by the same code.
 
 **Mathematical Representation**:
-- Each data bit, \(d_i\), is multiplied by the corresponding code bit \(c_m\) for each mini-slot \(m\):
- $Z_{i,m} = d_i \times c_m$
-- The receiver computes the original data bit by summing the product of the received encoded bits \(Z_{i,m}\) and the code bits \(c_m\):
-  $d_i = \frac{1}{M} \sum_{m=1}^{M} Z_{i,m} \times c_m$
+- Each data bit, \(d_i\), is multiplied by the corresponding code bit $c_m$ for each mini-slot $m$: $Z_{i,m} = d_i \times c_m$
+- The receiver computes the original data bit by summing the product of the received encoded bits $Z_{i,m}$ and the code bits $c_m$:  $d_i = \frac{1}{M} \sum_{m=1}^{M} Z_{i,m} \times c_m$
 
 **Interference Handling**:
 - **Additive Signal**: Interference from multiple senders is additive.
@@ -2248,8 +2237,8 @@ Before diving into the topical chapters in the second part of this book, we take
 
 **Example**:
 - Two senders using different CDMA codes:
-  - Sender 1: Code (1, 1, 1, -1, 1, -1, -1, -1)
-  - Sender 2: Code (1, -1, 1, 1, 1, -1, 1, 1)
+	- Sender 1: Code (1, 1, 1, -1, 1, -1, -1, -1)
+	- Sender 2: Code (1, -1, 1, 1, 1, -1, 1, 1)
 - The receiver can decode the data from sender 1 despite the interference from sender 2.
 
 **Analogy**:
@@ -2795,3 +2784,245 @@ __Power Management: Sleep Modes__
 **Current Status**:
   - Early stages of deployment with ongoing standardization.
   - Future impact on broadband wireless service, indoor wireless service competition, factory automation, autonomous vehicles, and wide-area wireless service.
+
+## 7.5 Mobility Management: Principles
+
+### 7.5.1 Device Mobility: a Network-layer Perspective
+
+**Forms of Mobility**:
+- A mobile device changes its point of attachment to the network over time.
+- Different challenges arise depending on device activity and mobility.
+
+**Scenarios**:
+- **Scenario (a)**:
+	- User physically moves between networks, powering down the device during moves.
+	- Device associates and disassociates from networks serially.
+	- Handled by existing networking mechanisms (Sections 7.3 and 7.4).
+- **Scenario (b)**:
+	- Device remains attached to the same access network despite physical movement.
+	- Not considered mobile from a network-layer perspective.
+	- No link-layer mobility if the device remains associated with the same AP or base station.
+- **Scenario (c)**:
+	- Device changes its access network while sending/receiving IP datagrams and maintaining connections.
+	- Requires handover for datagram forwarding between APs or base stations.
+	- Handover can be managed by a single provider or coordinated between multiple providers.
+- **Scenario (d)**:
+	- Device roams between multiple provider networks.
+	- Complicated handover process due to inter-provider coordination.
+
+### 7.5.2 Home Networks and Roaming on Visited Networks
+
+**Home Networks**:
+- Each cellular subscriber has a home network storing subscriber information in the Home Subscriber Service (HSS).
+- HSS includes device ID, service information, cryptographic keys, and billing data.
+
+**Roaming**:
+- When a device connects to a network other than its home network, it roams on a visited network.
+- Coordination is needed between home and visited networks.
+
+**Internet Context**:
+- No strong notion of home/visited networks in the Internet.
+- Examples: student’s home network might be their school network; mobile professional’s home network might be their company network.
+
+**Mobile IP Protocol**:
+- Proposed to incorporate the notion of home/visited networks.
+- Limited deployment/use in practice.
+
+**Eduroam**:
+- Provides authenticated network access across visited IP networks, built on existing IP infrastructure.
+
+**Advantages of Home Networks**:
+- Single location for device information.
+- Serves as a coordination point for communication to/from roaming devices.
+
+**Analogy**:
+- Bob, a mobile adult, registers his current address with his family.
+- Friends contact the family home to find Bob's current address.
+- Communication can be indirect (forwarded mail) or direct (using the updated address).
+
+### 7.5.3 Direct and Indirect Routing to/from a Mobile Device
+
+__Introduction__
+- **Scenario**: A correspondent wants to communicate with a mobile device in its home network or a visited network.
+- **Context**: Discusses 4G/5G cellular networks, with principles applicable to both cellular networks and the Internet.
+- **Identifiers**: Mobile devices have globally unique identifiers (IMSI in 4G, permanent IP address in Mobile IP architecture).
+
+__Approaches to Routing in Mobile Networks__
+1. **Leveraging Existing IP Address Infrastructure**:
+	- **Method**: Use BGP to advertise routes to mobile devices by their specific IP addresses.
+	- **Process**: Visited network advertises the mobile device’s IP address. Other networks propagate this information, directing datagrams to the visited network.
+	- **Drawback**: Scalability issues due to the need for routers to maintain entries for potentially billions of mobile devices and frequent updates as devices roam.
+
+2. **Using Mobile Device’s Home Network**:
+	- **Method**: Push mobility functionality to the network edge via the home network.
+	- **Components**:
+		- **MME and HSS**: Track mobile device location within the home network.
+		- **Database Updates**: Visited network updates home network’s HSS with device location.
+	- **Addressing**:
+		- Mobile device may use a permanent address, a new address from the visited network, or a NAT address.
+		- **NAT**: Visited network gateway router performs NAT translation.
+
+__Routing Approaches__
+1. **Indirect Routing to a Mobile Device**:
+	- **Process**:
+		- Correspondent sends a datagram to the mobile device’s permanent address.
+		- Home network’s gateway intercepts and forwards the datagram to the visited network.
+		- Visited network forwards it to the mobile device, performing NAT if necessary.
+		- Encapsulation/decapsulation is used (tunneling).
+	- **Sending from Mobile Device**:
+		- Datagrams are sent through the visited network gateway.
+		- Options:
+			- Tunnel back to the home gateway (4a).
+			- Transmit directly to the correspondent (local breakout) (4b).
+	- **New Functionalities**:
+		- Mobile-device-to-visited-network association protocol.
+		- Visited-network-to-home-network-HSS registration protocol.
+		- Datagram tunneling protocol.
+	- **Continuity**:
+		- Update home network HSS and tunnel endpoint when the device moves to a new network.
+		- Minimal datagram loss if the transition time between networks is small.
+
+2. **Direct Routing to a Mobile Device**:
+   - **Process**:
+     - Correspondent queries HSS to find the mobile device’s visited network.
+     - Correspondent tunnels datagrams directly to the visited network.
+   - **Challenges**:
+     - Requires a mobile-user location protocol for querying HSS.
+     - Protocols needed to update the correspondent when the mobile device moves between visited networks.
+   - **Advantage**: Avoids the triangle routing problem, providing a more efficient route.
+
+## 7.6 Mobility Management in Practice
+
+**Introduction**:
+- Key challenges and solutions for device mobility:
+  - Home and visited networks
+  - Home network as central information and control hub
+  - Control-plane functions for tracking roaming devices
+  - Data-plane approaches: direct and indirect routing
+
+**Focus**:
+- Mobility management in 4G/5G networks
+- Mobile IP for Internet mobility
+
+### 7.6.1 Mobility Management in 4G/5G Networks
+
+**Background**:
+- 4G/5G networks build on 3G and 2G networks
+- Focus on interoperability of network elements for mobility services
+
+**Scenario**: Mobile user moving between 4G/5G base stations while streaming HD video.
+
+__Steps in Mobility Management:__
+1. **Mobile device and base station association**:
+	- Device listens to base station signals and selects one
+	- Provides base station with IMSI for identification
+2. **Control-plane configuration**:
+	- MME in visited network contacts home network
+	- Retrieves authentication and network service information
+	- Mutual authentication ensures device and network verification
+	- HSS in home network updates database with device’s location
+	- Establishes control-plane state and parameters for data-plane channel
+3. **Data-plane configuration**:
+	- MME configures two tunnels:
+	     - Base station to Serving Gateway in visited network
+	     - Serving Gateway to PDN Gateway in home network
+	- Uses GTP protocol for tunneling
+	- Compares with mobility within home network:
+	     - Both use Serving Gateway in device’s network
+	     - Indirect routing through home network
+	- Local breakout (alternative) is rarely used
+4. **Mobile device handover**:
+	- Handover between base stations involves:
+	     - Selection of target base station
+	     - Pre-allocation of resources by target base station
+	     - Informing mobile device of target base station
+	     - Stopping and reconfiguring tunnel datagram forwarding
+	- Involves local changes if base stations are near each other
+	- Reasons for handover:
+	     - Signal deterioration
+	     - Cell congestion
+	     - Mobile measures signals and reports to source base station
+	- Source base station initiates handover based on measurements and other factors
+
+**Handover Process**:
+1. Source base station selects target base station, sends Handover Request.
+2. Target base station pre-allocates resources, sends Handover Request Acknowledge.
+3. Source base station informs mobile device about target base station.
+4. Source base station forwards datagrams to target base station.
+5. Target base station informs MME, which reconfigures tunnel to terminate at target base station.
+6. Target base station confirms tunnel reconfiguration, source base station releases resources.
+7. Target base station begins delivering datagrams to mobile device.
+
+**Future of 5G Mobility**:
+- 5G networks will be denser with smaller cell sizes
+- Handover will be critical for real-time applications
+- Migration of control plane to SDN for higher capacity and lower latency
+- Ongoing research into SDN applications in 5G networks
+
+### 7.6.2 Mobile IP
+
+**Context and Deployment**:
+- The Internet lacks widely deployed infrastructure for "on the go" mobile users, unlike 4G/5G networks.
+- **Mobile IP** architecture and protocols [RFC 5944] have been standardized for over 20 years.
+- **Lack of Deployment**: Due to lack of motivating business/use cases and the rise of alternative cellular network solutions.
+- **Historical Context**: 2G networks provided mobile voice services; 3G networks supported voice and data, addressing mobile user needs through dual technology solutions (cellular for mobility, 802.11 for local/stationary use).
+
+**Importance of Mobile IP**:
+- Mobile IP offers similar services and mobility principles as cellular networks.
+- Defined primarily in **RFC 5944 for IPv4**.
+- Similar architecture to cellular networks with home and foreign networks and the use of indirect routing.
+
+**Mobile IP Architecture**:
+- **Home Network**: Mobile device has a permanent IP address.
+- **Foreign Networks**: Mobile device receives a care-of-address.
+- **Home Agent**: Tracks location updates from foreign agents.
+- **Indirect Routing**: Uses tunnels to connect home and foreign network routers.
+
+**Main Components of Mobile IP**:
+1. **Agent Discovery**:
+	- Foreign agents advertise mobility services to mobile devices.
+	- Includes care-of-address allocation, registration with the home agent, and datagram forwarding.
+2. **Registration with Home Agent**:
+	- Protocols for mobile devices/foreign agents to register and deregister care-of-addresses with the home agent.
+3. **Indirect Routing of Datagrams**:
+	- Defines forwarding of datagrams to mobile devices by the home agent.
+	- Includes rules for forwarding, handling errors, and tunneling [RFC 2003, RFC 2004].
+
+## 7.7 Wireless and Mobility: Impact on Higher-Layer Protocols
+
+__Introduction__
+- **Wireless Networks vs. Wired Networks**:
+	- Wireless networks differ significantly from wired networks at both the link layer and network layer.
+	- Despite similar network-layer best-effort delivery models, transport and application layers can experience different performance in wireless networks.
+
+__Transport Layer Protocols in Wireless Networks__
+- **TCP Performance**:
+	- TCP retransmits segments lost or corrupted due to network congestion or handover delays.
+	- TCP’s ACK mechanism does not distinguish the cause of segment loss.
+	- TCP's congestion-control decreases the congestion window uniformly, assuming congestion as the cause of loss, which is not always accurate in wireless networks.
+	- Wireless networks have higher bit error rates, making TCP’s congestion control less effective.
+- **TCP Challenges and Solutions**:
+	- Researchers identified issues with TCP’s congestion control in wireless settings in the early to mid-1990s.
+	- Three broad classes of approaches were proposed:
+		- **Local Recovery**:
+		    - Protocols recover from bit errors locally, such as the 802.11 ARQ protocol or combinations of ARQ and FEC in 4G/5G networks.
+		- **TCP Sender Awareness of Wireless Links**:
+		    - TCP sender and receiver become aware of the wireless link.
+		    - Distinguish between congestion losses and corruption/loss on wireless links.
+		    - Invoke congestion control only for congestive wired-network losses.
+		    - Research includes [Liu 2003] and [Huang 2013] for more LTE-friendly transport mechanisms.
+		- **Split-Connection Approaches**:
+			- End-to-end connection split into two transport-layer connections:
+				- One from the mobile host to the wireless access point.
+				- One from the wireless access point to the wired host.
+			- Can use standard TCP or specialized error recovery protocols.
+			- Studies such as [Bakre 1995], [Yavatkar 1994], and [Wei 2006] show significant improvements with split connections.
+
+__Application Layer Protocols in Wireless Networks__
+- **Bandwidth Considerations**:
+  - Bandwidth is a scarce commodity in wireless links, especially cellular links.
+  - Applications must adapt content delivery (e.g., image-rich content) to the available bandwidth on wireless connections.
+- **Opportunities in Mobility**:
+  - Mobility enables location-aware and context-aware applications.
+  - Rich potential for future ubiquitous computing environments.
+  - Research and potential developments are still in early stages, indicating much more impact to come.

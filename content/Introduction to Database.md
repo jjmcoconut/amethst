@@ -3615,3 +3615,264 @@ __Indexing | Locality-Sensitive Hashing__
 	-  To find the nearest neighbors for a given query vector, we use the same hashing functions used to “bucket” similar vectors into hash tables
 	-  The query vector is hashed to a particular table and then compared with the other vectors in that same table to find the closest matches
 - This method is much faster than searching through the entire dataset because there are far fewer vectors in each hash table
+
+ Indexing | Hierarchical Navigable Small World (HNSW)
+- HNSW creates a hierarchical, tree-like structure where each node of the tree represents a set of vectors
+- The edges between the nodes represent the similarity between the vectors
+- The algorithm starts by creating a set of nodes, each with a small number of vectors
+- This could be done randomly or by clustering the vectors with algorithms like k-means, where each cluster becomes a node
+- The algorithm then examines the vectors of each node and draws an edge between that node and the nodes that have the most similar vectors to the one it has
+- When we query an HNSW index, it uses this graph to navigate through the tree, visiting the nodes that are most likely to contain the closest vectors to the query vector\
+
+Querying | Similarity Measures
+- Cosine similarity: measures the cosine of the angle between two vectors in a vector space
+- It ranges from -1 to 1, where 1 represents identical vectors, 0 represents orthogonal vectors, and -1 represents vectors that are diametrically opposed
+- Euclidean distance: measures the straight-line distance between two vectors in a vector space
+- It ranges from 0 to infinity, where 0 represents identical vectors, and larger values represent increasingly dissimilar vectors
+- Dot product: measures the product of the magnitudes of two vectors and the cosine of the angle between them
+- It ranges from -∞ to ∞, where a positive value represents vectors that point in the same direction, 0 represents orthogonal vectors, and a negative value represents vectors that point in opposite directions
+  
+Post Processing | Filtering
+- In addition to the ability to query for similar vectors, vector databases can also filter the results based on a metadata query
+- To do this, the vector database usually maintains two indexes: a vector index and a metadata index
+- It then performs the metadata filtering either before or after the vector search
+
+## Chroma
+
+__Four Core Commands__
+```
+# python can also run in-memory with no server running: chromadb.PersistentClient()
+
+import chromadb  
+client = chromadb.HttpClient()  
+collection = client.create_collection("sample_collection")
+
+# Add docs to the collection. Can also update and delete. Row-based API coming soon!
+collection.add(  
+	documents=["This is document1", "This is document2"], 
+	metadatas=[{"source": "notion"}, {"source": "google-docs"}],
+	ids=["doc1", "doc2"], # must be unique for each doc
+)
+
+results = collection.query(  
+	query_texts=["This is a query document"],  
+	n_results=2,  
+	# where={"metadata_field": "is_equal_to_this"}, # optional filter  
+	# where_document={"$contains":"search_string"} # optional filter
+)
+```
+
+__EphemeralClient__
+- `def EphemeralClient(settings: Settings = Settings()) -> API`
+- Creates an in-memory instance of Chroma. This is useful for testing and development, but not recommended for production use.
+
+__PersistentClient__
+- `def PersistentClient(path: str = "./chroma", settings: Settings = Settings()) -> API`
+- Creates a persistent instance of Chroma that saves to disk. This is useful for testing and development, but not recommended for production use. 
+- Arguments:
+	- path - The directory to save Chroma's data to. Defaults to "./chroma". 
+
+__Client__
+- `def Client(settings: Settings = __settings) -> API`
+- Return a running chroma.API instance. Defaults to EphemeralClient.
+
+__client.create_collection__
+```
+def create_collection(
+	name: str,
+	metadata: Optional[CollectionMetadata] = None,
+	embedding_function: Optional[EmbeddingFunction] = ef.DefaultEmbeddingFunction(),
+	get_or_create: bool = False) -> Collection
+```
+- Create a new collection with the given name and metadata. 
+- Arguments:
+	- name - The name of the collection to create.
+	- metadata - Optional metadata to associate with the collection.
+	- embedding_function - Optional function to use to embed documents. Uses the default embedding function if not provided.
+	- get_or_create - If True, return the existing collection if it exists.
+- Returns:
+	- Collection - The newly created collection.
+- Raises:
+	- ValueError - If the collection already exists and get_or_create is False.
+	- ValueError - If the collection name is invalid.
+- Examples:
+```
+client.create_collection("my_collection")
+# collection(name="my_collection", metadata={})
+client.create_collection("my_collection", metadata={"foo": "bar"})
+# collection(name="my_collection", metadata={"foo": "bar"})
+```
+
+__collection.add__
+```
+def add(ids: OneOrMany[ID],
+embeddings: Optional[OneOrMany[Embedding]] = None,
+metadatas: Optional[OneOrMany[Metadata]] = None,
+documents: Optional[OneOrMany[Document]] = None) -> None
+```
+- Add embeddings to the data store. 
+- Arguments:
+	- ids - The ids of the embeddings you wish to add
+	- embeddings - The embeddings to add. If None, embeddings will be computed based on the documents using the
+	- embedding_function set for the Collection. Optional.
+	- metadatas - The metadata to associate with the embeddings. When querying, you can filter on this metadata. Optional.
+	- documents - The documents to associate with the embeddings. Optional.
+- Returns: None 
+- Raises:
+	- ValueError: If you don't provide either embeddings or documents
+	- ValueError: If the length of ids, embeddings, metadatas, or documents don't match
+	- ValueError: If you don't provide an embedding function and don't provide embeddings
+	- DuplicateIDError: If you provide an id that already exists
+
+__collection.query__
+```
+def query(
+      query_embeddings: Optional[OneOrMany[Embedding]] = None,
+      query_texts: Optional[OneOrMany[Document]] = None, 
+      n_results: int = 10,
+      where: Optional[Where] = None,
+      where_document: Optional[WhereDocument] = None,
+      include: Include = ["metadatas", "documents", "distances"]) -> QueryResult
+```
+- Get the n_results nearest neighbor embeddings for provided query_embeddings or query_texts.
+- Arguments:
+	- query_embeddings: The embeddings to get the closest neighbors of. Optional. 
+	- query_texts: The document texts to get the closest neighbors of. Optional.
+	- n_results: The number of neighbors to return for each query_embedding or query_texts. Optional.
+	- where - A Where type dict used to filter results by. E.g.
+	- where_document - A WhereDocument type dict used to filter by the documents. E.g. Optional.
+	- include - A list of what to include in the results. Optional.
+- Returns:
+	- QueryResult - A QueryResult object containing the results.
+- Raises:
+	- ValueError: If you don't provide either query_embeddings or query_texts
+	- ValueError: If you provide both query_embeddings and query_texts
+
+__Embeddings__
+- Embeddings are the A.I-native way to represent any kind of data, making them the perfect fit for working with all kinds of A.I-powered tools and algorithms
+	- They can represent text, images, and soon audio and video
+- There are many options for creating embeddings, whether locally using an installed library, or by calling an API
+- Chroma provides lightweight wrappers around popular embedding providers, making it easy to use them in your apps
+	- You can set an embedding function when you create a Chroma collection, which will be used automatically, or you can call them directly yourself
+
+__Sentence Transformers__
+Default: all-MiniLM-L6-v2
+By default, Chroma uses the Sentence Transformers all-MiniLM-L6-v2 model to create embeddings. This embedding model can create sentence and document embeddings that can be used for a wide variety of tasks. This embedding function runs locally on your machine, and may require you download the model files (this will happen automatically).
+```
+from chromadb.utils import embedding_functions
+default_ef = embedding_functions.DefaultEmbeddingFunction()
+```
+Sentence Transformers
+Chroma can also use any Sentence Transformers model to create embeddings. 
+```
+sentence_transformer_ef =
+embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+```
+You can pass in an optional `model_name` argument, which lets you choose which Sentence Transformers model to use. By default, Chroma uses `all-MiniLM-L6-v2`. You can see a list of all available models here.
+
+__Pre-Trained Models for Embedding__
+
+
+__Similarity Function__
+create_collection also takes an optional metadata argument which can be used to customize the distance method of the embedding space by setting the value of hnsw:space.
+```
+collection = client.create_collection( 
+	name="collection_name",
+	metadata={"hnsw:space": "cosine"} # l2 is the default
+)
+```   
+Valid options for hnsw:space are "l2", "ip, "or "cosine". The default is "l2" which is the squared L2 norm.
+ 
+## LangChain
+ ![[Pasted image 20240527144746.png|400]]
+__Introduction__
+- A framework for developing applications powered by language models
+- LangChain is an framework (SDK) designed to simplify the integration of LLMs and applications
+	- LangChain is similar to an ODBC or JDBC driver, which abstracts the underlying database by letting you focus on standard SQL statements
+	- LangChain abstracts the implementation details of the underlying LLMs by exposing a simple and unified API
+		- This API makes it easy for developers to swap in and swap out models without significant changes to the code
+- LangChain is a powerful framework that integrates with external tools to form an ecosystem
+
+__Overall Flow__
+1. Data sources
+	- Applications need to retrieve data from external sources such as PDFs, web pages, CSVs, and relational databases to build the context for the LLM
+	- LangChain seamlessly integrates with modules that can access and retrieve data from disparate sources
+2. Word embeddings
+	- The data retrieved from some of the external sources must be converted into vectors. This is done by passing the text to a word embedding model associated with the LLM
+		- For example, OpenAI’s GPT-3.5 model has an associated word embeddings model that needs to be used to send the context
+		- LangChain picks the best embedding model based on the chosen LLM, removing the guesswork in pairing the models
+3. Vector databases
+	- The generated embeddings are stored in a vector database to perform a similarity search
+	- LangChain makes it easy to store and retrieve vectors from various sources ranging from in-memory arrays to hosted vector databases such as Chroma and Pinecone
+4. Large language models
+	- LangChain supports mainstream LLMs offered by OpenAI, Cohere, and AI21 and open source LLMs available on Hugging Face
+		- The list of supported models and API endpoints is rapidly growing
+
+__LangChain Modules__
+![[Pasted image 20240527145210.png|400]]
+- Model I/O
+	- The Model I/O module deals with the interaction with the LLM
+	- It essentially helps in creating effective prompts, invoking the model API, and parsing the output; prompt engineering, which is the core of generative AI, is handled well by LangChain
+	- It abstracts the authentication, API parameters, and endpoint exposed by LLM providers
+	- Finally, it can parse the response sent by the model in the desired format that the application can consume
+- Data connection
+	- Think of the data connection module as the ETL pipeline of your LLM application
+	- It deals with loading external documents such as PDF or Excel files, converting them into chunks for processing them into word embeddings in batches, storing the embeddings in a vector database, and finally retrieving them through queries
+- Chains
+	- Chains in LangChain are designed to build efficient pipelines that leverage the building blocks and LLMs to get an expected response
+	- A simple chain may have a prompt and an LLM, but it’s also possible to build highly complex chains that invoke the LLM multiple times, like recursion, to achieve an outcome
+	- For example, a chain may include a prompt to summarize a document and then perform a sentiment analysis on the same
+- Memory
+	- LLMs are stateless but need context to respond accurately
+	- The memory module makes it easy to add both short-term and long-term memory to models
+	- Short-term memory maintains the history of a conversation through a simple mechanism; message history can be persisted to external sources such as Redis, representing long-term memory
+- Callbacks
+	- LangChain provides developers with a callback system that allows them to hook into the various stages of an LLM application
+	- This is useful for logging, monitoring, streaming, and other tasks
+	- It is possible to write custom callback handlers that are invoked when a specific event takes place within the pipeline
+- Agents
+	- Agents is by far the most powerful module of LangChain
+	- LLMs are capable of reasoning and acting, called the ReAct prompting technique; the agents simplify crafting ReAct prompts that use the LLM to distill the prompt into a plan of action
+	- The basic idea behind agents is to use an LLM to select a set of actions
+	- A sequence of actions is hard-coded in chains (in code), and LLM is used as a reasoning engine in agents to determine which actions to take and in what order
+
+Step-by-Step Guide
+![[Pasted image 20240527150224.png|500]]
+1. Load the document
+2. Splitting the document into chunks
+3. Use embedding against the chunks and convert to vectors
+4. Save the data to a vector database
+5. Take a question from the user and get the embedding
+6. Connect to the vector database and do a semantic search
+7. Retrieve relevant responses based on user queries and send them to an LLM (e.g., ChatGPT)
+8. Get an answer from the LLM and send it back to the user
+
+
+## RAG
+ 
+What is Retrieval-Augmented Generation(RAG)?  
+RAG is a technique for augmenting LLM knowledge with additional data.
+LLMs can reason about wide-ranging topics, but their knowledge is limited to the public data up to a specific point in time that they were trained on. If you want to build AI applications that can reason about private data or data introduced after a model's cutoff date, you need to augment the knowledge of the model with the specific information it needs. The process of bringing the appropriate information and inserting it into the model prompt is known as Retrieval Augmented Generation (RAG).
+
+__RAG Architecture__
+A typical RAG application has two main components:
+- Indexing: a pipeline for ingesting data from a source and indexing it
+	- This usually happens offline
+- Retrieval and generation: the actual RAG chain, which takes the user query at run time and retrieves the relevant data from the index, then passes that to the model
+- Depending on the literature, retrieval and generation are written as separate components
+
+__Indexing Component__
+- Load: First we need to load our data. 
+	- This is done with DocumentLoaders.
+- Split: Text splitters break large Documents into smaller chunks. 
+	- This is useful both for indexing data and for passing it in to a model, since large chunks are harder to search over and won’t fit in a model’s finite context window.
+- Store: We need somewhere to store and index our splits, so that they can later be searched over. 
+	- This is often done using a VectorStore and Embeddings model.
+
+__Retrieval and generation__
+- Retrieve: Given a user input, relevant splits are retrieved from storage using a Retriever.
+- Generate: A ChatModel / LLM produces an answer using a prompt that includes the question and the retrieved data
+
+   
+ 
+ 

@@ -1202,7 +1202,7 @@ __Advantages of Virtualization__
 		- E.g. Android, Windows, and Linux
 	- Would you rather debug on three separate machines, or one machine with two guests?
 
-Cloud Computing
+__Cloud Computing__
 - Cloud computing
 	- The delivery of various computing services over the internet, allowing users to access and use computing resources without owning and maintaining physical hardware and infrastructure.
 		- These services include storage, processing power, databases, networking, software, and more.
@@ -1214,7 +1214,7 @@ Cloud Computing
 		- e.g. Amazon EC2.
 	- Also a company can create a private cloud.
 
-Types of virtualization
+__Types of virtualization__
 - Full Virtualization
 	- No Guest OS modification
 	- Software approach
@@ -1227,3 +1227,308 @@ Types of virtualization
 	- Software approach
 		- Hypercalls
 		- Xen
+
+## x86 Virtualization
+
+__Classic Virtualization__
+- Popek and Goldberg’s Criteria:
+	1. Fidelity (Transparency) – run any software
+	2. Performance – run it fairly fast
+	3. Safety – VMM manages all hardware
+- Trap-and-Emulate: a real solution that supports the above criteria
+
+__Trap-and-Emulate Virtualization__
+Important ideas from Trap-and-Emulate Virtualization
+1. De-Privilege OS
+	- Executes guest operating systems directly but at lesser privilege level, user-level
+	- Instructions that read or write privileged state – trap
+	- VMM intercepts the trap and emulates the trapping instruction against the virtual machine state
+
+__Virtual Hardware Examples__
+- VMM exports a simple disk interface
+	- Reads/writes are translated to a virtual filesystem on the real disk
+		- Just like Pintos on QEMU
+
+__Classic VMM: Primary and Shadow structures__
+- Privileged state of each guest differs from that of the underlying hardware
+- Basic function of VMM is to meet guest’s expectation
+- To accomplish this VMM derives shadow structures from guest-level primary structures
+	- Primary structures reflect the state of guest
+	- VMM-level shadow structures are copies of guests primary structures
+- These structures are kept coherent using – memory tracing
+
+__Classical VMM: Memory Tracing__
+- On-CPU privileged state – handled trivially
+	- Includes page table pointer register, processor status register, etc
+	- Guest access to these registers coincide with trapping instructions
+	- On trap, VMM refers to the corresponding shadow of the guest register structure in the instruction emulation
+- Off-CPU privileged data
+	- Guest access to these does not coincide with trapping instructions
+	- Example : Guest PTEs are considered privileged data – but, accessing this is not accompanied by traps
+	- They can be modified by shadow structures of PTEs
+	- VMM cannot maintain coherency of shadow structures
+- VMMs use hardware page protection mechanisms to trap access to in memory primary structures – memory tracing
+
+__Classic VMM : Memory Tracing Example__
+- Guest PTEs for which shadow PTEs are constructed may be writeprotected
+- Guest access to these cause traps (tracing faults)
+- VMM decodes the faulting guest instruction, emulates its effect on primary structure and propagates the change to shadow structures
+	1. De-Privilege OS
+	2. Shadow structures and memory tracing
+
+__Problem: How to Virtualize the MMU?__
+- On x86, each OS expects that it can create page tables and install them in the cr3 register
+	- The OS believes that it can access physical memory
+- However, virtualized guests do not have access to physical memory
+- Using trap (or binary translation), the VMM can replace writes to cr3
+	- Store the guest’s root page in the virtual CPU cr3
+	- The VMM can now walk to guest’s page tables
+- However, the guest’s page tables cannot be installed in the physical CPU…
+
+__Guest’s Page Tables Are Invalid__
+- Guest OS page tables map virtual page numbers (VPNs) to physical frame numbers (PFNs)
+- Problem: the guest is virtualized, doesn’t actuallyknow the true PFNs
+	- The true location is the machine frame number(MFN)
+	- MFNs are known to the VMM and the host OS
+- Guest page tables cannot be installed in cr3
+	- Map VPNs to PFNs, but the PFNs are incorrect
+- How can the MMU translate addresses used bythe guest (VPNs) to MFNs?
+
+__Shadow Page Tables__
+- Solution: VMM creates shadow page tables thatmap VPN → MFN (as opposed to VPN→PFN)
+
+__Building Shadow Tables__
+- Problem: how can the VMM maintain consistentshadow pages tables?
+	- The guest OS may modify its page tables at any time
+	- Modifying the tables is a simple memory write, not a privileged instruction
+		- Thus, no helpful CPU exceptions :(
+- Solution: mark the hardware pages containing the guest’s tables as read-only
+	- If the guest updates a table, an exception is generated
+	- VMM catches the exception, examines the faulting write, updates the shadow table
+
+__Dealing With Page Faults__
+- It is possible that the shadow table may be inconsistent
+- If a guest page faults, this could be a:
+	- True miss: actual page fault
+	- Hidden miss: the shadow table is inconsistent; there is a valid VPN→PFN mapping in the guest’s page tables
+- VMM must disambiguate true and hidden misses
+	- On each page fault, the VMM must walk the guest’s tables to see if a valid VPN→PFN mapping exists
+	- If so, this is a hidden miss
+		- Update the shadow table and retry the instruction
+	- Otherwise, forward the page fault to the guest OS’s handler
+
+__Pros and Cons__
+- The good: shadow tables allow the MMU to directly translate guest VPNs to hardware pages
+	- Thus, guest OS code and guest apps can execute directly on the CPU
+- The bad:
+	- Double the amount of memory used for page tables
+		- i.e. the guest’s tables and the shadow tables
+	- Context switch from the guest to the VMM every time a page table is created or updated
+		- Very high CPU overhead for memory intensive workloads 
+
+__More VMM Tricks__
+- The VMM can play tricks with virtual memory just like an OS can
+- Paging:
+	- The VMM can page parts of a guest, or even an entire guest, to disk
+	- A guest can be written to disk and brought back online on a different machine!
+- Shared pages:
+	- The VMM can share read-only pages between guests
+	- Example: two guests both running Windows XP 
+
+__Trap-and-Emulate (cont.)__
+- Traps are expensive (~3000 cycles)
+- Important enhancements
+	- “Paravirtualization” to reduce traps (e.g., Xen)
+		- Modify guest OS to provide higher-level information to VMM
+		- Approach relaxes Popek and Goldberg’s fidelity requirement
+		- But gains in performance Virtual Machines 10
+	- Hardware VM modes (e.g., IBM s370)
+
+__Can x86 Trap and Emulate?__
+- No
+	- Even with 4 execution modes!
+	- Key problem: dual-purpose instructions don’t trap
+- Classic Example: popf instruction
+	- Same instruction behaves differently depending on execution mode
+	- User Mode: changes ALU flags
+	- Kernel Mode: changes ALU and system flags
+	- Does not generate a trap in user mode 
+
+__Protected Mode__
+![[Pasted image 20240527131554.png|250]]
+- Most modern CPUs support protected mode
+- x86 CPUs support three rings with different privileges
+	- Ring 0: OS kernel
+	- Ring 1, 2: device drivers
+	- Ring 3: userland
+- Most OSes only use rings 0 and 3
+
+__Software VMM: To overcome obstacles on x86__
+![[Pasted image 20240527131638.png|300]]
+- Execute guest on Interpreter
+	- But fetch-decode-execute cycle of interpreter reduces performance
+- Binary Translation of the guest
+	- VMM can switch between BT mode and direct execution mode
+	- Privileged instructions are changed to function calls to code in VMM
+
+__Binary Translation (VMWare)__
+- Characteristics
+	- Binary – input is machine-level code
+	- Dynamic – occurs at runtime
+	- On demand – code translated when needed for execution
+	- System level – makes no assumption about guest code
+	- Only need to translate OS code
+		- Makes applications run fast by default
+	- Most instruction sequences don’t change
+	- Instructions that do change:
+		- Indirect control flow: call/ret, jmp
+		- PC-relative addressing
+		- Privileged instructions
+
+__Binary Translation Example__
+- Guest OS Assembly
+```
+do_atomic_operation:
+cli
+mov eax, 1
+xchg eax, [lock_addr]
+test eax, eax
+jnz spinlock
+…
+…
+mov [lock_addr], 0
+sti
+ret
+```
+- Translated Assembly
+```
+do_atomic_operation:
+call [vmm_disable_interrupts]
+mov eax, 1
+xchg eax, [lock_addr]
+test eax, eax
+jnz spinlock
+…
+…
+mov [lock_addr], 0
+call [vmm_enable_interrupts]
+ret
+```
+
+__Pros and Cons__
+- Advantages of binary translation
+	- It makes it safe to virtualize x86 assembly code
+	- Translation occurs dynamically, on demand
+		- No need to translate the entire guest OS
+	- App code running in the guest does not need to be translated
+- Disadvantages
+	- Translation is slow
+	- Wastes memory (duplicate copies of code in memory)
+	- Translation may cause code to be expanded or shortened
+		- Thus, jmp and call addresses may also need to be patched
+
+__Caching Translated Code__
+- Typically, VMMs maintain a cache of translated code blocks
+	- LRU replacement
+- Thus, frequently used code will only be translated once
+	- The first execution of this code will be slow
+	- Other invocations occur at native speed
+
+__Virtualization Performance__
+- Guest code executes on the physical CPU
+- However, that doesn’t mean its as fast as the host OS or native applications
+	1. Guest code must be binary translated
+	2. Shadow page tables must be maintained
+	- Page table updates cause expensive context switches from guest to VMM
+	- Page faults are at least twice as costly to handle 
+
+__Hardware Techniques__
+- Modern x86 chips support hardware extensions designed to improve virtualization performance
+1. Reliable exceptions during privileged instructions
+	- Known as AMD-V and VT-x (Intel)
+	- Released in 2006
+	- Adds vmenter/vmexit instructions (like sysenter/sysret)
+	- allows classic trap-and-emulate
+1. Extended page tables for guests
+	- Known as RVI (AMD) and EPT (Intel)
+	- Adds another layer onto existing page table to map PFN→MFN
+
+__AMD-V and VT-x__
+- Annoyingly, AMD and Intel offer different implementations
+- However, both offer similar functionality
+- vmenter: instruction used by the hypervisor to context switch into a guest
+	- Downgrade CPU privilege to ring 3
+- vmexit: exception thrown by the CPU if the guest executes a privileged instruction
+	- Saves the running state of the guest’s CPU
+	- Context switches back to the VMM
+
+__Configuring vmenter/vmexit__
+- The VMM tells the CPU what actions should trigger vmexit using a VM Control Block (VMCB)
+	- VMCB is a structure defined by the x86 hardware
+	- Fields in the struct tell the CPU what events to trap
+	- Examples: page fault, TLB flush, mov cr3, I/O instructions, access of memory mapped devices, etc.
+- The CPU saves the state of the guest to the VMCB before vmexit
+	- Example: suppose the guest exits due to device I/O
+	- The port, data width, and direction (in/out) of the operation get stored in the VMCB
+
+__Benefits of AMD-V and VT-x__
+- Greatly simplifies VMM implementation
+	- No need for binary translation
+	- Simplifies implementation of shadow page tables
+- Warning: the VMM runs in userland, but use of AMD-V and VT-x requires ring 0 access
+	- Host OS must offer APIs that allow VMMs to configure VMCB and setup callbacks for guest OS exceptions
+	- Example: KVM on Linux
+
+__Problem with AMD-V and VT-x__
+- Some operations are much slower when using vmexit vs. binary translation
+
+__Benefits of AMD-V and VT-x__
+- Greatly simplifies VMM implementation
+	- No need for binary translation
+	- Simplifies implementation of shadow page tables
+- … however, sophisticated VMMs still use binary translation in addition to vmenter/vmexit
+	- VMM observes guest code that causes frequent vmexits
+	- Hot spots may be binary translated or dynamically patched to improve performance
+	- Similar to Just-In-Time (JIT) compilation
+
+__Second Level Address Translation__
+- AMD-V and VT-x help the VMM control guests
+- … but, they don’t address the need for shadow page tables
+- Second level address translation (SLAT) allows the MMU to directly support guest page tables
+	- Intel: Extended Page Tables (EPT)
+	- AMD: Rapid Virtualization Indexing (RVI)
+	- Also known as Two Dimensional Paging (TDP)
+	- Introduced in 2008
+
+__SLAT Implementation__
+- VMM installs first and second level tables in the MMU
+	- Context switch to the guest via vmenter
+- Steps to translate an address:
+	1. MMU queries the level 1 (guest) table
+	2. MMU queries the level 2 (VMM) table
+- If any step yields an invalid PTE then page fault to the VMM (vmexit)
+
+__Advantages of SLAT__
+- Huge performance advantages vs. shadow page tables
+- When guests mov cr3, the CPU updates vmcr3 register
+	- No need to vmexit when guest OS switches context
+- EPT can be filled on-demand or pre-initialized with PFN→MFN entries
+	- On-demand:
+	- Slower, since many address translations will trigger hidden misses
+	- … but hardware pages for the guest can be allocated when needed
+	- And, the EPT table will be smaller
+- Preallocation:
+	- No need to vmexit when the guest OS creates or modifies it’s page tables
+	- … but hardware pages need to be reserved for the guest
+	- And, the EPT table will be larger
+
+__Disadvantages of SLAT__
+- Memory overhead for EPT
+	- … but not as much as shadow page tables
+- TLB misses are twice as costly
+	- SLAT makes page tables twice as deep, hence it takes twice as long to resolve PTEs
+
+__EPT Performance Evaluation__
+- Microbenchmarks by the VMWare team
+- Normalized to shadow page table speeds (1.0)
+	- Lower times are better
