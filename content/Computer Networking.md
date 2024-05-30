@@ -1353,7 +1353,7 @@ __OSPF Operational Mechanisms__
 - **Area Border Routers**: Manage routing data across different OSPF areas, facilitating effective packet delivery across the network’s hierarchical structure.
 
 ## 5.4 Routing Among the ISPs: BGP
-
+![[Pasted image 20240530133028.png|500]]
 __Overview of BGP (Border Gateway Protocol)__
 - **Protocol Type**: _Inter-autonomous system (inter-AS)_ routing protocol.
 	- __INTER__: between AS
@@ -1434,6 +1434,7 @@ __BGP Route-Selection Algorithm__
 
 ## 5.5 The SDN Control Plane
 
+![[Pasted image 20240530133118.png|400]]
 __Overview of the SDN Control Plane__
 - **Purpose**: Control packet forwarding among SDN-enabled devices and manage device configuration and services.
 - **Key Components**: Divided into the data plane (network switches) and the control plane (servers and software).
@@ -1450,6 +1451,8 @@ __SDN Control Plane Components__
 
 ### 5.5.1 The SDN Control Plane: SDN Controller and SDN Network-control Applications
 
+__Controller's functionality in 3 layers__
+![[Pasted image 20240530133257.png|300]]
 - **Communication Layer**: Facilitates information transfer between the controller and network devices, including event notifications (known as the southbound interface).
 - **Network-Wide State-Management Layer**: Maintains comprehensive state information necessary for configuring network-wide flow tables and other control functions.
 - **Interface to Network-Control Applications**: Provides an API (northbound interface) for applications to interact with the network state and control decisions.
@@ -1478,7 +1481,7 @@ __Evolution of SDN__
 - **Packet-In**: Sends packets to the controller that do not match any flow table entries for further processing.
 
 ### 5.5.3 Data and Control Plane Interaction: An Example
-
+![[Pasted image 20240530133347.png|300]]
 **Scenario**: Utilizes Dijkstra’s algorithm for shortest path routing in an SDN environment.
 **Process**:
 1. **Link Failure Notification**: Switch s1 reports a failed link to s2 via OpenFlow port-status message to the SDN controller.
@@ -1504,6 +1507,7 @@ ___EXAM! 이 부분 퀴즈 시험예정(원래는 false 하지만 문제가 이�
 - Growth in SDN controllers, moving from proprietary to more open-source models in collaboration with the Linux Foundation.
 
 __OpenDaylight (ODL) Controller__
+![[Pasted image 20240530133435.png|400]]
 - **Basic Components and Structure**:
 	- **Basic Network Functions**: Core of the controller, managing network-wide state.
 	- **Service Abstraction Layer (SAL)**: Acts as the central hub for communication between controller components and external applications, providing a uniform interface to various protocols.
@@ -1515,6 +1519,7 @@ __OpenDaylight (ODL) Controller__
 	- **Model-Driven (MD-SAL)**: Later approach using the YANG data modeling language for device and network management through NETCONF protocol.
 
 __ONOS Controller__
+![[Pasted image 20240530133506.png|400]]
 - **Architectural Overview**:
 	- Presented as a three-layer model:
 	    1. **Northbound Abstractions and Protocols**: Includes an intent framework allowing applications to request high-level services without knowing underlying details.
@@ -1618,11 +1623,14 @@ __Overview of Error-Detection and Correction__
 __Techniques for Error Detection and Correction__
 - **Parity Checks**:
 	- **Single-bit Parity**: Adds one bit to data to make the number of 1s even (even parity) or odd (odd parity). Simple but can miss errors if an even number of bits are flipped.
+	  ![[Pasted image 20240530133916.png|200]]
 	- **Two-dimensional Parity**: Organizes data into a matrix of rows and columns, computing parity for each, enhancing error detection and enabling correction of single-bit errors.
+	  ![[Pasted image 20240530134003.png|300]]
 - **Checksumming Methods**:
 	- Data treated as sequence of k-bit integers; sum used for error detection.
 	- **Internet checksum**: Based on 1s complement of sums; utilized in TCP, UDP, and IP for error detection.
 - **Cyclic Redundancy Check (CRC)**:
+  ![[Pasted image 20240530134036.png|400]]
 	- Polynomial code-based technique where data is viewed as a polynomial.
 	- Involves appending r bits to data so the combined data is divisible by a predefined polynomial (generator G) using modulo-2 arithmetic, enabling robust error detection.
 
@@ -1675,6 +1683,7 @@ __The Multiple Access Problem__
 - **Code Division Multiple Access (CDMA)**: Assigns unique codes to each node allowing simultaneous transmissions.
 
 **Illustration**:
+![[Pasted image 20240530134507.png|300]]
 - **TDM Example**: If N nodes are connected, each node gets one slot per frame to transmit, ensuring all have a chance without collision.
 - **FDM and CDMA**: Similar in sharing but use frequencies and codes, respectively, for data transmission.
 
@@ -1695,6 +1704,7 @@ Here's how your note-taking format might look for the section on random access p
 **Definition**: Random access protocols allow nodes to transmit at the full rate of the channel, R bps, and employ a collision resolution mechanism where each node involved in a collision retransmits its frame after a random delay.
 
 __Slotted ALOHA__
+![[Pasted image 20240530134528.png|400]]
 - **Frame Size**: Frames are of size L bits.
 - **Time Slots**: Transmission time is divided into slots of size L/R seconds.
 - **Transmission Rules**:
@@ -1707,8 +1717,10 @@ __Slotted ALOHA__
 	- prob any node has success in slot: $Np(1-p)^{N-1}$
 	- find p that maximizes $Np(1-p)^{N-1}$
 	- $(1-p)^{N-1}-(N-1)p(1-p)^{N-2}=(1-p-(N-1)p)(1-p)^{N-2}=0$
+	  $p=\frac{1}{N}$
 
 __Pure ALOHA__
+![[Pasted image 20240530134545.png|400]]
 - **Decentralization**: Fully decentralized; nodes transmit immediately upon receiving a frame.
 - **Collision Handling**: After a collision, a node retransmits the frame with a probability p after waiting for one frame transmission time.
 - **Maximum Efficiency**: Half of slotted ALOHA, at 1/(2e) due to increased collision possibilities.
@@ -1718,6 +1730,7 @@ __Basic CSMA__
 - **Collision Detection**: Nodes stop transmitting when they detect another transmission interfering.
 
 __CSMA with Collision Detection (CSMA/CD)__
+![[Pasted image 20240530134814.png|300]]
 - **Operation**: Nodes perform carrier sensing and abort transmission immediately upon detecting a collision.
 - **Binary Exponential Backoff**: Post-collision, nodes wait a random backoff time determined by the number of collisions encountered.
 - **Efficiency Variables**:
@@ -1769,6 +1782,7 @@ __Token-Passing Protocol__
 
 ### 6.3.4 DOCSIS: The Link-Layer Protocol for Cable Internet Access
 
+![[Pasted image 20240530134856.png|500]]
 **Cable Access Networks**:
 - Connects thousands of residential modems to a Cable Modem Termination System (CMTS) using the DOCSIS standard.
 - **Downstream and Upstream Channels**:
@@ -1796,7 +1810,9 @@ __Integration of Multiple Access Protocols__
 
 ## 6.4 Switched Local Area Networks
 
+![[Pasted image 20240530134931.png|500]]
 ### 6.4.1 Link-Layer Addressing and ARP
+![[Pasted image 20240530134957.png|250]]
 
 __MAC Addresses__
 - **Adapters have MAC addresses**: Hosts and routers use multiple network and MAC addresses; link-layer switches, however, do not have MAC addresses for interfaces connected to hosts and routers.
@@ -1805,6 +1821,7 @@ __MAC Addresses__
 - **Structure and notation**: Flat addressing structure; 6-byte long, expressed in hexadecimal format (e.g., AB-CD-EF-01-23-45).
 
 __Address Resolution Protocol (ARP)__
+![[Pasted image 20240530135022.png|400]]
 - **Function**: Converts network-layer IP addresses to link-layer MAC addresses.
 - **Scope**: Operates only within the same subnet; would error out if used for nodes on different subnets.
 - **Mechanism**: 
@@ -1880,6 +1897,7 @@ __Detailed Switch Operations: Forwarding and Filtering__
 	- **Forwarding**: If the table points to a different interface than the incoming one for a given MAC address, the frame is forwarded to that interface. Frames with no specific table entry are broadcast to all interfaces except the source.
 
 __Self-Learning Capabilities of Switches__
+![[Pasted image 20240530135206.png|400]]
 - **Automatic Table Configuration**: Switches autonomously populate their switch table based on incoming frames, which prevents the need for manual configuration:
 	1. **Initial State**: The switch table starts empty.
 	2. **Learning Process**: Each incoming frame leads to a new entry or updates an existing entry in the switch table with the frame's source MAC address, the receiving interface, and the time of reception.
@@ -1889,13 +1907,15 @@ __Self-Learning Capabilities of Switches__
 - **Example of Self-Learning**:
 	- Suppose a frame from MAC address 01-12-23-34-45-56 arrives on interface 2 at 9:39. If this address is not already in the switch table, the switch adds it with the current timestamp.
 
-__Benefits and Features of Link-Layer Switches__
+__Benefits and Features of Link-Layer Switches
+![[Pasted image 20240530135328.png|400]]__
 - **Advantages**:
 	- **Collision Avoidance**: By managing frame transmissions and buffering, switches eliminate collisions and maximize available bandwidth.
 	- **Support for Diverse Link Types**: Switches can handle different speeds and types of media, enabling a mix of legacy and modern equipment within the same network.
 	- **Enhanced Network Management**: Switches can autonomously manage issues such as faulty adapters and cable problems without manual intervention, significantly reducing network downtime and maintenance.
 
 __Comparative Analysis: Switches vs. Routers__
+![[Pasted image 20240530135359.png|500]]
 - **Functional Differences**:
 	- **Layer Operation**: Switches operate at Layer 2 using MAC addresses for decisions, whereas routers operate at Layer 3 and use IP addresses.
 	- **Data Handling**: Switches perform store-and-forward packet switching up to Layer 2, whereas routers process up through Layer 3, adding more overhead.
@@ -1908,6 +1928,7 @@ __Comparative Analysis: Switches vs. Routers__
 
 ### 6.4.4 Virtual Local Area Networks (VLANs)
 
+![[Pasted image 20240530135420.png|400]]
 __Context and Network Challenges__
 - **Hierarchical LAN Configuration**: Institutional LANs structured with departmental switched LANs linked via a switch hierarchy.
 - **Identified Drawbacks**:
@@ -1930,6 +1951,7 @@ __VLAN Isolation and Inter-VLAN Communication__
 - **Integrated Switch-Routers**: Modern solutions often include combined VLAN switch and router hardware for streamlined management.
 
 __VLAN Extension and Management__
+![[Pasted image 20240530135559.png|500]]
 - **Extended VLANs**: Connecting remote users to their respective department VLANs.
 - **Scalable Interconnection - VLAN Trunking**:
 	- **Concept**: Use trunk ports to interconnect VLAN switches, carrying frames for all VLANs across a single port.
@@ -1958,7 +1980,7 @@ __Standards and Future Directions__
 3. Cloud computing for external companies (e.g., AWS, Azure, Alibaba Cloud).
 
 ### 6.6.1 Data Center Architectures
-
+![[Pasted image 20240530135714.png|400]]
 **Design and Costs**:
 - Designs are proprietary and costly (e.g., $12 million/month for a 100,000 host data center in 2009).
 - Cost breakdown:
@@ -2057,7 +2079,7 @@ Before diving into the topical chapters in the second part of this book, we take
 **Scenario**: Bob connects his laptop to his school's Ethernet switch and downloads a web page from www.google.com. This process involves multiple protocols working together.
 
 ### 6.7.1 Getting Started: DHCP, UDP, IP, and Ethernet
-
+![[Pasted image 20240530135940.png|400]]
 **Initial Setup**:
 - Bob connects his laptop to an Ethernet cable linked to the school’s Ethernet switch.
 - The switch connects to the school’s router, which connects to an ISP (comcast.net).
@@ -2223,6 +2245,7 @@ Before diving into the topical chapters in the second part of this book, we take
 - Encodes each bit by multiplying it by a fast-changing signal (the code).
 
 **CDMA Encoding and Decoding**:
+![[Pasted image 20240530140407.png|400]]
 - **Encoding**: Each bit is multiplied by a sequence of values (the code) that changes faster than the data bits.
 - **Decoding**: The receiver recovers the original data by multiplying the received encoded bits by the same code.
 
@@ -2237,6 +2260,7 @@ Before diving into the topical chapters in the second part of this book, we take
 
 **Example**:
 - Two senders using different CDMA codes:
+  ![[Pasted image 20240530140436.png|400]] 
 	- Sender 1: Code (1, 1, 1, -1, 1, -1, -1, -1)
 	- Sender 2: Code (1, -1, 1, 1, 1, -1, 1, 1)
 - The receiver can decode the data from sender 1 despite the interference from sender 2.
@@ -2251,6 +2275,7 @@ Before diving into the topical chapters in the second part of this book, we take
 
 ## 7.3 WiFi: 802.11 Wireless LANs
 
+![[Pasted image 20240530140517.png|500]]
 **Pervasiveness**:
   - Widely used in workplaces, homes, educational institutions, cafés, airports, and public places.
   - Crucial access network technology in today's Internet.
@@ -2298,6 +2323,7 @@ __Physical Layer Differences__
 
 ### 7.3.1 The 802.11 Wireless LAN Architecture
 
+![[Pasted image 20240530140554.png|400]]
 **Principal Components**:
 - **Basic Service Set (BSS)**: Fundamental building block containing wireless stations and a central base station (Access Point, AP).
 - **Access Point (AP)**: Connects BSS to the Internet via interconnection devices (e.g., switch or router).
@@ -2321,6 +2347,7 @@ __Channels and Association__
 	- **Alternative Selection Methods**: Various algorithms exist to choose APs based on factors beyond signal strength.
 
 __Scanning Methods__
+![[Pasted image 20240530140625.png|500]]
 - **Passive Scanning**:
 	- Devices scan channels and listen for beacon frames.
 - **Active Scanning**:
@@ -2339,7 +2366,7 @@ __Authentication__
 	- **IEEE 802.11i**: New protocol defining security aspects, follows centralized authentication approach.
 
 ### 7.3.2 The 802.11 MAC Protocol
-
+![[Pasted image 20240530140710.png|200]]
 __Association with AP__
 - **Process**: Wireless device associates with an Access Point (AP).
 - **Multiple Access Protocol**: Needed to coordinate transmissions from multiple devices/APs over the same channel.
@@ -2364,6 +2391,7 @@ __Collision Avoidance Techniques__
 	4. **Acknowledgment**: Wait for acknowledgment; if received, proceed; otherwise, reenter backoff.
 
 __Hidden Terminals: RTS/CTS Scheme__
+![[Pasted image 20240530140746.png|300]]
 - **Purpose**: To avoid collisions in the presence of hidden terminals.
 - **Process**:
 	1. **RTS Frame**: Sender requests to send data.
@@ -2372,41 +2400,37 @@ __Hidden Terminals: RTS/CTS Scheme__
 	- Mitigates hidden station problem.
 	- Reduces collision duration.
 - **Usage**: Typically for long data frames due to introduced delay and resource consumption.
+  ![[Pasted image 20240530140839.png|400]]
 
 __Point-to-Point Link__
 - **Directional Antennas**: Can use 802.11 protocol over a point-to-point link.
 - **Applications**: Inexpensive wireless point-to-point connections over long distances.
 
 __Detailed Process Breakdown__
-
 **1. Channel Sensing and Idle Detection**:
 - Station senses the channel.
 - If idle, waits DIFS then transmits.
-
 **2. Backoff Mechanism**:
 - If busy, station waits using binary exponential backoff.
 - Countdown starts when channel is idle.
 - Transmits when countdown reaches zero.
-
 **3. Frame Transmission**:
 - Transmit entire frame without collision detection.
 - Wait for acknowledgment from receiver.
-
 **4. Acknowledgment Handling**:
 - If acknowledgment received, proceed to next frame.
 - If not, retransmit using backoff.
-
 **5. RTS/CTS for Collision Avoidance**:
 - Sender sends RTS to AP.
 - AP responds with CTS.
 - Other stations defer transmission upon receiving CTS.
-
 **6. Point-to-Point 802.11 Links**:
 - Directional antennas create a point-to-point connection.
 - Enables long-distance, low-cost wireless connections.
 
 ### 7.3.3 The IEEE 802.11 Frame
 
+![[Pasted image 20240530140909.png|400]]
 **Overview**:
 - Similar to Ethernet frames, but with additional fields for wireless links.
 - Frame fields include payload, CRC, address fields, sequence number, duration, and frame control.
@@ -2587,6 +2611,7 @@ __Additional Resources__
 
 ### 7.4.1 4G LTE Cellular Networks: Architecture and Elements
 
+![[Pasted image 20240530141018.png|500]]
 __Mobile Device (User Equipment, UE)__
 - **Function**: Connects to the cellular carrier’s network.
 - **Applications**: Web browsers, map apps, voice/video apps, mobile payment apps.
@@ -2618,6 +2643,7 @@ __Serving Gateway (S-GW) and Packet Data Network Gateway (P-GW)__
 	- Last LTE element before Internet.
 - **Network Role**: Hides mobility of mobile nodes from the outside world.
 
+![[Pasted image 20240530141228.png|400]]
 __Mobility Management Entity (MME)__
 - **Role**: Control-plane element.
 - **Functions**:
@@ -2673,6 +2699,7 @@ __Cell Location Tracking__
 
 ### 7.4.3 LTE Radio Access Network
 
+![[Pasted image 20240530141347.png|400]]
 **Orthogonal Frequency Division Multiplexing (OFDM)**:
 - Uses frequency division and time division multiplexing on the downstream channel.
 - Allocates 0.5 ms time slots in one or more channel frequencies to mobile devices.
@@ -2717,6 +2744,7 @@ __Power Management: Sleep Modes__
 
 ### 7.4.5 The Global Cellular Network: A Network of Networks
 
+![[Pasted image 20240530141639.png|400]]
 **Overview**:
   - The global cellular network is a "network of networks" similar to the Internet.
   - A user’s mobile device connects via a 4G base station to the home network, operated by carriers like Verizon, AT&T, T-Mobile, etc.
@@ -2864,6 +2892,7 @@ __Approaches to Routing in Mobile Networks__
 
 __Routing Approaches__
 1. **Indirect Routing to a Mobile Device**:
+   ![[Pasted image 20240530145950.png|400]]
 	- **Process**:
 		- Correspondent sends a datagram to the mobile device’s permanent address.
 		- Home network’s gateway intercepts and forwards the datagram to the visited network.
@@ -2881,24 +2910,24 @@ __Routing Approaches__
 	- **Continuity**:
 		- Update home network HSS and tunnel endpoint when the device moves to a new network.
 		- Minimal datagram loss if the transition time between networks is small.
-
 2. **Direct Routing to a Mobile Device**:
-   - **Process**:
-     - Correspondent queries HSS to find the mobile device’s visited network.
-     - Correspondent tunnels datagrams directly to the visited network.
-   - **Challenges**:
-     - Requires a mobile-user location protocol for querying HSS.
-     - Protocols needed to update the correspondent when the mobile device moves between visited networks.
-   - **Advantage**: Avoids the triangle routing problem, providing a more efficient route.
+   ![[Pasted image 20240530150005.png|400]]
+	   - **Process**:
+	     - Correspondent queries HSS to find the mobile device’s visited network.
+	     - Correspondent tunnels datagrams directly to the visited network.
+	   - **Challenges**:
+	     - Requires a mobile-user location protocol for querying HSS.
+	     - Protocols needed to update the correspondent when the mobile device moves between visited networks.
+	   - **Advantage**: Avoids the triangle routing problem, providing a more efficient route.
 
 ## 7.6 Mobility Management in Practice
 
 **Introduction**:
 - Key challenges and solutions for device mobility:
-  - Home and visited networks
-  - Home network as central information and control hub
-  - Control-plane functions for tracking roaming devices
-  - Data-plane approaches: direct and indirect routing
+	- Home and visited networks
+	- Home network as central information and control hub
+	- Control-plane functions for tracking roaming devices
+	- Data-plane approaches: direct and indirect routing
 
 **Focus**:
 - Mobility management in 4G/5G networks
@@ -2910,8 +2939,8 @@ __Routing Approaches__
 - 4G/5G networks build on 3G and 2G networks
 - Focus on interoperability of network elements for mobility services
 
+![[Pasted image 20240530150037.png|400]]
 **Scenario**: Mobile user moving between 4G/5G base stations while streaming HD video.
-
 __Steps in Mobility Management:__
 1. **Mobile device and base station association**:
 	- Device listens to base station signals and selects one
@@ -3020,9 +3049,294 @@ __Transport Layer Protocols in Wireless Networks__
 
 __Application Layer Protocols in Wireless Networks__
 - **Bandwidth Considerations**:
-  - Bandwidth is a scarce commodity in wireless links, especially cellular links.
-  - Applications must adapt content delivery (e.g., image-rich content) to the available bandwidth on wireless connections.
+	- Bandwidth is a scarce commodity in wireless links, especially cellular links.
+	- Applications must adapt content delivery (e.g., image-rich content) to the available bandwidth on wireless connections.
 - **Opportunities in Mobility**:
-  - Mobility enables location-aware and context-aware applications.
-  - Rich potential for future ubiquitous computing environments.
-  - Research and potential developments are still in early stages, indicating much more impact to come.
+	- Mobility enables location-aware and context-aware applications.
+	- Rich potential for future ubiquitous computing environments.
+	- Research and potential developments are still in early stages, indicating much more impact to come.
+
+# Security in Computer Networks
+## 8.1 What Is Network Security?
+
+__Introduction__
+- **Scenario**: Alice and Bob want to communicate securely over an insecure medium.
+- **Threat**: Intruder (Trudy) may intercept communications.
+- **Goals**:
+	- Ensure only Bob can understand Alice's message.
+	- Bob verifies the message is from Alice.
+	- Messages are not altered in transit.
+	- Ensure communication resources are accessible.
+
+__Desirable Properties of Secure Communication__
+- **Confidentiality**:
+	- Only sender and receiver understand the message.
+	- Messages are encrypted to prevent eavesdropping.
+	- Focus on cryptographic techniques (Section 8.2).
+- **Message Integrity**:
+	- Ensure communication is not altered maliciously or accidentally.
+	- Uses checksumming techniques (Section 8.3).
+- **End-point Authentication**:
+	- Confirm identities of communicating parties.
+	- Example: Verifying user identity when accessing an inbox (Section 8.4).
+- **Operational Security**:
+	- Protect organizational networks connected to the public Internet.
+	- Counter threats like worms, data theft, network mapping, and DoS attacks.
+	- Use of firewalls and intrusion detection systems (Section 8.9).
+
+__Intruder Capabilities and Threats__
+- **Intruder Actions**:
+	- **Eavesdropping**: Sniffing and recording control/data messages.
+	- **Modification**: Inserting, altering, or deleting messages.
+- **Potential Attacks**:
+	- **Snooping**: Stealing passwords and data.
+	- **Impersonation**: Pretending to be another entity.
+	- **Session Hijacking**: Taking over an ongoing session.
+	- **Denial of Service (DoS)**: Overloading system resources to deny service.
+- **Real-world Threats**:
+	- **Reported Attacks**: Maintained at the CERT Coordination Center.
+
+__Real-world Examples of Secure Communication Needs__
+- **Human Users**: Secure email between real individuals.
+- **E-commerce**: Secure credit card transactions.
+- **Online Banking**: Secure interactions with banks.
+- **Network Infrastructure**: Secure DNS lookups, routing information exchange, network management.
+
+__Importance of Cryptography__
+- **Central Role**:
+	- Provides confidentiality, end-point authentication, and message integrity.
+	- Essential to network security.
+
+## 8.2 Principles of Cryptography
+
+**Historical Context**:
+  - Cryptography dates back to Julius Caesar.
+  - Modern techniques have advanced significantly in the past 30 years.
+  - For detailed history, see Kahn’s "The Codebreakers" [Kahn 1967] and Singh’s "The Code Book" [Singh 1999].
+  - Comprehensive discussions on cryptography can be found in [Bishop 2003; Kaufman 2002; Schneier 2015].
+
+**Scope**:
+  - Focuses on essential aspects of cryptography as practiced on the Internet.
+  - Cryptographic techniques are integral to confidentiality, authentication, message integrity, nonrepudiation, etc.
+
+**Basic Concepts**:
+  - **Purpose**: Allows a sender to disguise data to prevent information interception by intruders.
+  - **Receiver's Role**: Must be able to recover original data from the disguised data.
+  - **Terminology**:
+    - **Plaintext/Cleartext**: Original message (e.g., “Bob, I love you. Alice”).
+    - **Ciphertext**: Encrypted, unintelligible message to intruders.
+    - **Encryption Algorithm**: The known, published method for encoding data (e.g., [RFC 1321; RFC 3447; RFC 2420; NIST 2001]).
+    - **Keys**: Secret information preventing intruders from decrypting data.
+
+**Encryption and Decryption Process**:
+  - **Encryption**:
+    - Sender (Alice) provides a key (KA) to the encryption algorithm.
+    - Algorithm takes the key and plaintext message (m) to produce ciphertext (KA(m)).
+  - **Decryption**:
+    - Receiver (Bob) provides a key (KB) to the decryption algorithm.
+    - Algorithm takes the ciphertext and Bob’s key to produce the original plaintext (KB(KA(m)) = m).
+
+**Key Systems**:
+  - **Symmetric Key Systems**:
+    - Both Alice and Bob use identical, secret keys.
+  - **Public Key Systems**:
+    - Uses a pair of keys: one public (known to everyone) and one private (known only to the owner).
+
+### 8.2.1 Symmetric Key Cryptography
+
+__Overview__
+- **Cryptographic Algorithms**: Substitute plaintext with ciphertext to create encrypted messages.
+- **Caesar Cipher**: Substitutes each letter in plaintext with a letter k positions later in the alphabet. Example: For k = 3, "bob, i love you. Alice" becomes "ere, l oryh brx. dolfh". Limited security with only 25 possible keys.
+- **Monoalphabetic Cipher**: Each letter is uniquely substituted with another letter. More secure than Caesar cipher with 26! (≈10^26) possible pairings. Vulnerable to statistical analysis of letter frequency.
+  ![[Pasted image 20240530151949.png|400]]
+
+__Attack Scenarios__
+1. **Ciphertext-only attack**: Intruder has only the ciphertext.
+	- Uses statistical analysis to deduce plaintext.
+2. **Known-plaintext attack**: Intruder knows some plaintext-ciphertext pairs.
+	- Example: Knowing "bob" and "alice" appear in the text helps break the code.
+3. **Chosen-plaintext attack**: Intruder can choose plaintext and obtain ciphertext.
+	- Example: Encrypting "The quick brown fox jumps over the lazy dog" can break simple encryption schemes.
+
+__Polyalphabetic Encryption__
+- **Improvement**: Uses multiple monoalphabetic ciphers.
+- **Example**: Alternates between two Caesar ciphers (k=5 and k=19) in a pattern. Example: "bob, i love you." becomes "ghu, n etox dhz".
+  ![[Pasted image 20240530152017.png|400]]
+- **Key**: Knowledge of the specific ciphers and the pattern used.
+
+__Modern Symmetric Key Encryption__
+__Block Ciphers__
+- **Definition**: Encrypts message in k-bit blocks independently.
+- **Example**: For k=3, maps 3-bit cleartext to 3-bit ciphertext.
+  ![[Pasted image 20240530152038.png|400]]
+- **Key Space**: For k=3, 8 possible inputs can be permuted in 8! (40,320) ways.
+- **Brute-force Attack**: Feasible for small k but infeasible for larger k like 64 bits due to 2^k! possible mappings.
+
+__Practical Block Ciphers__
+- **Function**: Simulate randomly permuted tables using manageable size tables and permutations.
+- **Example**: 64-bit block cipher breaks block into 8-bit chunks, processes each with a table, scrambles positions, and repeats.
+- **Popular Ciphers**: DES (64-bit block, 56-bit key), AES (128-bit block, 128/192/256-bit keys).
+- **Brute-force Attack**: Infeasible for large keys (e.g., 128-bit AES key).
+
+__Cipher-Block Chaining (CBC)__
+- **Problem**: Identical plaintext blocks produce identical ciphertext blocks.
+- **Solution**: Introduce randomness to ensure different ciphertext blocks.
+- **Example**: Using a random k-bit number r(i) for each block.
+	- Encrypt: c(i) = KS(m(i) ⊕ r(i))
+	- Decrypt: m(i) = KS(c(i)) ⊕ r(i)
+- **Bandwidth Issue**: Transmitting random bits doubles required bandwidth.
+- **CBC Mechanism**:
+	1. Generate and send a random Initialization Vector (IV) in cleartext.
+	2. Calculate c(1) = KS(m(1) ⊕ IV).
+	3. For subsequent blocks, c(i) = KS(m(i) ⊕ c(i-1)).
+- **Advantages**: Different ciphertext for identical plaintext blocks, minimal bandwidth overhead.
+- **Example**: For a 3-bit block cipher, plaintext "010010010" and IV="001" produce ciphertext blocks "100", "000", and "101".
+
+__Implications for Secure Protocols__
+- Need a mechanism to distribute the IV from sender to receiver.
+- Essential for protocols like PGP, TLS, and IPsec.
+
+### 8.2.2 Public Key Encryption
+
+![[Pasted image 20240530152105.png|500]]
+__Introduction to Public Key Encryption__
+- **Historical Context**:
+	- Encrypted communication traditionally required a shared symmetric key.
+	- Challenges included securely agreeing on the key, especially over a network.
+	- Diffie-Hellman Key Exchange (1976) revolutionized secure communication, leading to public key cryptography.
+
+__Concept of Public Key Cryptography__
+- **Key Elements**:
+  - Each party has a public key (KB+) available to everyone and a private key (KB-) known only to the owner.
+  - Example: Alice encrypts a message (m) to Bob using Bob’s public key: KB+(m). Bob decrypts it with his private key: KB-(KB+(m)) = m.
+  - Remarkable property: KB-(KB+(m)) = m and KB+(KB-(m)) = m.
+
+__Authentication Concern__
+- **Issue**: Public key cryptography does not inherently verify the sender's identity.
+- **Solution**: Digital signatures bind the sender to the message (explored in Section 8.3).
+
+__RSA Algorithm__
+- **Founders**: Ron Rivest, Adi Shamir, Leonard Adleman.
+- **Modular Arithmetic**:
+	- Operations involve addition, multiplication, and exponentiation modulo-n.
+	- Important identities: (a mod n)d mod n = ad mod n.
+
+__RSA Key Generation__
+1. **Choose Two Primes**: p and q.
+2. **Compute**: n = pq and z = (p - 1)(q - 1).
+3. **Select e**: A number less than n, relatively prime to z.
+4. **Find d**: Such that ed mod z = 1.
+5. **Public Key**: (n, e).
+6. **Private Key**: (n, d).
+
+__RSA Encryption/Decryption__
+- **Encryption**: c = me mod n (Alice to Bob).
+- **Decryption**: m = cd mod n (Bob decrypts).
+  ![[Pasted image 20240530152146.png|400]]
+  ![[Pasted image 20240530152202.png|400]]
+
+
+__RSA Example__
+- **Example Values**: p = 5, q = 7, n = 35, z = 24, e = 5, d = 29.
+- **Message Encryption**: Example of letters 'l', 'o', 'v', 'e' encrypted and decrypted using RSA.
+
+__Practical Considerations__
+- **Large Primes**: Needed for security, e.g., product of p and q ~ 1024 bits.
+- **Exponentiation**: Time-consuming, hence often used with symmetric key cryptography for large data.
+
+__Session Keys__
+- **Usage**: RSA used to encrypt a session key (KS), which is then used for symmetric key encryption of data.
+
+__Why RSA Works__
+- **Mathematical Basis**:
+	- Encryption: c = me mod n.
+	- Decryption: m = cd mod n.
+	- Fundamental property: med mod n = m.
+	- Proof: Uses modular arithmetic properties and the relationship ed mod z = 1.
+
+__Security of RSA__
+- **Basis**: Difficulty of factoring n into p and q.
+- **Concerns**: Quantum computing may threaten RSA's security in the future, but practical implementation is still distant.
+
+__Diffie-Hellman Algorithm__
+- **Overview**: Another public-key algorithm used to establish symmetric session keys.
+- **Limitation**: Cannot encrypt messages of arbitrary length, used for key exchange.
+
+## 8.3 Message Integrity and Digital Signatures
+
+**Overview**
+- Focus on message integrity (message authentication), digital signatures, and end-point authentication.
+- Importance: Verifying the sender and ensuring no tampering of messages.
+
+**Message Integrity Problem**
+- Example: Bob receives a message believed to be from Alice.
+- Goals:
+	1. Verify the message originated from Alice.
+	2. Ensure the message was not tampered with.
+
+### 8.3.1 Cryptographic Hash Functions
+
+**Definition and Properties**
+- Hash function: Computes a fixed-size string H(m) from input m.
+- Required property: It is computationally infeasible to find two different messages x and y such that H(x) = H(y).
+
+**Example and Limitations**
+- Internet checksum and CRCs are simple but not suitable for security.
+- Example: Simple checksums can lead to collisions (e.g., “IOU100.99BOB” and “IOU900.19BOB” have the same checksum).
+
+**Advanced Hash Algorithms**
+- **MD5**: Computes a 128-bit hash; involves padding, appending message length, initialization, and looping steps.
+- **SHA-1**: Computes a 160-bit message digest; more secure due to longer output length.
+
+### 8.3.2 Message Authentication Code (MAC)
+
+**Concept**
+- Combines message m with a shared secret s to create a MAC: H(m + s).
+- Ensures message integrity without requiring encryption.
+
+**Procedure**
+1. Alice creates message m, concatenates s, and computes H(m + s).
+2. Alice sends (m, H(m + s)) to Bob.
+3. Bob computes H(m + s) and verifies it matches the received MAC.
+
+**Standards**
+- **HMAC**: Popular standard, uses MD5 or SHA-1, processes data and key twice through the hash function.
+
+**Key Distribution**
+- Shared authentication key distribution methods:
+	- Physically visiting each router.
+	- Encrypting the key with each router’s public key and sending it over the network.
+
+### 8.3.3 Digital Signatures
+
+**Purpose**
+- Signatures authenticate the creator of a document and signify agreement with its contents.
+
+**Mechanism**
+- Uses public-key cryptography.
+- Bob signs a document m using his private key: KB-(m).
+- Verification: Alice uses Bob’s public key to check the signature.
+
+**Efficiency**
+- Signing the hash of a message (H(m)) rather than the entire message to reduce computational effort.
+
+**Comparison with MACs**
+- MACs: Use shared secret keys, no encryption.
+- Digital signatures: Use private/public key pairs, more secure, involve PKI (Public Key Infrastructure).
+
+**Public Key Certification**
+- **Purpose**: Verify public key ownership.
+- **Certification Authority (CA)** roles:
+	1. Verify the entity’s identity.
+	2. Issue a certificate binding the entity's identity to its public key.
+- **Standards**: ITU X.509 and IETF RFC 1422.
+
+**Example Scenario**
+- **Pizza Prank**:
+	- Trudy pretends to be Bob, uses her public key, and signs a message.
+	- Alice mistakenly verifies the signature with Trudy’s public key.
+	- Solution: Use CA-signed certificates to verify true public keys.
+
+**Operational Procedure**
+- Bob sends CA-signed certificate with his order.
+- Alice verifies the certificate using the CA’s public key and extracts Bob’s true public key.

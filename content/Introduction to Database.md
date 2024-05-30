@@ -3598,11 +3598,13 @@ __Pipeline__
 3. Post Processing: Sometimes, the vector database retrieves the final nearest neighbors from the dataset and post-processes them to return the final results
 
 __Indexing | Random Projection__
+![[Pasted image 20240530131717.png|500]]
 - The basic idea behind random projection is to project the high-dimensional vectors to a lower-dimensional space using a random projection matrix
 - We then calculate the dot product of the input vectors and the matrix, which results in a projected matrix of a lower-dimensionality
 - When we query, we use the same projection matrix to project the query vector onto the lower-dimensional space
 
-__Indexing | Product Quantization__
+__Indexing | Product Quantization
+![[Pasted image 20240530131742.png|500]]__
 - Product quantization (PQ) takes the original vector, breaks it up into smaller chunks, simplifies the representation of each chunk by creating a representative “code” for each chunk, and then puts all the chunks back together—without losing information that is vital for similarity operations
 - The process of PQ can be broken down into four steps: splitting, training, encoding, and querying.
 	1. Splitting: The vectors are broken into segments
@@ -3610,13 +3612,16 @@ __Indexing | Product Quantization__
 	3. Encoding: The algorithm assigns a specific code to each segment
 	4. Querying: When we query, the algorithm breaks down the vectors into sub-vectors and quantizes them using the same codebook; then, it uses the indexed codes to find the nearest vectors to the query vector
 
-__Indexing | Locality-Sensitive Hashing__
+__Indexing | Locality-Sensitive Hashing
+![[Pasted image 20240530131758.png|200]]__
 - Locality-Sensitive Hashing (LSH) maps similar vectors into “buckets” using a set of hashing functions
 	-  To find the nearest neighbors for a given query vector, we use the same hashing functions used to “bucket” similar vectors into hash tables
 	-  The query vector is hashed to a particular table and then compared with the other vectors in that same table to find the closest matches
 - This method is much faster than searching through the entire dataset because there are far fewer vectors in each hash table
 
- Indexing | Hierarchical Navigable Small World (HNSW)
+![[Pasted image 20240530131851.png|500]]
+
+__Indexing | Hierarchical Navigable Small World (HNSW)__
 - HNSW creates a hierarchical, tree-like structure where each node of the tree represents a set of vectors
 - The edges between the nodes represent the similarity between the vectors
 - The algorithm starts by creating a set of nodes, each with a small number of vectors
@@ -3624,7 +3629,7 @@ __Indexing | Locality-Sensitive Hashing__
 - The algorithm then examines the vectors of each node and draws an edge between that node and the nodes that have the most similar vectors to the one it has
 - When we query an HNSW index, it uses this graph to navigate through the tree, visiting the nodes that are most likely to contain the closest vectors to the query vector\
 
-Querying | Similarity Measures
+__Querying | Similarity Measures__
 - Cosine similarity: measures the cosine of the angle between two vectors in a vector space
 - It ranges from -1 to 1, where 1 represents identical vectors, 0 represents orthogonal vectors, and -1 represents vectors that are diametrically opposed
 - Euclidean distance: measures the straight-line distance between two vectors in a vector space
@@ -3632,12 +3637,15 @@ Querying | Similarity Measures
 - Dot product: measures the product of the magnitudes of two vectors and the cosine of the angle between them
 - It ranges from -∞ to ∞, where a positive value represents vectors that point in the same direction, 0 represents orthogonal vectors, and a negative value represents vectors that point in opposite directions
   
-Post Processing | Filtering
+__Post Processing | Filtering__
+![[Pasted image 20240530131910.png|300]]
 - In addition to the ability to query for similar vectors, vector databases can also filter the results based on a metadata query
 - To do this, the vector database usually maintains two indexes: a vector index and a metadata index
 - It then performs the metadata filtering either before or after the vector search
 
 ## Chroma
+__Components__
+![[Pasted image 20240530132022.png|400]]
 
 __Four Core Commands__
 ```
@@ -3771,10 +3779,10 @@ embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-
 You can pass in an optional `model_name` argument, which lets you choose which Sentence Transformers model to use. By default, Chroma uses `all-MiniLM-L6-v2`. You can see a list of all available models here.
 
 __Pre-Trained Models for Embedding__
-
+![[Pasted image 20240530132141.png|500]]
 
 __Similarity Function__
-create_collection also takes an optional metadata argument which can be used to customize the distance method of the embedding space by setting the value of hnsw:space.
+`create_collection` also takes an optional `metadata` argument which can be used to customize the distance method of the embedding space by setting the value of `hnsw:space`.
 ```
 collection = client.create_collection( 
 	name="collection_name",
@@ -3782,9 +3790,15 @@ collection = client.create_collection(
 )
 ```   
 Valid options for hnsw:space are "l2", "ip, "or "cosine". The default is "l2" which is the squared L2 norm.
- 
+
+| Distance          | Equation                                                       |
+| ----------------- | -------------------------------------------------------------- |
+| Squared L2        | $\sum(A_i-B_i)^2$                                              |
+| Inner product     | $1-\sum(A_i \times B_i)$                                       |
+| Cosine similarity | $1-\frac{\sum(A_i \times B_i)}{\sqrt{(\sum A_i^2 \sum B_i^2}}$ |
+
 ## LangChain
- ![[Pasted image 20240527144746.png|400]]
+![[Pasted image 20240527144746.png|400]]
 __Introduction__
 - A framework for developing applications powered by language models
 - LangChain is an framework (SDK) designed to simplify the integration of LLMs and applications
@@ -3873,6 +3887,138 @@ __Retrieval and generation__
 - Retrieve: Given a user input, relevant splits are retrieved from storage using a Retriever.
 - Generate: A ChatModel / LLM produces an answer using a prompt that includes the question and the retrieved data
 
-   
- 
- 
+# 10. Big Data
+
+## Motivation
+
+__Motivation__
+- Very large volumes of data being collected
+	- Driven by the growth of the Web, social media, and more recently Internet-of-Things
+	- e.g., initial sources of big data: Web logs
+		- Analytics on Web logs has great value for advertisements, Website structuring, what posts to show to a user, etc.
+- Big Data: differentiated from data handled by earlier generation databases
+	- Volume: much larger amounts of data stored
+	- Velocity: much higher rates of insertions
+	- Variety: many types of data, beyond relational data
+
+__Querying Big Data__
+- Transaction processing systems that need very high scalability
+	- Many applications are willing to sacrifice ACID properties and other database features, if they can get very high scalability
+		- ACID: Atomicity, Consistency, Isolation, Durability
+- Query processing systems that need very high scalability and support for non-relational data
+
+__Big Data Storage Systems__
+- Distributed file systems
+- Key-value storage systems
+- Parallel and distributed databases
+
+__Distributed File Systems__
+- A distributed file system stores data across a large collection of machines, but provides a single file-system view
+- It should be highly scalable for large data-intensive applications
+- e.g., 10K nodes, 100 million files, 10 PB
+- It provides abundant storage of massive amounts of data on cheap and unreliable computers
+	- Files are replicated to handle hardware failure
+	- Failures are detected, and data is recovered from them
+	- e.g., Google File System (GFS), Hadoop File System (HDFS)
+
+Hadoop File System Architecture
+- The entire cluster can been seen as a single name space
+- Files are broken up into blocks
+	- A block is typically a size of 64 MB
+	- Each block is replicated on multiple DataNodes
+- A client access a file by:
+	1. Finding the locations of blocks from NameNode
+	2. Accessing the data directly from DataNode
+
+Hadoop Distributed File System (HDFS)
+- NameNode
+	- Mapping a filename to a list of block identifiers
+	- Mapping each block identifier to DataNodes containing a replica of the block
+- DataNode
+	- Mapping a block identifier to a physical location on disk
+- Data coherency
+	- Write-once-read-many access model
+	- Only append to existing files
+- Good for large files, but not for a large number of small files
+
+Key-Value Storage Systems
+- Key-value storage systems store large numbers (billions or even more) of small (KB-MB) sized records
+- Records are partitioned across multiple machines and queries are routed by the system to appropriate machine
+- Records are also replicated across multiple machines, to ensure availability even if a machine fails
+	- Key-value stores ensure that updates are applied to all replicas, to ensure that their values are consistent
+- Key-value stores may store
+	- Uninterpreted bytes, with an associated key
+		- e.g., Amazon S3, Amazon Dynamo
+	- Wide-table (can have arbitrarily many attribute names) with an associated key
+		- Google BigTable, Apache Cassandra, Apache Hbase, Amazon DynamoDB
+		- Allows some operations (e.g., filtering) to execute on storage node 
+	- JSON
+		- MongoDB, CouchDB (document model)
+- Document stores store semi-structured data, typically JSON
+- Some key-value stores support multiple versions of data, with timestamps/version numbers
+- Key-value stores support
+	- put(key, value): stores values with an associated key
+	- get(key): retrieves the stored value associated with the specified key
+	- delete(key): removes the key and its associated value
+- Some systems also support range queries on key values
+- Document stores also support queries on non-key attributes
+	- See books for MongoDB queries
+- Key-value stores are not full database systems
+	- Transactional updates are not supported or limited
+	- Applications must manage query processing on their own
+- Not supporting above features makes it easier to build scalable data storage systems ⇒ also called NoSQL systems
+
+
+Data Representation
+- An example of a JSON object is: 
+```
+{
+	"ID": "22222", 
+	"name": {
+		"firstname: "Albert",
+		"lastname: "Einstein" 
+	},
+	"deptname": "Physics", 
+	"children": [
+		{ "firstname": "Hans", "lastname": "Einstein" },
+		{ "firstname": "Eduard", "lastname": "Einstein" } 
+	]
+}
+```
+
+
+Parallel and Distributed Databases
+- Parallel databases were developed in 1980s, well before Big Data
+- Parallel databases run on multiple machines (cluster)
+	- Early generation was designed for a smaller scale (10s to 100s of machines)
+- Replication is used to ensure data availability despite machine failures 
+	- However, query execution is typically restarted in event of a failure
+		- Restarts may be frequent at a very large scale, e.g., on thousands of machines
+		- MapReduce systems (coming up next) can continue query execution, working around failures
+- JGL: Commercial products include Google Cloud Spanner
+	- Website: https://cloud.google.com/spanner?hl=en
+	- Paper: https://research.google/pubs/pub39966/
+
+Replication and Consistency
+- Availability (a system can run even if parts have failed) is essential for parallel/distributed databases
+	- It is realized via replication; so even if a node has failed, another copy is available
+- Consistency is important for replicated data
+	- All live replicas have same value, and each read sees the latest version
+	- It is often implemented using majority protocols
+		- e.g., have 3 replicas, reads/writes must access 2 replicas
+- Network partitions
+	- A network can break into ≥ 2 parts, each with active systems that can’t talk to other parts
+	- In presence of partitions, both availability and consistency cannot be guaranteed
+		- Brewer’s CAP “Theorem” (see https://en.wikipedia.org/wiki/CAP_theorem)
+
+Replication and Consistency
+- Explanation of CAP Theorem [Wikipedia]
+  No distributed system is safe from network failures, thus network partitioning generally has to be tolerated. In the presence of a partition, one is then left with two options: consistency or availability. When choosing consistency over availability, the system will return an error or a time out if particular information cannot be guaranteed to be up to date due to network partitioning. When choosing availability over consistency, the system will always process the query and try to return the most recent available version of the information, even if it cannot guarantee it is up to date due to network partitioning.
+  In the absence of a partition, both availability and consistency can be satisfied.
+- Very large systems will partition at some point
+	- Choose one of consistency or availability
+- Traditional databases choose consistency
+- Most Web applications choose availability
+	- Except for specific parts such as order processing
+
+## MapReduce and Hadoop

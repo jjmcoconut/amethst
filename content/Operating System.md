@@ -1532,3 +1532,62 @@ __EPT Performance Evaluation__
 - Microbenchmarks by the VMWare team
 - Normalized to shadow page table speeds (1.0)
 	- Lower times are better
+
+# FLUID: Enabling next-generation multi-device paradigm
+
+Multi-device Computing Model
+- Transparent cross-device resource sharing
+	- allows an app executing on one device to use resources on another device transparently
+		- physical resources: camera, sensors, etc
+		- logical(app) service: login, browsing, PDF viewer, etc
+
+What does FLUID do?
+- Partitions an app at the unit of UI, distributes UIs across different devices, and runs each UI simultaneously on different devices
+
+Existing solutions
+- Customized apps
+	- Extra engineering efforts
+	- Low applicability
+- Screen mirroring
+	- Low flexibility
+		- Supports only full screen
+	- Low responsiveness(for higher resolutions)
+- App migration
+	- Low flexibility
+		- Supports only full screen
+		- Cannot support concurrent usage
+
+Goal
+- Design a new mobile platform that supports multi-device computing by distributing UI objects to different devices in a flexible, transparent and responsive manner
+
+FLUID overview
+![[Pasted image 20240529140154.png|500]]
+- Key idea: separation between app logic & UI parts
+	- Distributing target UI objects to remote devices and rendering them
+	- Giving an illusion as if app logic and UI objects were in the same process by extending intra-app interaction to multi-device environments
+
+Why is FLUID good?
+- Flexibility
+	- Allows users to interact with multiple devices, via fine-grained UI distribution, with maximum flexibility
+- Transparency
+	- Support legacy apps without any modification
+	- Develop new multi-surface apps under the existing programming model
+- Responsiveness
+	- Require less network transmission when moving UIs instead of full screen
+
+Problems
+- How to maintain interaction between app logic & UI objects?
+  ![[Pasted image 20240529140620.png|400]]
+	- Such interaction is achieved via local function calls
+	- However, local functions cannot be executed across devices
+	- Our solution: transparent RPC transformation in Andriod VM (ART)
+- How to split & distribute UI objects?
+  ![[Pasted image 20240529140906.png|400]]
+	- We aim to minimize the amount of network transfer(graphical states) needed for UI rendering to reduce network overhead
+	- However, for some app-specific custom UIs, it is not easy to precisely determine which graphical states are used
+	- Our solution: selective UI distribution
+
+Limitation of FLUID: No cross-platfrom support
+- Multi-device environment often consists of heterogeneous devices
+	- Where different device types typically have different major platforms
+- FLUID only support UI distribution between Andriod devices
