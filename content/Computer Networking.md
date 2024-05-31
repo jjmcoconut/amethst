@@ -1692,12 +1692,7 @@ __The Multiple Access Problem__
 - **CDMA**: Technically complex but allows effective simultaneous transmissions.
 
 **Usage**:
-- TDM and FDM are used broadly in wired networks, while CDMA is prevalent in military and civilian wireless communications, such as cellular networks.
-
-**Next Steps**:
-- Detailed examination of CDMA will be covered in a later chapter, focusing on its implementation in various communication systems.
-
-Here's how your note-taking format might look for the section on random access protocols:
+- TDM and FDM are used broadly in wired networks, while CDMA is prevalent in military and civilian wireless communications, such as cellular networks.2
 
 ### 6.3.2 Random Access Protocols
 
@@ -2067,11 +2062,6 @@ __Solutions to Scalability Challenges__
 - Networking challenges include container-internal and core networks, with hybrid electrical/optical switch architectures.
 - Large providers customize network components and use availability zones for reliability.
 
-**References**:
-- Studies and implementations by Greenberg, Singh, Mysore, and others.
-- Innovations by Google, Facebook, Amazon, and other cloud providers.
-- Key papers and examples: FB 2019, Greenberg 2009b, Singh 2015, Alizadeh 2010, Zhu 2015, Farrington 2010.
-
 ## 6.7 Retrospective: A Day in the Life of a Web Page Request
 
 Before diving into the topical chapters in the second part of this book, we take an integrated view of the protocols involved in satisfying a simple request: downloading a web page. 
@@ -2088,83 +2078,71 @@ Before diving into the topical chapters in the second part of this book, we take
 
 **Obtaining an IP Address via DHCP**:
 1. **DHCP Request Creation**:
-   - Bob’s laptop creates a DHCP request message.
-   - The message is placed within a UDP segment (dest port 67, source port 68).
-   - The UDP segment is encapsulated in an IP datagram with a broadcast destination IP (255.255.255.255) and a source IP of 0.0.0.0.
-   
+	- Bob’s laptop creates a DHCP request message.
+	- The message is placed within a UDP segment (dest port 67, source port 68).
+	- The UDP segment is encapsulated in an IP datagram with a broadcast destination IP (255.255.255.255) and a source IP of 0.0.0.0.
 2. **Encapsulation in Ethernet Frame**:
-   - The IP datagram is placed within an Ethernet frame.
-   - The frame has a destination MAC address of FF:FF:FF:FF:FF:FF (broadcast) and a source MAC address of Bob’s laptop (00:16:D3:23:68:8A).
-
+	- The IP datagram is placed within an Ethernet frame.
+	- The frame has a destination MAC address of FF:FF:FF:FF:FF:FF (broadcast) and a source MAC address of Bob’s laptop (00:16:D3:23:68:8A).
 3. **Broadcast by Switch**:
-   - The Ethernet frame is sent by Bob’s laptop to the Ethernet switch.
-   - The switch broadcasts the frame on all outgoing ports, including the one connected to the router.
-
+	- The Ethernet frame is sent by Bob’s laptop to the Ethernet switch.
+	- The switch broadcasts the frame on all outgoing ports, including the one connected to the router.
 4. **Router Processing**:
-   - The router receives the Ethernet frame on its interface (MAC: 00:22:6B:45:1F:1B).
-   - The IP datagram is extracted and processed, leading to the DHCP request being handled by the router’s DHCP server.
-
+	- The router receives the Ethernet frame on its interface (MAC: 00:22:6B:45:1F:1B).
+	- The IP datagram is extracted and processed, leading to the DHCP request being handled by the router’s DHCP server.
 5. **DHCP Server Response**:
-   - The DHCP server allocates an IP address (68.85.2.101) to Bob’s laptop.
-   - It creates a DHCP ACK message containing this IP address, the DNS server IP (68.87.71.226), the default gateway IP (68.85.2.1), and the subnet block (68.85.2.0/24).
-   - The DHCP ACK message is encapsulated in a UDP segment, then an IP datagram, and finally an Ethernet frame with the router’s MAC address as the source and Bob’s laptop’s MAC address as the destination.
-
+	- The DHCP server allocates an IP address (68.85.2.101) to Bob’s laptop.
+	- It creates a DHCP ACK message containing this IP address, the DNS server IP (68.87.71.226), the default gateway IP (68.85.2.1), and the subnet block (68.85.2.0/24).
+	- The DHCP ACK message is encapsulated in a UDP segment, then an IP datagram, and finally an Ethernet frame with the router’s MAC address as the source and Bob’s laptop’s MAC address as the destination.
 6. **Unicast to Laptop**:
-   - The Ethernet frame is sent by the router to the switch.
-   - The switch, using its self-learning capability, forwards the frame directly to Bob’s laptop.
-
+	- The Ethernet frame is sent by the router to the switch.
+	- The switch, using its self-learning capability, forwards the frame directly to Bob’s laptop.
 7. **Final Steps on Laptop**:
-   - Bob’s laptop receives the frame, extracts the IP datagram, then the UDP segment, and finally the DHCP ACK message.
-   - The laptop records its IP address and the DNS server IP.
-   - It installs the default gateway’s address into its IP forwarding table.
-   - Now, Bob’s laptop is ready to process the web page fetch.
+	- Bob’s laptop receives the frame, extracts the IP datagram, then the UDP segment, and finally the DHCP ACK message.
+	- The laptop records its IP address and the DNS server IP.
+	- It installs the default gateway’s address into its IP forwarding table.
+	- Now, Bob’s laptop is ready to process the web page fetch.
 
 ### 6.7.2 Still Getting Started: DNS and ARP
 
 **DNS Query Process**:
 8. **Creating DNS Query**:
-   - The OS creates a DNS query message with "www.google.com" in the question section.
-   - The message is placed in a UDP segment (destination port 53).
-   - The UDP segment is placed in an IP datagram with the DNS server’s IP (68.87.71.226) and the source IP (68.85.2.101).
-
+	- The OS creates a DNS query message with "www.google.com" in the question section.
+	- The message is placed in a UDP segment (destination port 53).
+	- The UDP segment is placed in an IP datagram with the DNS server’s IP (68.87.71.226) and the source IP (68.85.2.101).
 9. **Encapsulation in Ethernet Frame**:
-   - The datagram is placed in an Ethernet frame.
-   - The frame needs to be sent to the gateway router, but the MAC address of the gateway router (68.85.2.1) is unknown.
+	- The datagram is placed in an Ethernet frame.
+	- The frame needs to be sent to the gateway router, but the MAC address of the gateway router (68.85.2.1) is unknown.
 
 **ARP Protocol for MAC Address**:
 10. **Creating ARP Query**:
-   - An ARP query message is created with the target IP address (68.85.2.1).
-   - The ARP message is placed in an Ethernet frame with a broadcast destination address (FF:FF:FF:FF:FF:FF).
-   - The frame is sent to the switch, which delivers it to all devices, including the gateway router.
-
+	- An ARP query message is created with the target IP address (68.85.2.1).
+	- The ARP message is placed in an Ethernet frame with a broadcast destination address (FF:FF:FF:FF:FF:FF).
+	- The frame is sent to the switch, which delivers it to all devices, including the gateway router.
 11. **Gateway Router Response**:
-   - The gateway router receives the frame, identifies the matching IP, and prepares an ARP reply with its MAC address (00:22:6B:45:1F:1B).
-   - The ARP reply is placed in an Ethernet frame with the destination address of Bob’s laptop (00:16:D3:23:68:8A) and sent back through the switch.
-
+	- The gateway router receives the frame, identifies the matching IP, and prepares an ARP reply with its MAC address (00:22:6B:45:1F:1B).
+	- The ARP reply is placed in an Ethernet frame with the destination address of Bob’s laptop (00:16:D3:23:68:8A) and sent back through the switch.
 12. **Receiving ARP Reply**:
-   - Bob’s laptop receives the frame, extracts the MAC address of the gateway router.
-   - The Ethernet frame containing the DNS query is now addressed to the gateway router’s MAC address.
-   - The frame is sent to the switch, which delivers it to the gateway router.
+	- Bob’s laptop receives the frame, extracts the MAC address of the gateway router.
+	- The Ethernet frame containing the DNS query is now addressed to the gateway router’s MAC address.
+	- The frame is sent to the switch, which delivers it to the gateway router.
 
 ### 6.7.3 Still Getting Started: Intra-Domain Routing to the DNS Server
 
 **Forwarding DNS Query**:
 13. **Gateway Router Processing**:
-   - The gateway router receives the frame and extracts the IP datagram.
-   - The destination address (68.87.71.226) is looked up in the forwarding table, directing the datagram to the Comcast router.
-   - The datagram is placed in a link-layer frame appropriate for the school-Comcast link and sent.
-
+	- The gateway router receives the frame and extracts the IP datagram.
+	- The destination address (68.87.71.226) is looked up in the forwarding table, directing the datagram to the Comcast router.
+	- The datagram is placed in a link-layer frame appropriate for the school-Comcast link and sent.
 14. **Comcast Network Processing**:
-   - The Comcast router receives the frame, extracts the IP datagram, and forwards it based on intra-domain and inter-domain routing protocols (RIP, OSPF, IS-IS, BGP).
-   - The datagram eventually reaches the DNS server.
-
+	- The Comcast router receives the frame, extracts the IP datagram, and forwards it based on intra-domain and inter-domain routing protocols (RIP, OSPF, IS-IS, BGP).
+	- The datagram eventually reaches the DNS server.
 15. **DNS Server Response**:
-   - The DNS server extracts the DNS query, looks up "www.google.com", and finds the corresponding IP address (64.233.169.105).
-   - A DNS reply message with the IP address is created and placed in a UDP segment, which is then placed in an IP datagram addressed to Bob’s laptop.
-   - The datagram is sent back through the Comcast and school networks to Bob’s laptop.
-
+	- The DNS server extracts the DNS query, looks up "www.google.com", and finds the corresponding IP address (64.233.169.105).
+	- A DNS reply message with the IP address is created and placed in a UDP segment, which is then placed in an IP datagram addressed to Bob’s laptop.
+	- The datagram is sent back through the Comcast and school networks to Bob’s laptop.
 16. **Receiving DNS Reply**:
-   - Bob’s laptop receives the DNS reply, extracts the IP address of www.google.com, and is now ready to contact the server.
+	- Bob’s laptop receives the DNS reply, extracts the IP address of www.google.com, and is now ready to contact the server.
 
 ### 6.7.4 Web Client-Server Interaction: TCP and HTTP
 
@@ -2172,14 +2150,11 @@ Before diving into the topical chapters in the second part of this book, we take
 17. **Creating TCP Socket**:
     - Bob’s laptop creates a TCP SYN segment (dest port 80) to establish a connection with www.google.com.
     - The TCP segment is placed in an IP datagram (dest IP 64.233.169.105) and then in an Ethernet frame (dest MAC 00:22:6B:45:1F:1B) and sent to the switch.
-
 18. **Routing TCP SYN**:
     - The datagram is forwarded through the school, Comcast, and Google networks to www.google.com.
-
 19. **Receiving TCP SYN at Google**:
     - Google’s server extracts the TCP SYN, creates a connection socket, and generates a TCP SYNACK segment.
     - The TCP SYNACK is placed in a datagram addressed to Bob’s laptop and sent back.
-
 20. **Receiving TCP SYNACK**:
     - Bob’s laptop receives the TCP SYNACK, completing the three-way handshake, and the TCP socket enters the connected state.
 
@@ -2187,10 +2162,8 @@ Before diving into the topical chapters in the second part of this book, we take
 21. **Sending HTTP GET**:
     - Bob’s browser creates an HTTP GET message with the URL.
     - The GET message is placed in a TCP segment, then in a datagram, and sent to www.google.com.
-
 22. **Processing HTTP GET**:
     - Google’s server reads the GET message, creates an HTTP response with the requested web page content, and sends it back to Bob’s laptop.
-
 23. **Receiving HTTP Response**:
     - Bob’s laptop receives the HTTP response, extracts the HTML content, and displays the web page.
 
@@ -2271,7 +2244,6 @@ Before diving into the topical chapters in the second part of this book, we take
 **Practical Considerations**:
 - **Code Selection**: CDMA codes must be carefully chosen for effective communication.
 - **Signal Strength**: Assumes equal signal strengths from all senders, which can be challenging in practice.
-- **Further Reading**: For more detailed information, refer to sources like Pickholtz (1982) and Viterbi (1995).
 
 ## 7.3 WiFi: 802.11 Wireless LANs
 
@@ -2407,26 +2379,26 @@ __Point-to-Point Link__
 - **Applications**: Inexpensive wireless point-to-point connections over long distances.
 
 __Detailed Process Breakdown__
-**1. Channel Sensing and Idle Detection**:
-- Station senses the channel.
-- If idle, waits DIFS then transmits.
-**2. Backoff Mechanism**:
-- If busy, station waits using binary exponential backoff.
-- Countdown starts when channel is idle.
-- Transmits when countdown reaches zero.
-**3. Frame Transmission**:
-- Transmit entire frame without collision detection.
-- Wait for acknowledgment from receiver.
-**4. Acknowledgment Handling**:
-- If acknowledgment received, proceed to next frame.
-- If not, retransmit using backoff.
-**5. RTS/CTS for Collision Avoidance**:
-- Sender sends RTS to AP.
-- AP responds with CTS.
-- Other stations defer transmission upon receiving CTS.
-**6. Point-to-Point 802.11 Links**:
-- Directional antennas create a point-to-point connection.
-- Enables long-distance, low-cost wireless connections.
+1. **Channel Sensing and Idle Detection**:
+	- Station senses the channel.
+	- If idle, waits DIFS then transmits.
+2. **Backoff Mechanism**:
+	- If busy, station waits using binary exponential backoff.
+	- Countdown starts when channel is idle.
+	- Transmits when countdown reaches zero.
+3. **Frame Transmission**:
+	- Transmit entire frame without collision detection.
+	- Wait for acknowledgment from receiver.
+4. **Acknowledgment Handling**:
+	- If acknowledgment received, proceed to next frame.
+	- If not, retransmit using backoff.
+5. **RTS/CTS for Collision Avoidance**:
+	- Sender sends RTS to AP.
+	- AP responds with CTS.
+	- Other stations defer transmission upon receiving CTS.
+6. **Point-to-Point 802.11 Links**:
+	- Directional antennas create a point-to-point connection.
+	- Enables long-distance, low-cost wireless connections.
 
 ### 7.3.3 The IEEE 802.11 Frame
 

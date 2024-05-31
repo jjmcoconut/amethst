@@ -1135,7 +1135,7 @@ __Moblie Maestro: Challenges__
 - For high quality sound reproduction, Devices should be synchronized in terms of sound arrival time and level
 
 
-# Virtualization
+# Virtualization 
 
 __Concept of Virtualization__
 - The common theme of all virtualization technologies is the hiding of technical detail, through encapsulation,
