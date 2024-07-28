@@ -2348,7 +2348,7 @@ __ER Design Decisions__
 __Symbols Used in ER Notation__
 ![[Pasted image 20240422143426.png|350]]![[Pasted image 20240422143452.png|350]]
 
-# 7. Normalization EXAM! - EASY TO MAKE PROBLEMS
+# 7. Normalization - - EASY TO MAKE PROBLEMS
 
 ## Overview of Normalization
 
@@ -2868,7 +2868,7 @@ __Testing for 3NF__
 - If α is not a superkey, we have to verify if each attribute in β is contained in a candidate key of R
 	- This test is rather more expensive, since it involves finding candidate keys
 	- Testing for 3NF has been shown to be NP-complete (see the next slide)
-		- Jiann H. Jou and Patrick C. Fischer, "The complexity of recognizing 3NF relation schemes," Information Processing Letters 14(4): 187--190, 1982 https://www.sciencedirect.com/science/article/pii/0020019082900345
+		- Jiann H. Jou and Patrick C. Fischer, "The complexity of recognizing 3NF relation schemes," Information Processing Letters 14(4): 187--190, 1982 https:-www.sciencedirect.com/science/article/pii/0020019082900345
 	- Interestingly, decomposition into third normal form (described shortly) can be done in polynomial time
 - Proof: a quick summary from the paper (see the paper for details)
 	- Any attribute that is a member of a key is called a prime attribute
@@ -3165,7 +3165,7 @@ __JSON__
 	- Generating JSON from relational data
 		- e.g., json.build_object(‘ID’, 12345, ‘name’, ‘Einstein’) - Creating JSON collections using aggregation
 		- e.g., json_agg aggregate function in PostgreSQL # returns a JSON array
-	- Syntax varies greatly across databases (see https://www.sqlite.org/json1.html for SQLite3)
+	- Syntax varies greatly across databases (see https:-www.sqlite.org/json1.html for SQLite3)
 - JSON is verbose
 	- Compressed representations such as BSON (Binary JSON) used for efficient data storage
 	
@@ -3861,6 +3861,8 @@ Step-by-Step Guide
 7. Retrieve relevant responses based on user queries and send them to an LLM (e.g., ChatGPT)
 8. Get an answer from the LLM and send it back to the user
 
+There are researches to improve every step -> our assignment is simple example of one of the step
+
 
 ## RAG
  
@@ -3996,8 +3998,8 @@ Parallel and Distributed Databases
 		- Restarts may be frequent at a very large scale, e.g., on thousands of machines
 		- MapReduce systems (coming up next) can continue query execution, working around failures
 - JGL: Commercial products include Google Cloud Spanner
-	- Website: https://cloud.google.com/spanner?hl=en
-	- Paper: https://research.google/pubs/pub39966/
+	- Website: https:-cloud.google.com/spanner?hl=en
+	- Paper: https:-research.google/pubs/pub39966/
 
 Replication and Consistency
 - Availability (a system can run even if parts have failed) is essential for parallel/distributed databases
@@ -4009,7 +4011,7 @@ Replication and Consistency
 - Network partitions
 	- A network can break into ≥ 2 parts, each with active systems that can’t talk to other parts
 	- In presence of partitions, both availability and consistency cannot be guaranteed
-		- Brewer’s CAP “Theorem” (see https://en.wikipedia.org/wiki/CAP_theorem)
+		- Brewer’s CAP “Theorem” (see https:-en.wikipedia.org/wiki/CAP_theorem)
 
 Replication and Consistency
 - Explanation of CAP Theorem [Wikipedia]
@@ -4022,3 +4024,410 @@ Replication and Consistency
 	- Except for specific parts such as order processing
 
 ## MapReduce and Hadoop
+
+__The MapReduce Paradigm__
+- Providing a platform for reliable, scalable parallel computing
+- Abstracting the issues of a distributed and parallel environment from programmers
+	- A programmer provides only the core logic (via map() and reduce() functions)
+	- A system takes care of parallelization of computation, coordination, etc.
+- Typically using distributed file systems or key-value stores
+- Proposed by Google and being available as Hadoop
+	- Jeffrey Dean, Sanjay Ghemawat: MapReduce: Simplified Data Processing on Large Clusters. OSDI 2004: 137-150 (cited by around 25K times, as of November 2023)
+
+![[Pasted image 20240603143447.png|500]]
+__MapReduce Example: Word Counting__
+- Let’s consider the problem of counting the number of occurrences of each word in a large collection of documents
+- How would you do it in parallel?
+- Solution:
+	- Divide documents among workers
+	- Each worker parses document to find all words, a map function outputs (word, count) pairs
+	- Partition (word, count) pairs across workers based on the word
+	- For each word at a worker, a reduce function locally adds up the counts
+- Given input: “One a penny, two a penny, hot cross buns.”
+	- Records output by the map() function would be
+		- (“One”, 1), (“a”, 1), (“penny”, 1), (“two”, 1), (“a”, 1), (“penny”, 1), (“hot”, 1), (“cross”, 1), (“buns”, 1) 
+	- Records output by reduce function would be
+		- (“One”, 1), (“a”, 2), (“penny”, 2), (“two”, 1), (“hot”, 1), (“cross”, 1), (“buns”, 1)
+
+__Pseudocode of Word Counting__
+```
+map(String record):
+	for each word in record
+		emit(word, 1);
+```
+- The first attribute of emit() above is called the reduce key.
+- In effect, a group by is performed on the reduce key to create a list of values (all 1’s in above code). 
+- This requires the shuffle step across machines.
+- The reduce function is called on list of values in each group.
+```
+reduce(String key, List value_list): 
+	String word = key;
+	int count = 0;
+	for each value in value_list:
+		count = count + value; 
+	output(word, count);
+```
+
+__MapReduce Programming Model__
+- Inspired from map and reduce operations commonly used in functional programming languages like Lisp
+- Input: a set of key/value pairs
+- Two user-supplied functions:
+- map(k1, v1) ⟶ list(k2, v2)
+	- (k2, v2) is an intermediate key/value pair
+	- k1 is the line number in a log file in our log processing example
+- reduce(k2 list(v2)) ⟶ list(k3, v3)
+	- types need to match btw k1, k2, k3 and v1, v2, v3
+- Output: a set of key/value (k3, v3) pairs
+
+MapReduce Example: Log Processing
+- Given a log file in the following format: 
+	- 2013/02/21 10:31:22.00EST /slide-dir/11.ppt
+	  2013/02/21 10:43:12.00EST /slide-dir/12.ppt 
+	  2013/02/22 18:26:45.00EST /slide-dir/13.ppt 
+	  2013/02/22 20:53:29.00EST /slide-dir/12.ppt 
+	  ...
+- Goal: find how many times each of the files in the slide-dir directory was accessed between 2013/01/01 and 2013/01/31
+- Options:
+	- Sequential program: too slow on massive datasets ⇒ parallel program
+	- Database loading: expensive ⇒ direct operation on log files
+	- Custom built parallel program: very laborious
+	- MapReduce paradigm
+
+Pseudocode of Log Processing
+```
+map(String key, String record) {
+	String attribute[3];
+	.... break up a record into tokens (based on a space character), and store the tokens in array attributes String date = attribute[0];
+	String time = attribute[1];
+	String filename = attribute[2];
+	if date between 2013/01/01 and 2013/01/31 and filename starts with "/slide-dir/"
+		emit(filename, 1); 
+}
+```
+```
+reduce(String key, List recordlist) { 
+	String filename = key;
+	int count = 0;
+	for each record in recordlist
+		count = count + 1; 
+	output(filename, count);
+}
+```
+
+
+__Schematic Flow of Keys and Values__
+- Flow of keys and values in a MapReduce task
+  ![[Pasted image 20240603144014.png|450]]
+
+__Parallel Processing of MapReduce Job__
+![[Pasted image 20240603144037.png|450]]
+
+__Hadoop MapReduce__
+- Google pioneered MapReduce implementations that could run on thousands of machines (nodes) and transparently handle failures of machines
+- Hadoop is a widely-used open-source implementation of MapReduce written in Java
+	- The map and reduce functions can be written in several different languages
+- The input and output to MapReduce systems such as Hadoop must be done in parallel
+	- Google uses the GFS distributed file system
+	- Hadoop uses the Hadoop Distributed File System (HDFS)
+	- Input files can be in several formats
+		- Text/CSV
+		- Compressed representation such as Avro, ORC, and Parquet
+	- Hadoop also supports key-value stores such as Hbase, Cassandra, MongoDB, etc.
+  
+__Types in Hadoop__
+- Generic Mapper and Reducer interfaces both take four type arguments, that specify the types of the input key, input value, output key, and output value
+- Map class in the next slide implements the Mapper interface
+	- Map input key is of type LongWritable, i.e., a long integer
+	- Map input value, which is (all or part of) a document, is of type Text
+	- Map output key is of type Text, since the key is a word
+	- Map output value is of type IntWritable, which is an integer value
+
+
+__Hadoop Code in Java: Map Function__
+```
+public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
+	private final static IntWritable one = new IntWritable(1);
+	private Text word = new Text();
+	public void map(LongWritable key, Text value, Context context)
+		throws IOException, 
+	InterruptedException {
+		String line = value.toString();
+		StringTokenizer tokenizer = new StringTokenizer(line); 
+		while (tokenizer.hasMoreTokens()) {
+			word.set(tokenizer.nextToken());
+			context.write(word, one); }
+	} 
+}
+```
+
+
+__Hadoop Code in Java: Reduce Function__
+```
+public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
+	public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+		int sum = 0;
+		for (IntWritable val : values) {
+			sum += val.get(); 
+		}
+		context.write(key, new IntWritable(sum)); 
+	}
+}
+```
+
+__Hadoop Job Parameters__
+- The classes that contain the map and reduce functions for the job 
+	- Set by the methods setMapperClass() and setReducerClass()
+- The types of the job’s output key and values
+	- Set by the methods setOutputKeyClass() and setOutputValueClass()
+- The input format of the job
+	- Set by the method job.setInputFormatClass()
+	- Default input format in Hadoop is TextInputFormat
+		- Map key whose value is a byte offset into the file
+		- Map value is the contents of one line of the file
+- The directories where the input files are stored and where the output files must be created
+	- Set by the methods addInputPath() and addOutputPath() 
+- And many more parameters
+
+  
+__Hadoop Code in Java: Overall Program__
+```
+public class WordCount {
+	public static void main(String[] args) throws Exception {
+		Configuration conf = new Configuration();
+		Job job = new Job(conf, "wordcount"); 
+		job.setOutputKeyClass(Text.class); 
+		job.setOutputValueClass(IntWritable.class); 
+		job.setMapperClass(Map.class); 
+		job.setReducerClass(Reduce.class);
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		job.waitForCompletion(true);
+	} 
+}
+```
+
+
+__MapReduce vs. Databases__
+- MapReduce has been widely used for parallel processing by Google, Yahoo, and 100’s of other companies
+	- e.g., computing PageRank, building keyword indices, data analysis of web click logs, ...
+- Many real-world uses of MapReduce cannot be expressed in SQL
+- But many computations are much easier to express in SQL
+	- MapReduce is cumbersome for writing simple queries
+- Relational operations (select, project, join, aggregation, etc.) can be expressed using MapReduce
+- SQL queries can be translated into the MapReduce infrastructure for execution
+	- Apache Hive SQL, Apache Pig Latin, Microsoft SCOPE
+- Current generation execution engines support not only MapReduce, but also other algebraic operations such as joins, aggregation, etc. natively
+- The advantages for each method __(EXAM! - 6.3 53min)__
+	- Map Reduce: scalability
+	- Database: easiness
+ 
+## Beyond MapReduce: Algebraic Operations
+
+__Algebraic Operations__
+- Current generation execution engines
+	- Supporting algebraic operations such as joins, aggregation, etc. natively
+	- Allowing users to create their own algebraic operators
+	- Supporting trees of algebraic operators that can be executed on multiple nodes in parallel
+- e.g. Apache Tez, Spark
+	- Tez provides low level API; Hive on Tez compiles SQL to Tez
+	- Spark provides more user-friendly API
+
+__Algebraic Operations in Spark__
+- Resilient Distributed Dataset (RDD) abstraction
+	- Collection of records that can be stored across multiple machines
+- RDDs can be created by applying algebraic operations on other RDDs
+- RDDs can be lazily computed when needed
+- Spark programs can be written in Java/Scala/R
+	- Our examples are in Java
+- Spark makes use of Java 8 Lambda expressions
+	- https://www.w3schools.com/java/java_lambda.asp
+	- `s->Arrays.asList(s.split(" ")).iterator()` defines an unnamed function that takes argument `s` and executes the expression` Arrays.asList(s.split(" ")).iterator()` on the argument
+- Lambda functions are particularly convenient as arguments to map, reduce and other functions
+
+__RDD in Spark__
+- In-memory distributed collections
+  ![[Pasted image 20240603153027.png|300]]
+- There are only two types of operation supported by Spark RDDs
+	- Transformation: creating a new RDD by transforming from an existing RDD
+	- Action: computing and writing a value to the driver program
+- ![[Pasted image 20240603153056.png|400]]
+- Laziness: Before 'action' we only create the execution map and execute when 'action' is called
+- Lineage: History of RDD is saved(To recover if failure)\
+- Transformation: creating a new RDD by transforming from an existing RDD
+	- map(func): returning a new distributed dataset formed by passing each element of the source through a function func
+	- filter(func): returning a new dataset formed by selecting those elements of the source on which func returns true
+	- flatMap(func): similar to map, but each input item → 0 or more output items
+	- reduceByKey(func): returning a dataset of (K, V) pairs where the values for each key are aggregated using the given reduce function func 
+	- ...
+- Action: computing and writing a value to the driver program
+	- collect(): returning all the elements of the dataset as an array at the driver program
+	- count(): returning the number of elements in the dataset 
+	- ...
+
+__Word Count in Spark__
+```
+SparkSession spark = SparkSession.builder().appName("WordCount").getOrCreate();
+
+JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
+JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(s.split(" ")).iterator());
+JavaPairRDD<String,Integer> ones = words.mapToPair(s -> new Tuple2<>(s,1));
+JavaPairRDD<String,Integer> counts = ones.reduceByKey((i1,i2)->i1+i2);
+
+counts.saveAsTextFile("outputDir");
+
+List<Tuple2<String,Integer>> output = counts.collect();
+for(Tuple2<String, Integer> tuple : output){
+	System.out.println(tuple);
+}
+spark.stop();
+```
+
+__Algebraic Operations in Spark__
+- Algebraic operations in Spark are typically executed in parallel on multiple machines
+	- The data is partitioned across the machines
+- Algebraic operations are executed lazily, not immediately
+	- Our preceding program creates an operator tree
+	- The tree is executed only on specific functions such as saveAsTextFile() or collect()
+	- Query optimization can be performed on the tree before it is executed
+
+
+## Streaming Data
+
+__Streaming Data and Applications__
+- Streaming data refers to data that arrives in a continuous fashion 
+	- cf. data-at-rest
+- Applications include:
+	- Stock market: stream of trades
+	- e-commerce site: purchases, searches
+	- Sensors: sensor readings
+		- Internet of things
+	- Network monitoring data
+	- Social media: tweets and posts can be viewed as a stream
+- Queries on streams can be very useful
+	- Monitoring, alerts, automated triggering of actions
+
+__Querying Streaming Data__
+- Windowing: A stream is broken into windows, and queries are run on windows
+	- Stream query languages support window operations
+	- Windows may be based on time or tuples
+	- We can infer when all tuples in a window have been seen
+	- The timestamps are increasing
+	- Punctuations specify that all future tuples have timestamp greater that some value
+- Continuous queries: Queries written e.g., in SQL, output partial results based on the stream seen so far; query results are updated continuously 
+	- The user would be flooded with a large number of updates
+- Algebraic operators on streams:
+	- Each operator consumes tuples from a stream and outputs tuples
+	- Operators can be written e.g., in an imperative language
+	- Operators may maintain state, allowing them to aggregate incoming data
+- Pattern matching:
+	- Queries specify patterns, and a system detects occurrences of patterns and triggers actions
+		- Complex event processing (CEP) systems: e.g., Microsoft StreamInsight, Flink CEP, Oracle Event Processing
+
+__Stream Processing Architectures__
+- Many stream processing systems are purely in-memory, and do not persist data
+- Lambda architecture split a stream into two, where one goes to a streamprocessing system and the other to a database for storage
+	- Easy to implement and widely used
+	- Often leading to duplication of querying effort, once on a streaming system and once in adatabase
+
+__Stream Extensions to SQL__
+- Streaming systems often support more window types 
+	- Tumbling window
+		- e.g., hourly windows, windows don’t overlap 
+	- Hopping window
+		- e.g., hourly window computed every 20 minutes 
+	- Sliding window
+		- Window of specified size (based on timestamp interval or number of tuples) around each incoming tuple
+	- Session window
+		- Tuples based on user sessions
+
+__Window Syntax in SQL__
+- Windowing syntax varies widely by systems 
+- e.g., in Azure Stream Analytics SQL:
+```
+select item, System.Timestamp as window end, sum(amount) 
+from order timestamp by datetime
+group by itemid, tumblingwindow(hour, 1)
+```
+- Aggregates are applied on windows
+- A result of windowing operation on a stream is a relation
+- Many systems support stream-relation joins
+- Stream-stream joins often require join conditions to specify bound ontimestamp gap between matching tuples
+	- e.g., tuples must be at most 30 minutes apart in timestamp
+
+![[Pasted image 20240603154542.png|500]]
+__Algebraic Operations on Streams__
+- Tuples in streams need to be routed to operators 
+	- DAG and publish-subscribe representations
+		- Used in Apache Storm and Apache Kafka respectively
+
+
+__Publish Subscribe Systems__
+- Publish-subscribe (pub-sub) systems provide convenient abstraction for processing streams
+	- Tuples in a stream are published to a topic
+	- Consumers subscribe to a topic
+- Parallel pub-sub systems allow tuples in a topic to be partitioned across multiple machines
+- Apache Kafka is a popular parallel pub-sub system widely used to manage streaming data
+
+
+## Graph Databases
+
+__Graph Data Model__
+- A graph is a very general data model
+- The ER model of an enterprise can be viewed as a graph
+	- Every entity is a node
+	- Every binary relationship is an edge
+	- Ternary and higher degree relationships can be modelled as binary relationships
+- Graphs can be modelled as relations
+	- node(ID, label, node_data)
+	- edge(fromID, toID, label, edge_data)
+- Graph databases like Neo4j can provide a graph view of relational schema
+	- Relations can be identified as representing either nodes or edges
+- Query languages for graph databases make it
+	- Easy to express queries requiring edge traversal
+	- Allow efficient algorithms to be used for evaluation
+- Suppose
+	- Relations instructor and student are nodes, and
+	- Relation advisor represents edges between instructor and student
+ - Query in Neo4j (Cypher):
+```
+match (i:instructor)<-[:advisor]-(s:student) 
+where i.dept name= 'Comp. Sci.’
+return i.ID as ID, i.name as name, collect(s.name) as advisees
+```
+- match clause matches nodes and edges in graphs
+- Recursive traversal of edges is also possible
+	- Suppose prereq(course_id, prereq_id) is modeled as an edge
+	- Transitive closure can be done as follows:
+```
+match (c1:course)-[:prereq *1..]->(c2:course) 
+return c1.course id, c2.course id
+```
+
+__Parallel Graph Processing__
+- Very large graphs (billions of nodes, trillions of edges)
+	- Web graph: web pages are nodes; hyperlinks are edges
+	- Social network graph: people are nodes; friend/follow links are edges
+- Two popular approaches for parallel processing on such graphs
+	- MapReduce and algebraic frameworks
+	- Bulk synchronous processing (BSP) framework
+- Multiple iterations are required for any computations on graphs
+	- MapReduce/algebraic frameworks often have high overheads per iteration
+	- BSP frameworks have much lower per-iteration overheads
+- Google’s Pregel system popularized the BSP framework
+- Apache Giraph is an open-source version of Pregel
+- Apache Spark’s GraphX component provides a Pregel-like API
+
+![[Pasted image 20240603154820.png|400]]![[Pasted image 20240603154857.png|200]]
+__Bulk Synchronous Processing (BSP)__
+- Each vertex (node) of a graph has data (state) associated with it
+	- Vertices are partitioned across multiple machines, and the state of a node is kept in-memory
+- Analogous to map() and reduce() functions, programmers provide methods to be executed for each node
+	- The node method can send messages to or receive messages from neighboring nodes
+- Computation consists of multiple iterations, or supersteps
+- In each superstep,
+	- Nodes process received messages
+	- Nodes update their state, and send further messages or vote to halt
+	- Computation ends when all nodes vote to halt, and there are no pending messages
+

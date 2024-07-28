@@ -1,3 +1,175 @@
+
+**1. Yes or no? According to the Dijkstra's link state algorithm, individual routers have the complete topology of the network for shortest-path computation.**
+- **Answer:** Yes
+- **Explanation:** Dijkstra의 링크 상태 알고리즘에 따르면 개별 라우터는 최단 경로 계산을 위해 네트워크의 전체 토폴로지를 갖고 있습니다.
+
+**2. Yes or no? In a distance vector routing algorithm, individual routers compute paths to the rest of the network via updates from neighboring routers.**
+- **Answer:** Yes
+- **Explanation:** 거리 벡터 라우팅 알고리즘에서는 개별 라우터가 인접 라우터로부터 받은 업데이트를 통해 네트워크의 나머지 부분으로의 경로를 계산합니다.
+
+**3. Yes or no? Routing protocols based on shortest-path algorithms run between ASes (Autonomous Systems).**
+- **Answer:** No
+- **Explanation:** 최단 경로 알고리즘에 기반한 라우팅 프로토콜은 주로 AS 내부에서 사용됩니다. AS 간에는 BGP와 같은 프로토콜이 사용됩니다.
+
+**4. Yes or no? The KAIST network shares one AS number with a couple of neighboring institutions.**
+- **Answer:** No
+- **Explanation:** KAIST 네트워크는 인접 기관들과 AS 번호를 공유하지 않습니다.
+
+**5. Yes or no? KAIST has only one routable prefix 143.248.0.0/16.**
+- **Answer:** Yes
+- **Explanation:** KAIST는 143.248.0.0/16의 하나의 라우터 가능한 프리픽스를 갖고 있습니다.
+
+**6. Yes or no? OSPF is an intra-domain routing protocol.**
+- **Answer:** Yes
+- **Explanation:** OSPF는 내부 도메인 라우팅 프로토콜입니다.
+
+**7. Yes or no? BGP is an inter-domain routing protocol.**
+- **Answer:** Yes
+- **Explanation:** BGP는 도메인 간 라우팅 프로토콜입니다.
+
+**8. Yes or no? Routers within an AS use only intra-domain routing protocols between themselves.**
+- **Answer:** No
+- **Explanation:** AS 내부의 라우터는 iBGP를 포함하여 내부 및 외부 라우팅 프로토콜을 모두 사용할 수 있습니다.
+
+**9. Yes or no? iBGP is used to disseminate BGP routes learned from peer ASes.**
+- **Answer:** Yes
+- **Explanation:** iBGP는 피어 AS에서 학습한 BGP 경로를 전파하는 데 사용됩니다.
+
+**10. What protocol do gateway routers directly connected between two different ASes use to exchange BGP route info?**
+- **Answer:** BGP (Border Gateway Protocol)
+- **Explanation:** 두 다른 AS에 직접 연결된 게이트웨이 라우터는 BGP를 사용하여 BGP 경로 정보를 교환합니다.
+
+**11. Yes or no? End-to-end Internet paths are always symmetric; forward and reverse paths go through the same routers.**
+- **Answer:** No
+- **Explanation:** 종단 간 인터넷 경로는 항상 대칭적이지 않으며, 순방향 및 역방향 경로는 다른 라우터를 통해 갈 수 있습니다.
+
+**12. Which ICMP message type the routers use to reply to packets sent out by traceroute?
+	Type = 3, code = 1; destination host unreachable
+	Type = 3, code = 3; destination port unreachable
+	Type = 11, code = 0; TTL expired
+	Type = 12, code = 0; bad IP header**
+- **Answer:** Type 11, code 0; TTL expired
+- **Explanation:** 트레이스루트가 보낸 패킷에 라우터는 "TTL 만료" 메시지 (Type 11, code 0)로 응답합니다.
+
+**13. Yes or no? If an AS adopts an SDN control plane, routers delegate intra-domain shortest path computation to the centralized SDN controller.**
+- **Answer:** Yes
+- **Explanation:** SDN 제어 평면을 채택한 AS에서는 라우터가 내부 도메인의 최단 경로 계산을 중앙 집중식 SDN 컨트롤러에 위임합니다.
+
+**14. Yes or no? An SDN switch communicates with an ONOS controller via OpenFlow and with an OpenDaylight (ODL) controller via SNMP.**
+- **Answer:** No
+- **Explanation:** SDN 스위치는 ONOS 및 OpenDaylight 컨트롤러와 모두 OpenFlow를 통해 통신합니다.
+
+**15. What type of errors does Cyclic Redundancy Check (CRC) with d data bits and r CRC bits detect? Mark all that applies
+	A single bit error
+	A burst of errors up to (r+1) bits
+	Any combination of errors up to r bits
+	Any odd number of r-bit errors**
+- **Answer:**
+  - A single bit error
+  - A burst of errors up to (r+1) bits
+- **Explanation:** CRC는 단일 비트 오류와 최대 (r+1) 비트의 오류 묶음을 감지할 수 있습니다.
+
+**16. Mark all the protocols that have some form of error detection.
+	HTTP
+	TCP
+	IP
+	Ethernet**
+- **Answer:**
+  - TCP
+  - IP
+  - Ethernet
+- **Explanation:** TCP, IP, Ethernet 프로토콜은 모두 오류 검출 메커니즘을 포함하고 있습니다.
+
+**17. Yes or no? Slotted ALOHA has better efficiency than pure ALOHA.**
+- **Answer:** Yes
+- **Explanation:** 슬롯 ALOHA는 순수 ALOHA보다 효율성이 더 높습니다.
+
+**18. In Ethernet CSMA/CD, what is the next action that a host takes after detecting a collision?
+	A host stops transmitting and wait for a random amount of time.
+	A host sends out a jamming signal.
+	A host finishes transmissing a frame and when waits for a random amount of time.
+	A host stops transmitting and waits for a constant amount of time.
+- **Answer:** A host sends out a jamming signal.
+- **Explanation:** 충돌을 감지한 후 호스트는 간섭 신호를 보냅니다.
+
+**19. Which of the following protocols does not "take turn"?
+	Bluetooth
+	FDDI
+	token ring
+	Ethernet**
+- **Answer:** Ethernet
+- **Explanation:** Ethernet은 'turn-taking' 메커니즘을 사용하지 않습니다.
+
+**20. Mark all use cases of VLAN.
+	Partition a subnet into smaller groups of administrative domains.
+	Limit the scope of IP broadcast.
+	Limit the size of routing tables.
+	Limit the scope of routing protocol reachability.**
+- **Answer:**
+  - Partition a subnet into smaller groups of administrative domains.
+  - Limit the scope of IP broadcast.
+- **Explanation:** VLAN은 서브넷을 더 작은 관리 도메인으로 분할하고 IP 브로드캐스트의 범위를 제한하는 데 사용됩니다.
+
+**21. What action does a switch take when it receives a frame of which MAC address is not in the switching table?
+	It drops the frame and replies "destination unreachable" via ICMP .
+	It broadcasts an ARP request on all ports but for the incoming port.
+	It simply broadcasts the frame to all ports but for the incoming port.
+	It simply sends it back on the incoming port.**
+- **Answer:** It simply broadcasts the frame to all ports but for the incoming port.
+- **Explanation:** 스위치는 MAC 주소가 스위칭 테이블에 없을 때 프레임을 들어오는 포트를 제외한 모든 포트에 브로드캐스트합니다.
+
+**22. How long is the MPLS label?**
+- **Answer:** 20 bits
+- **Explanation:** MPLS 레이블은 20비트입니다.
+
+**23. Now that you have covered the Internet protocol stack from the application layer down to the Ethernet layer. What will you do when your web search does not go thru?**
+- **Answer:** Check network connectivity, DNS settings, or firewall configurations.
+- **Explanation:** 웹 검색이 되지 않으면 네트워크 연결, DNS 설정 또는 방화벽 구성을 확인합니다.
+
+**24. Which of the medium access classes does CDMA (Code Division Multiple Access) belong to?
+	Channel partitioning
+	Random access
+	Taking turns**
+- **Answer:** Channel partitioning
+- **Explanation:** CDMA는 채널 분할에 속합니다.
+
+**25. Yes or no? CDMA allows multiple stations to transmit and receive at the same time.**
+- **Answer:** Yes
+- **Explanation:** CDMA는 여러 스테이션이 동시에 전송하고 수신할 수 있도록 합니다.
+
+**26. Yes or no? When you connect to the Internet via an AP (Access Point), you are using the infrastructure mode of WiFi technology.**
+- **Answer:** Yes
+- **Explanation:** AP를 통해 인터넷에 연결할 때 WiFi 기술의 인프라 모드를 사용하고 있습니다.
+
+**27. Yes or no? MANET and VANET rely on ad-hoc mode of WiFi technology.**
+- **Answer:** Yes
+- **Explanation:** MANET 및 VANET은 WiFi 기술의 애드혹 모드에 의존합니다.
+
+**28. Yes or no? Base stations and mobile hosts both adjust rates dynamically as SNR changes.**
+- **Answer:** Yes
+- **Explanation:** 기지국과 모바일 호스트 모두 SNR(신호 대 잡음비)의 변화에 따라 동적으로 속도를 조정합니다.
+
+**29. Yes or no? In the 802.11 header frame, the MAC address of the AP is included.**
+- **Answer:** Yes
+- **Explanation:** 802.11 헤더 프레임에는 AP의 MAC 주소가 포함됩니다.
+
+**30. Yes or no? RTS-CTS is a collision detection mechanism.**
+- **Answer:** No
+- **Explanation:** RTS-CTS는 충돌 회피 메커니즘입니다.
+
+**31. Yes or no? 5G base stations cover a shorter range of distance than 4G one.**
+- **Answer:** Yes
+- **Explanation:** 5G 기지국은 4G 기지국보다 더 짧은 범위를 커버합니다.
+
+**32. Yes or no? When you travel abroad and start roaming, the visited network abroad has to contact your home network for authorization to network access.**
+- **Answer:** Yes
+- **Explanation:** 해외로 로밍할 때 방문한 네트워크는 네트워크 접근 권한을 얻기 위해 귀하의 홈 네트워크에 연락해야 합니다.
+
+**33. Yes or no? In 4G/5G your roaming phone's data goes thru a tunnel between the visited network and your home network for eventual Internet access.**
+- **Answer:** Yes
+- **Explanation:** 4G/5G에서는 로밍 전화의 데이터가 방문 네트워크와 홈 네트워크 사이의 터널을 통해 최종적으로 인터넷에 접근합니다.
+
+
 # QUIZ
 
 What is not in the network edge? 

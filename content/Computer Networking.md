@@ -1963,6 +1963,54 @@ __Standards and Future Directions__
 - **802.1Q Standard**: Provides detailed protocols for VLAN tagging and management.
 - **Evolutionary Potential**: Continuous improvement in VLAN technology, aiming to simplify network management and enhance security and performance across institutional LANs.
 
+## 6.5 Link Virtualization: A Network as a Link Layer
+
+**Evolution of Link Definition**:
+- Initially viewed as a physical wire connecting hosts.
+- Expanded to include multiple hosts connected by shared media (e.g., radio spectra).
+- Considered abstractly as a channel, not just a wire.
+- Ethernet LANs: complex switched infrastructures seen as simple link-layer channels by hosts.
+- Dialup modem connections: telephone network viewed as a simple "wire" by the Internet link-layer.
+**Overlay Networks**:
+- Internet virtualizes the telephone network, using it as a link-layer technology.
+- Similar to how overlay networks use the Internet for connectivity.
+
+## 6.5.1 Multiprotocol Label Switching (MPLS)
+
+**Overview**:
+- **Origins**: Evolved in the 1990s to improve IP router forwarding speeds using fixed-length labels.
+- **Purpose**: Augment IP datagram-forwarding with fixed-length labels for faster processing.
+- **Protocol**: Unified by IETF in MPLS protocol [RFC 3031, RFC 3032].
+
+**MPLS Frame Structure**:
+- **Format**: MPLS header added between layer-2 (e.g., Ethernet) and layer-3 (IP) headers.
+- **Fields**:
+  - Label
+  - 3 experimental bits
+  - S bit (end of MPLS header stack)
+  - Time-to-live field
+
+**Label-Switched Routers**:
+- **Function**: Forward MPLS frames based on label lookups.
+- **Requirement**: Both routers in the connection must be MPLS-capable.
+- **Example**:
+  - MPLS-capable routers (R1-R4) connect IP devices (R5, R6, A, D) without altering IP headers.
+
+**Label Distribution and Path Computation**:
+- **Label Distribution**: Managed by protocols like RSVP-TE [RFC 3209].
+- **Path Computation**: Uses extended link-state routing algorithms (e.g., OSPF).
+- **Vendor-Specific Algorithms**: Path computation methods are not standardized.
+
+**Advantages of MPLS**:
+- **Traffic Management**: Enables multiple paths to a destination, enhancing traffic engineering.
+  - Example: Router R4 can use different MPLS paths to reach destination A.
+- **Fast Restoration**: Precomputed failover paths for quick rerouting during link failures.
+- **Virtual Private Networks (VPNs)**: MPLS isolates customer resources and addresses within an ISP’s network.
+
+**Future of MPLS and SDN**:
+- **Coexistence with SDN**: MPLS predated SDN but shares similar traffic engineering capabilities.
+- **Potential for Replacement**: SDN may eventually replace MPLS, but both technologies currently coexist.
+
 ## 6.6 Data Center Networking
 
 **Purpose and Functionality**:
@@ -2480,10 +2528,6 @@ __802.11 Rate Adaptation__
 	- Adaptive selection of physical-layer modulation based on channel characteristics.
 	- **Fallback**: If two consecutive frames are not acknowledged (indicating bit errors), the transmission rate decreases.
 	- **Increase**: If 10 consecutive frames are acknowledged, or a timer expires, the transmission rate increases.
-	- **Philosophy**: Similar to TCP’s congestion-control mechanism—probing for higher rates when conditions are good, backing off when errors occur.
-	- **Comparison**: Like a child asking for more until told "Enough!" and then trying again later.
-- **Other Schemes**:
-	- Additional improvements proposed by Kamerman (1997), Holland (2001), Lacage (2004).
 
 __Power Management__
 - **Importance**:
@@ -2535,9 +2579,6 @@ __Power Management__
   - Allow changes in transmission power levels and device states (active/parked).
   - Address low energy and security considerations in newer versions.
 
-**References for Further Reading**:
-  - Bisdikian 2001, Colbach 2017, Bluetooth 2020.
-
 ## 7.4 Cellular Networks: 4G and 5G
 
 __Ubiquity and Performance of 4G__
@@ -2575,11 +2616,7 @@ __Architectural Principles in 4G Networks__
 - **Global Network Interconnection**:
 	- Multiple provider networks form a global "network of networks."
 - **Internet Protocols**:
-	- Many Internet protocols are used in the all-IP core of 4G networks.
-
-__Additional Resources__
-- **Mobility Management**: Covered in Section 7.6.
-- **4G Security**: Covered in Section 8.8.
+	- Many Internet protocols are used in the all-IP core of 4G networks.0
 
 ### 7.4.1 4G LTE Cellular Networks: Architecture and Elements
 
@@ -3312,3 +3349,201 @@ __Diffie-Hellman Algorithm__
 **Operational Procedure**
 - Bob sends CA-signed certificate with his order.
 - Alice verifies the certificate using the CA’s public key and extracts Bob’s true public key.
+
+## 8.4 End-Point Authentication
+
+**Definition**:
+- End-point authentication: Process of one entity proving its identity to another over a network, e.g., a user to an e-mail server.
+- Human analogy: Recognizing faces, voices, or customs officials checking passports.
+
+**Purpose**:
+- Authenticate a “live” party during communication.
+- Different from verifying a message received in the past.
+
+**Challenges**:
+- Cannot rely on biometric information (visual appearance, voiceprint).
+- Authentication relies on exchanged messages and data in an authentication protocol.
+- Typically, an authentication protocol runs before other protocols (data transfer, routing, e-mail).
+
+**Development of Authentication Protocols**:
+- Stepwise development similar to reliable data transfer protocol development.
+- Identifying and addressing flaws in successive versions.
+
+__Authentication Protocol ap2.0__
+**Scenario**:
+- Alice authenticates herself to Bob.
+- Simple method: Alice sends a message saying, “I am Alice”.
+
+**Flaw**:
+- No way for Bob to verify the sender’s true identity.
+- Trudy (intruder) could impersonate Alice.
+
+**Improvement**:
+- Verify the source address on the IP datagram matches Alice’s well-known address.
+
+**Flaw**:
+- IP spoofing: Creating an IP datagram with Alice’s IP address is easy.
+- Reliance on first-hop router configurations to prevent spoofing (not universally enforced).
+
+__Authentication Protocol ap3.0__
+**Classic Approach**:
+- Use a secret password shared between Alice and Bob.
+- Widely used in services like Gmail, Facebook, Telnet, FTP.
+
+**Flaw**:
+- Password sent unencrypted can be intercepted (e.g., on a LAN during Telnet login).
+- Eavesdropping threat is real.
+
+__Authentication Protocol ap3.1__
+
+**Improvement**:
+- Encrypt the password using a symmetric secret key (KA-B).
+- Alice sends an encrypted password and “I am Alice” message to Bob.
+
+**Flaw**:
+- Vulnerable to playback attack: Trudy can record and replay the encrypted password.
+- Encryption does not prevent reuse of the recorded message.
+
+__Authentication Protocol ap4.0__
+
+**Solution**:
+- Use a nonce (a number used only once).
+- Steps:
+  1. Alice sends “I am Alice” to Bob.
+  2. Bob sends a nonce, R, to Alice.
+  3. Alice encrypts the nonce with the symmetric key (KA-B) and sends it back.
+  4. Bob decrypts and verifies the nonce.
+
+**Benefit**:
+- Ensures Alice is live and knows the secret key.
+- Nonce prevents replay attacks.
+
+## 8.6 Securing TCP Connections: TLS
+
+**TLS (Transport Layer Security)**:
+  - Enhances TCP with security services: confidentiality, data integrity, and end-point authentication.
+  - Standardized by IETF [RFC 4346].
+  - Successor to SSL (Secure Sockets Layer) version 3, originally designed by Netscape.
+
+**Importance and Usage**:
+  - Broadly deployed, supported by all popular Web browsers and servers.
+  - Used by major services like Gmail, Amazon, eBay, TaoBao.
+  - Facilitates secure Internet commerce, handling transactions worth hundreds of billions of dollars annually.
+  - Identified by URLs beginning with "https" instead of "http".
+
+**Example**:
+  - Bob visits Alice Incorporated’s site to buy perfume.
+  - Bob enters personal information and payment details.
+  - Risks without TLS:
+    - **No confidentiality**: Intruder intercepts and uses Bob’s payment information.
+    - **No data integrity**: Intruder alters the order details.
+    - **No server authentication**: Bob could be tricked by a fraudulent site (e.g., Trudy masquerading as Alice Inc.).
+
+**Provides**:
+  - **Confidentiality**: Encrypts data to prevent interception.
+  - **Data Integrity**: Ensures data has not been tampered with.
+  - **Server Authentication**: Verifies the server’s identity to prevent impersonation.
+  - **Client Authentication**: Verifies the client’s identity.
+
+**Usage**:
+  - Secures transactions over HTTP and other applications running over TCP.
+  - Provides an API similar to TCP’s, enabling easy integration with applications.
+
+**Developer's Perspective**:
+  - Technically resides in the application layer.
+  - Seen as a transport protocol that enhances TCP with security services.
+  - Requires inclusion of SSL classes/libraries in the application.
+
+### 8.6.1 The Big Picture
+
+**Simplified Version of TLS ("almost-TLS")**:
+- **Phases**: Handshake, Key Derivation, Data Transfer.
+- **Participants**: Client (Bob) and Server (Alice), with Alice having a private/public key pair and a certificate.
+
+__Handshake__
+- **Steps**:
+	1. Establish TCP connection.
+	2. Verify Alice's identity.
+	3. Send a master secret key to Alice.
+- **Process**:
+	- Bob sends a hello message after establishing a TCP connection.
+	- Alice responds with her certificate containing her public key.
+	- Bob generates a Master Secret (MS), encrypts it with Alice’s public key, and sends the Encrypted Master Secret (EMS) to Alice.
+	- Alice decrypts the EMS with her private key to obtain the MS.
+- **Outcome**: Both Bob and Alice know the master secret for this TLS session.
+
+__Key Derivation__
+- **Purpose**: Generate different cryptographic keys for encryption and integrity checking.
+- **Keys Derived**:
+	- **EB**: Session encryption key for Bob to Alice.
+	- **MB**: Session HMAC key for Bob to Alice.
+	- **EA**: Session encryption key for Alice to Bob.
+	- **MA**: Session HMAC key for Alice to Bob.
+- **Process**: Both Alice and Bob generate these keys from the MS.
+
+__Data Transfer__
+- **Purpose**: Secure data transfer using the derived keys.
+- **Process**:
+	- Data is broken into records.
+	- HMAC is appended to each record for integrity checking.
+	- Record + HMAC is encrypted and sent over TCP.
+- **Integrity Check**:
+	- Use of sequence numbers in HMAC calculations to prevent reordering or replaying segments.
+- **Potential Issues**: Without sequence numbers, a woman-in-the-middle attack could reorder segments, affecting the data integrity.
+
+**TLS Record Structure**:
+- **Fields**:
+	- **Type Field**: Indicates if the record is a handshake message or application data.
+	- **Version Field**: Specifies the version of TLS.
+	- **Length Field**: Used to extract TLS records from the TCP byte stream.
+	- **Data Field**: Contains the actual data.
+	- **HMAC Field**: Ensures the integrity of the record.
+
+**Sequence Numbers in TLS**:
+- **Function**: Prevent attacks by ensuring the correct order of records.
+- **Process**:
+	- Sequence numbers are not included in the record but are used in HMAC calculations.
+	- Bob maintains a sequence number counter and includes the sequence number in the HMAC calculation.
+	- Alice tracks the sequence numbers to verify the data integrity.
+
+### 8.6.2 A More Complete Picture
+
+__TLS Handshake__
+- **Overview**:
+	- TLS allows Alice and Bob to agree on cryptographic algorithms at the start of the session during the handshake phase.
+	- Nonces are exchanged to create session keys.
+- **Steps**:
+	1. **Client Sends**:
+		- List of supported cryptographic algorithms.
+		- Client nonce.
+	2. **Server Chooses and Sends**:
+		- Chosen symmetric algorithm (e.g., AES), public key algorithm (e.g., RSA), HMAC algorithm (e.g., MD5 or SHA-1).
+		- Certificate and server nonce.
+	3. **Client Verifies and Sends**:
+		- Verifies the server’s certificate.
+		- Extracts server’s public key.
+		- Generates Pre-Master Secret (PMS).
+		- Encrypts PMS with server’s public key and sends it to the server.
+	4. **Both Compute Master Secret (MS)**:
+		- Independently compute MS from PMS and nonces.
+		- MS is used to generate encryption and HMAC keys, and Initialization Vectors (IVs) for CBC mode.
+		- All subsequent messages are encrypted and authenticated.
+	5. **Client Sends**:
+		- HMAC of all handshake messages.
+	6. **Server Sends**:
+		- HMAC of all handshake messages.
+- **Tampering Protection**:
+	- Steps 5 and 6 prevent tampering with the handshake process.
+	- Ensures the integrity of the algorithm selection process by comparing HMACs.
+- **Nonce Use**:
+	- Prevents "connection replay attack" where an attacker replays a previous session's messages.
+	- Ensures different encryption keys for each session.
+
+__Connection Closure__
+- **Issue**:
+	- Terminating the session with a simple TCP FIN could allow a truncation attack, ending the session prematurely.
+- **Solution**:
+	- Use a TLS type field to indicate session termination.
+	- Authenticated by HMAC to ensure the closure message is legitimate.
+	- Alerts the receiver to suspicious activity if a TCP FIN is received before a closure record.
+

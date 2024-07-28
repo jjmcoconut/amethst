@@ -1,4 +1,4 @@
-
+/
 Lecture notes from Operating System & Lab taught by Insik Shin - KAIST
 ### Introduction
 
@@ -1354,8 +1354,8 @@ __Can x86 Trap and Emulate?__
 	- Kernel Mode: changes ALU and system flags
 	- Does not generate a trap in user mode 
 
-__Protected Mode__
 ![[Pasted image 20240527131554.png|250]]
+__Protected Mode__
 - Most modern CPUs support protected mode
 - x86 CPUs support three rings with different privileges
 	- Ring 0: OS kernel
@@ -1535,16 +1535,16 @@ __EPT Performance Evaluation__
 
 # FLUID: Enabling next-generation multi-device paradigm
 
-Multi-device Computing Model
+__Multi-device Computing Model__
 - Transparent cross-device resource sharing
 	- allows an app executing on one device to use resources on another device transparently
 		- physical resources: camera, sensors, etc
 		- logical(app) service: login, browsing, PDF viewer, etc
 
-What does FLUID do?
+__What does FLUID do?__
 - Partitions an app at the unit of UI, distributes UIs across different devices, and runs each UI simultaneously on different devices
 
-Existing solutions
+__Existing solutions__
 - Customized apps
 	- Extra engineering efforts
 	- Low applicability
@@ -1557,16 +1557,16 @@ Existing solutions
 		- Supports only full screen
 		- Cannot support concurrent usage
 
-Goal
+__Goal__
 - Design a new mobile platform that supports multi-device computing by distributing UI objects to different devices in a flexible, transparent and responsive manner
 
-FLUID overview
 ![[Pasted image 20240529140154.png|500]]
+__FLUID overview__
 - Key idea: separation between app logic & UI parts
 	- Distributing target UI objects to remote devices and rendering them
 	- Giving an illusion as if app logic and UI objects were in the same process by extending intra-app interaction to multi-device environments
 
-Why is FLUID good?
+__Why is FLUID good?__
 - Flexibility
 	- Allows users to interact with multiple devices, via fine-grained UI distribution, with maximum flexibility
 - Transparency
@@ -1575,19 +1575,35 @@ Why is FLUID good?
 - Responsiveness
 	- Require less network transmission when moving UIs instead of full screen
 
-Problems
+__Problems__
 - How to maintain interaction between app logic & UI objects?
-  ![[Pasted image 20240529140620.png|400]]
 	- Such interaction is achieved via local function calls
 	- However, local functions cannot be executed across devices
 	- Our solution: transparent RPC transformation in Andriod VM (ART)
+		- ![[Pasted image 20240529140620.png|400]]
 - How to split & distribute UI objects?
-  ![[Pasted image 20240529140906.png|400]]
+	-  ![[Pasted image 20240529140906.png|400]]
 	- We aim to minimize the amount of network transfer(graphical states) needed for UI rendering to reduce network overhead
 	- However, for some app-specific custom UIs, it is not easy to precisely determine which graphical states are used
 	- Our solution: selective UI distribution
 
-Limitation of FLUID: No cross-platfrom support
+__Limitation of FLUID: No cross-platfrom support__
 - Multi-device environment often consists of heterogeneous devices
 	- Where different device types typically have different major platforms
 - FLUID only support UI distribution between Andriod devices
+
+__Goal: FLUID + XP__
+- Design a mobile platform that supports multi-device interaction by distributing UIs to different devices
+	- In flexible, transparent and responsive manner
+	- Also with cross platform support
+
+![[Pasted image 20240603132527.png|500]]
+__FLUID-XP overview__
+- Key idea: UI Tree partitioning & Subtree streaming
+	1. Separate Target UIs fro the original UI Tree
+	2. Render the partitioned subtree on a virtual display
+	3. Stream the pixels of virtual display to guest device's wrapper app
+
+__FLUIDGPT: GPT-based Autonomous App Execution__
+![[Pasted image 20240603135202.png|500]]
+
