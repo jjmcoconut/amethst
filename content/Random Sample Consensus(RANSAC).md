@@ -2,7 +2,7 @@
 - Majority of good samples agree with the expected model
 - Bad samples does not consistently agree with a single model(bad samples make different results)
 
-### While improvement>threshold
+### While improvement > threshold
 1. Choose small subset of points uniformly at random
 2. **Fit** a model to subset
 3. Find all remaining points close to model and reject the rest as outlier

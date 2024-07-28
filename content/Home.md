@@ -3,18 +3,6 @@
 	[[Quartz]]
 	[[Connecting Obsidian-Quartz]]
 
-2. [[Computer Vision]]
+2. [[Undergraduate]]
 
-3. [[Kaggle Competition]]
-
-4. [[Time Series Analysis]]
-
-7. [[Portfolio Optimization]]
-
-8. [[Risk Management]]
-
-9. [[2024 Spring]]
-
-10. [[Risk-sensitive Policy Optimization]]
-
-11. [[Game Theory - Coursera]]
+3. [[Master]]

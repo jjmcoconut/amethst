@@ -63,4 +63,47 @@ __Normal form__
 
 ## 1-4 Game Example
 
-Prisioner's Dilemma
+__Prisioner's Dilemma__
+
+|     | C    | D    |
+| --- | ---- | ---- |
+| C   | a, a | b, c |
+| D   | c, b | d,d  |
+Is any game with $c>a>d>b$
+
+__Games of pure competition__
+- Players have exactly opposed interests
+- Must be 2 players
+- For all action $a \in A, u_1(a)+u_2(a)=c$  for some constant $c$
+
+__Games of cooperation__
+- Players have exactly same interests
+- no conflict: all players want the same things
+	- $\forall a \in A, \forall i,j,u_i(a)=u_j(a)$
+
+## 1-5 Nash Equilibrium
+
+__Keynes Beauty Contest Game__
+- Each player names an integer btw 1 and 100
+- The player who names the integer closest to two thirds of the average integer wins.
+
+## 1-6 Strategic Reasoning
+
+__Keynes Beauty Contest Game__
+- What will other players do?
+- What should I do in response?
+- Each player takes the best response to others: _Nash equilibrium_
+
+__Flow__
+- Suppose the average will be _X_
+- _X_ is no less than 100, the optimal strategy to announce less than 67
+- If _X_ is less than 67 then the optimal strategy of any player is to write less than 45.
+- Continues ...
+- Everyone should pick 1 and get a $1/N$ chance to win
+
+__Actually...__
+- Mean 34, mode 50, Median 33, Winner 23
+- Because people do not understand the problem well...
+
+Why should we expect equilibria to be played?
+- We expect the non-equilibria not to be stable. The players should move away from that state.
