@@ -107,3 +107,53 @@ __Actually...__
 
 Why should we expect equilibria to be played?
 - We expect the non-equilibria not to be stable. The players should move away from that state.
+
+## 1-7 Best Response and Nash Equilibrium 
+
+__Best Response__
+$$a_i^* \in BR(a_{-i}) \text{ iff } \forall a_i \in A_i, u_i(a_i^*,a_{-i})\geq u_i(a_i,a_{-i})$$
+
+__Nash Equilibrium__
+$a=<a_1,\cdots,a_n>$ is a _Nash equilibrium_ iff $\forall i,a_i \in BR(a_{-i})$
+
+## 1-9 Dominant Strategies
+
+Let $s_i$ and $s_i'$ be two strategies for player $i$, and let $S_{-i}$ be set of all possible strategy for the other players.
+
+__Strictly Dominate__
+$s_i$ _strictly dominates_ $s_i'$ if $\forall s_{-i} \in S_{-i}, u_i(s_i,s_{-i})>u_i(s_i',s_{-i})$
+
+__Very weakly Dominate__
+$s_i$ _very weakly dominates_ $s_i'$ if $\forall s_{-i} \in S_{-i}, u_i(s_i,s_{-i}) \geq u_i(s_i',s_{-i})$
+
+__Dominant__
+If one strategy dominates all the other strategy it is _dominant_, and it must be uinque
+
+|       | C      | D      |
+| ----- | ------ | ------ |
+| __C__ | -1, -1 | -4, 0  |
+| __D__ | 0, -4  | -3, -3 |
+In this case D strategy is dominant two both players.
+
+## 1-10 Pareto Optimality
+
+__Pareto Dominance__
+If one outcome $o$ is at least as good as for every agent as other outcome $o'$, and there is some agent that strictly prefers o to $o'$, $o$ _Pareto-dominates_ $o'$
+
+__Pareto Optimality__
+Outcome $o'$ is _Pareto-optimal_ if there is no other outcome that Pareto-dominates it
+
+# 2 Mixed-Strategy Nash Equilibrium
+
+__Pure strategy__
+Only one action is played with positive probability
+
+__Mixed strategy__
+More than one action is played with positive probability. These actions are called the support of the mixed strategy
+
+__Expected Utility__
+$$u_i(s)=\sum_{a \in A}u_i(a)Pr(a|s)$$
+$$Pr(a|s) = \prod_{j\in N}s_j(a_j)$$
+
+__Nash Theorem__
+Every finite game has a _Nash equilibrium_
