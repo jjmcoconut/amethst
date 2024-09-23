@@ -99,3 +99,60 @@ __Proposition 4__
 		- Voluntary Mandate: Not all the case
 
 # Extensions
+
+## Shared Supplier
+We have second buyer firm(B2) with $\tau_2 \in (0,\tau)$
+
+All propositions 1-4  hold for both buying firms.
+
+__Proposition 5__
+1. With voluntary disclosure (and not under a disclosure mandate), cooperation can strictly reduce the learning cost threshold and result in higher impact.
+2. With voluntary disclosure (and not under a disclosure mandate), cooperation can strictly reduce the expected values of both buying firms’ valuations and discounted profits.
+3. The supplier’s expected impact can be strictly higher with a disclosure mandate and cooperation than with voluntary disclosure and noncooperation.
+	- Cooperation overcomes B2 freeride problem
+	- From (1)
+		- Disclosure Mandate -> increase learning cost threshold, reduce supplier impact
+		- Voluntary disclosure -> cooperation이 학습, 영향력 감소 막을 수 있음
+		- cooperation이 $\tau \rightarrow \tau+\tau_2$ 처럼 작동하기 때문이다.
+	- From (2)
+		- Voluntary disclosure: harm both buying firm & supplier
+			- cooperation -> increase likelihood of learning -> nondisclosure: investors think supplier has larger impact than usual -> overinvest on learning
+		- Disclosure mandate: buying firms & managers benefit
+	- From (c)
+		- In some cases disclosure mandate reduces the probability of learning
+
+## Alternative Supplier
+
+Learning cost is $\gamma C$
+
+__Proposition 6__
+1. With voluntary disclosure, the manager commits to a supplier if and only if $γ >\hat{γ}_v$, where $1 <\hat{γ}_v$. Under a disclosure mandate, the manager commits to a supplier if and only if $γ >\hat{γ}_m$, where $1 <\hat{γ}_m<\hat{γ}_v$.
+2. For $γ ≤\hat{γ}_m$, a disclosure mandate is ineffective.For $γ ∈ (\hat{γ}_m,\hat{γ}_v]$, a disclosure mandate strictly increases the probability that the manager learns. For $γ >\hat{γ}_v$, Propositions 1, 2, 3, and 4 hold.
+	- Commitment는 $\gamma$가 클 때 일어난다
+	- Disclosure mandate는 $\gamma$-threshold를 낮춰 commitment를 더 자주하게 된다$(\hat{\gamma}_m<\hat{\gamma}_v)$
+		- Prop3: disclosure mandate는 commit할 때 buyer, supplier 모두 이득을 본다
+	- 매니저가 alternative로 바꿀 옵션이 있다 -> voluntary도 optimal impact reduction을 찾은뒤 영향력 감소 시키고 무조건 공개한다 -> mandate는 쓸모 없는 옵션이다
+
+## Manager's Objective/Information for Investors
+
+$\theta$: weight assigned to EDP -> valuation has $1-\theta$
+
+__Proposition 7__ 
+1. A disclosure mandate has the same effect on learning, impact reduction, the firm’s expected discounted profit, and its valuation as increasing $θ$ to 1.
+	- Disclosure mandate has effect of
+		- Manager to maximize EDP
+		- Eliminate investors' uncertainty about supplier's impact
+
+__Proposition 8__
+1. With voluntary disclosure, if the equilibrium is unique, the learning cost threshold $\bar{c}_v$ strictly decreases with $θ$.
+	- Voluntary disclosure
+		- $\theta$ increases(investors more likely to learn supplier impact) -> manager less likely to learn
+
+# Concluding Remarks
+
+- Mandate tends to deter managers from learning about a supplier's impact but, if they do choose to learn, it incentivizes them to reduce that impact
+- The paper identifies three mechanisms where disclosure mandate enhances buyer's EDP & valuation
+	- Discourage unnecessary learning costs
+	- Encourage optimal impact reduction after learning
+	- Alleviate investor concerns about potential withholding of negative information
+- 경영자의 인센티브를 장기적 목표에 맞추면 더 나은 지속 가능성 결과와 기업 가치의 향상이 이루어질 수 있다
