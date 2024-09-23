@@ -38,6 +38,7 @@
 		- Solution: $(l^*,k^*,d^*)$
 - $\kappa^*(R)$: optimal $k$ conditional on $R=r$
 	- $κ^∗ ( R) ∈ argmin_{k \in [0,\infty)}\{k− τR  ( k)\}$
+- EDP: Expected Discounted Profit
 
 __Assumptions__
 - Investors cannot observe the manager’s decisions about learning and impact reduction and do not update their beliefs about those decisions upon observing the current period profit
@@ -51,3 +52,50 @@ __Assumptions__
 
 # Results
 ## Voluntary Disclosure
+
+__Lemma 1 (Voluntary Disclosure)__
+1. In an equilibrium, the manager learns if and only if $C ≤ \bar{c}_v$. After learning, the manager chooses to reduce the supplier’s impact according to $κ^∗(R$) and disclose it if and only if $G ≤\hat{g} (R, M_∅)$; otherwise, the manager does not disclose and pursues only the immediately profitable impact reduction $R(0)$. Together, $\bar{c}_v,\hat{g}(R, M_∅)$, and $M_∅$ satisfy 
+$$\bar{c}_v= τM_∅− E[min(τM_∅, κ^∗(R) + τ(G− R(κ^∗(R))))] $$
+$$\hat{g}(R, M_∅) =M_∅ + (τR(κ^∗(R)) − κ^∗(R)  )/(τ)$$
+$$M_∅=\frac{F(\bar{c}_v)E[(G− R(0))1\{G >\hat{g}(R, M∅)\}] + (1− F(\bar{c}_v))E[G]}{F(\bar{c}_v)Pr(G >\bar{g}(R, M_∅)) + (1− F(\bar{c}_v))}$$
+2. An equilibrium exists.
+3. In any equilibrium, investors’ expectation of the impact in the event of nondisclosure $M_∅$ is strictly greater than the expected impact without learning $E[G]$, that is, $M_∅ > E[G]$.
+4. If the equilibrium is unique, decreasing the learning cost $C$ (in first order stochastic dominance) strictly increases the learning cost threshold $\bar{c}_v$.
+	- (a): $C\leq\bar{c}_v$ iff 관리자가 학습함
+	- (c): 비공개를 관찰한 투자자들은 공급업체의 영향을 더 높게 추정
+		- 비공개를 관찰한 투자자들은 관리자가 학습하지 않았거나, 학습했지만 공급업체의 영향이 높다는 나쁜 소식을 숨기고 있다고 생각하게 되기 때문이다.
+	- (d): 비공개 $\rightarrow$ 투자자들의 학습 비용에 대한 사전 분포가 낮을수록, 투자자들은 관리자가 학습했지만 나쁜 소식을 숨기고 있을 확률이 더 높다고 생각하게 됨 $\rightarrow$ 공급업체의 영향에 대한 기대치($M_∅$)가 더 높아지게 됨 $\rightarrow$ 관리자는 좋은 소식을 공개하기 위해 더 높은 수준의 학습 비용을 감수하려는 동기를 갖게 된다.
+
+## Voluntary Disclosure vs Mandatory Disclosure
+
+__Proposition 1__
+1. A mandate for disclosure strictly reduces the probability that the manager learns: $$\bar{c}_m < \bar{c}_v$$with $\bar{c}_v$ representing the learning cost threshold in any equilibrium under voluntary disclosure. However, if $C ≤ \bar{c}_m$, so that the manager nevertheless learns, the mandate for disclosure results in weakly greater impact reduction.
+	- Mandatory Disclosure, Nondisclosure $\rightarrow$ Investors know that manager did not learn
+	- $\bar{c}_m$ is invariant with $C$
+
+__Proposition 2__
+1. A disclosure mandate results in strictly higher impact in expectation if
+   $$E[R(0)] > 0 \space and \space w.p.\space 1 \space k^∗(G, R)= 0$$
+	- Reduced probability to learn $\rightarrow$ increased expected impact by supplier
+
+일반적인 조건 하에서 Mandatory Disclosure가 구매 회사의 관리자가 공급업체의 사회적 또는 환경적 부정적 영향을 파악하고 이를 줄이는 것을 막음으로써 사회나 환경에 해를 끼칠 수 있다. 
+
+__Proposition 3__
+1. A disclosure mandate strictly increases the buying firm’s valuation and discounted profit, in expectation.
+	- Disclosure mandate는 매니저가 학습하고 영향력을 줄이는 것을 유도하기 때문에 EDP가 증가한다 -> Expected valuation 도 증가한다
+	- Nondisclosure일 때 Investor들이 supplier impact 예상치가 더 작다
+
+__Proposition 4__
+1. A disclosure mandate can strictly reduce the supplier’s impact only if $τ > \underline{τ}$.
+2. With voluntary disclosure, the manager withholds information from investors with nonzero probability if and only if (8) holds, which is equivalent to $τ < \bar{τ}$.
+3. Under a disclosure mandate, as $τ$ increases, the learning cost threshold $c_m$ strictly increases and the supplier’s impact decreases.
+	- $\tau \leq \underline{\tau}$
+		- 매니저가 영향력 감소에 돈을 안씀
+		- Buyer가 supplier impact로 바로 손실을 안 볼 경우 $\tau$가 작다.
+	- $\tau \geq \bar{\tau}$
+		- 매니저가 항상 공개 -> Disclosure Mandate가 쓸모 없음
+	- o/w
+		- Disclosure Mandate: Strictly reduce supplier's impact, $\tau \uparrow \space\rightarrow$  supplier impact $\downarrow$ 
+		- Voluntary Mandate: Not all the case
+
+# Extensions
