@@ -46,7 +46,7 @@ __Assumptions__
 - Support of the impact reduction function $R$ is a finite set
 	- Mathematical simplicity & Prevent unbounded impact reductions
 - $C$ is independent of $(G,R)$
-- $κ∗(R) + τ(G− R(κ∗(R)))> τE[G]$
+- $κ^∗(R) + τ(G− R(κ^∗(R)))> τE[G]$
 	- Manager might learn that the discounted cost associated with the supplier’s impact (even with optimal impact reduction) is higher than expected without learning
 	- Without this assumption manager would always choose to disclose the supplier’s impact after learning, so a disclosure mandate would have no effect
 
@@ -118,7 +118,7 @@ __Proposition 5__
 		- Voluntary disclosure: harm both buying firm & supplier
 			- cooperation -> increase likelihood of learning -> nondisclosure: investors think supplier has larger impact than usual -> overinvest on learning
 		- Disclosure mandate: buying firms & managers benefit
-	- From (c)
+	- From (3)
 		- In some cases disclosure mandate reduces the probability of learning
 
 ## Alternative Supplier
@@ -150,9 +150,11 @@ __Proposition 8__
 
 # Concluding Remarks
 
-- Mandate tends to deter managers from learning about a supplier's impact but, if they do choose to learn, it incentivizes them to reduce that impact
-- The paper identifies three mechanisms where disclosure mandate enhances buyer's EDP & valuation
-	- Discourage unnecessary learning costs
-	- Encourage optimal impact reduction after learning
-	- Alleviate investor concerns about potential withholding of negative information
-- 경영자의 인센티브를 장기적 목표에 맞추면 더 나은 지속 가능성 결과와 기업 가치의 향상이 이루어질 수 있다
+Disclosure mandate or shifting a manager’s priority to long-term profits over short-term valuation has a significant impact on how firms address supplier issues. It outlines three main mechanisms:
+
+1. Avoidance of Learning: Firms may avoid investigating supplier impacts if the costs exceeds the potential future profit benefits, fearing a negative impact on their valuation.
+2. Motivated Impact Reduction: When firms do investigate supplier impacts, they are more likely to take corrective actions rather than hide information, benefiting both the firm and stakeholders.
+3. Increased Investor Confidence: Transparency from disclosure reassures investors, enhancing the firm’s valuation.
+
+Overall, the mandate may initially discourage learning but ultimately promotes
+impact reduction, improving both expected profits and market value.
