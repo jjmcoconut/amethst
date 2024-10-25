@@ -7,7 +7,13 @@ Social Responsibility
 - [[Managing Supplier Social and Environmental Impacts with Voluntary Versus Mandatory Disclosure to Investors]]
 - [[Managing Social Responsibility in Multitier Supply Chains]]
 
+Healthcare
 - [[Incentive Programs for Reducing Readmissions when Patient Care is Co-Produced]]
 - [[Bundled Payment vs. Fee-for-Service, Impact of Payment Scheme on Performance]]
+- [[Can Yardstick Competition Reduce Waiting Times?]]
+
+Contracts
+- [[Selling to the Newsvendor, An Analysis of Price-Only Contracts]]
+
 
 [[Paper Translated]]
