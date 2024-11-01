@@ -14,6 +14,7 @@ Healthcare
 
 Contracts
 - [[Selling to the Newsvendor, An Analysis of Price-Only Contracts]]
+- [[Supply Chain Coordination with Revenue-Sharing Contracts, Strengths and Limitations]]
 
 
 [[Paper Translated]]
