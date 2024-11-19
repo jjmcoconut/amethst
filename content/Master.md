@@ -7,3 +7,4 @@ __2024 Fall__
 - [[Convex Optimization]]
 - [[Game Theory]]
 - [[Supply Chain Management]]
+- [[McKinsey]]

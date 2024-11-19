@@ -11,10 +11,21 @@ Healthcare
 - [[Incentive Programs for Reducing Readmissions when Patient Care is Co-Produced]]
 - [[Bundled Payment vs. Fee-for-Service, Impact of Payment Scheme on Performance]]
 - [[Can Yardstick Competition Reduce Waiting Times?]]
+- [[A Dispatching Model for Server-to-Customer Systems That Balances Efficiency and Equity]]
 
 Contracts
 - [[Selling to the Newsvendor, An Analysis of Price-Only Contracts]]
 - [[Supply Chain Coordination with Revenue-Sharing Contracts, Strengths and Limitations]]
 
+Supply Chain Competition
+- [[Supplier Capacity and Intermediary Profits, Can Less Be More?]]
+- [[Positive vs. Negative Externalities in Inventory Management, Implications for Supply Chain Design]]
+
+Convex Optimization
+- [[Convex Optimization for Bundle Size Pricing Problem]]
+
+Uncertainty
+- [[Supply Disruptions, Asymmetric Information, and a Backup Production Option]]
+- [[Advance Selling in a Supply Chain Under Uncertain Supply and Demand]]
 
 [[Paper Translated]]
