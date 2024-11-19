@@ -76,7 +76,7 @@ Royal Waste Services - McEnroe Organic Farm (in Millerton NY)
 
 ---
 
-모델링 - 쓰레기 수거 업체가 매립하거나 재활용 업체에 보내는 것 중에 선택할 수 있는 경우
+__모델링 - 쓰레기 수거 업체가 매립하거나 재활용 업체에 보내는 것 중에 선택할 수 있는 경우__
 - 2023년 기준으로 미국의 평균 매립 비용은 톤당 $56.8
 	- [ANALYZING MUNICIPAL SOLID WASTE LANDFILL TIPPING FEES](https://erefdn.org/analyzing-municipal-solid-waste-landfill-tipping-fees/)
 - 음식물 쓰레기 1톤을 동물 사료로 생산하는 데 드는 비용은 약 $93.8
@@ -89,3 +89,4 @@ Royal Waste Services - McEnroe Organic Farm (in Millerton NY)
 - $\$d$: 정부에서 음식물 쓰래기 매립을 적발 했을 때 벌금 + 소비자 punishment 
 - $\alpha$: 적발 확률(?)
 	- 너무 똑같은데...
+
