@@ -97,14 +97,14 @@ __Parameters__
 - $\rho\sim N(0.88~0.92,?)$ 
 	- [Percentage of non-compostable food waste](https://cemonitor.be/en/indicator/food/waste/share-of-food-waste-in-residual-household-waste/)
 	- [“Non-compostable materials (**NCM**) reach percentages between 8 and 12% of organic waste disposed](https://resoilfoundation.org/en/circular-bioeconomy/compost-non-compostable-materials/)
-- $w = \$352/year$
-- $D = 13000tons/day$
+- $w = 352$ $dollars/year$
+- $D = 13000$ $tons/day$
 - $P$: Calculated profit
 - $Cost$: Calculated cost
-- $p = 150\frac{\$}{yard^3}\cdot 1/1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 42.86\frac{\$}{ton_{food waste}}$
+- $p = 150\frac{dollars}{yard^3}\cdot 1/1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 42.86\frac{dollars}{ton_{food waste}}$
 	- 1ton of food waste $\rightarrow$ 360~544kg of compost
 		- [How Many Compost Make From 1 Ton of Organic Waste](https://fertilizerequipmentmanufacturer.com/how-many-compost-make-from-1-ton-of-organic-waste/)
-	- Average $\$150/yard^3$
+	- Average $150$ $dollars/yard^3$
 		- [Curside Compost](https://www.curbcompost.org/compost-delivery.html)
 	- Average $1.4ton/yard^3$
 		- [# Soil Calculator](https://www.inchcalculator.com/soil-calculator/)
