@@ -90,7 +90,9 @@ __모델링 - 쓰레기 수거 업체가 매립하거나 재활용 업체에 보
 - $\alpha$: 적발 확률(?)
 	- 너무 똑같은데...
 
-Parameters
+---
+
+__Parameters__
 $\alpha$: Parameter that needs to be optimized
 $\rho\sim N(0.88~0.92,?)$ 
 - [Percentage of non-compostable food waste](https://cemonitor.be/en/indicator/food/waste/share-of-food-waste-in-residual-household-waste/)
