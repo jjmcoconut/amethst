@@ -23,9 +23,17 @@ Supply Chain Competition
 
 Convex Optimization
 - [[Convex Optimization for Bundle Size Pricing Problem]]
+- [[Cost Allocation for Joint Replenishment Models]] (Inventory)
 
 Uncertainty
 - [[Supply Disruptions, Asymmetric Information, and a Backup Production Option]]
 - [[Advance Selling in a Supply Chain Under Uncertain Supply and Demand]]
+
+Service Operations(Queue)
+- [[Managing Service Systems with an Offline Waiting Option and Customer Abandonment]]
+- [[Routing and Staffing When Servers Are Strategic]]
+
+Behavioral Operations Management
+- [[The Effect of Payment Schemes on Inventory Decisions, The Role of Mental Accounting]]
 
 [[Paper Translated]]

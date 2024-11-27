@@ -90,3 +90,24 @@ __모델링 - 쓰레기 수거 업체가 매립하거나 재활용 업체에 보
 - $\alpha$: 적발 확률(?)
 	- 너무 똑같은데...
 
+Parameters
+$\alpha$: Parameter that needs to be optimized
+$\rho\sim N(0.88~0.92,?)$ 
+- [Percentage of non-compostable food waste](https://cemonitor.be/en/indicator/food/waste/share-of-food-waste-in-residual-household-waste/)
+- [“Non-compostable materials (**NCM**) reach percentages between 8 and 12% of organic waste disposed](https://resoilfoundation.org/en/circular-bioeconomy/compost-non-compostable-materials/)
+$w = \$352/year$
+$D = 13000tons/day$
+$P$: Calculated profit
+$Cost$: Calculated cost
+$p = 150\frac{\$}{yard^3}\cdot 1/1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 42.86\frac{\$}{ton_{food waste}}$
+- 1ton of food waste $\rightarrow$ 360~544kg of compost
+	- [How Many Compost Make From 1 Ton of Organic Waste](https://fertilizerequipmentmanufacturer.com/how-many-compost-make-from-1-ton-of-organic-waste/)
+- Average $\$150/yard^3$
+	- [Curside Compost](https://www.curbcompost.org/compost-delivery.html)
+- Average $1.4ton/yard^3$
+	- [# Soil Calculator](https://www.inchcalculator.com/soil-calculator/)
+$c$: cost per capacity
+- At least $c<p$?
+$d$: Contract information - at least larger than the interest rate
+- Interest rate in US: 4.75%
+- I do think 10~20% is the reasonable discount percentage
