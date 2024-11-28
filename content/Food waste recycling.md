@@ -97,11 +97,16 @@ __Parameters__
 - $\rho\sim N(0.88~0.92,?)$ 
 	- [Percentage of non-compostable food waste](https://cemonitor.be/en/indicator/food/waste/share-of-food-waste-in-residual-household-waste/)
 	- [“Non-compostable materials (**NCM**) reach percentages between 8 and 12% of organic waste disposed](https://resoilfoundation.org/en/circular-bioeconomy/compost-non-compostable-materials/)
-- $w = 352$ $dollars/year$
+- $w$ = 108 $/ton
+	- 0.425 kg/L
+		- [# Community Fund: Volume to Kgs](https://www.merseysidewda.gov.uk/volume-to-kgs/)
+	- 49.09 $/month, 65 gallon/week
+		- [# Commercial Franchise Garbage & Recycling Rates](https://www.villageofgrayslake.com/466/Commercial-Garbage-Recycling-Rates)
+	- $49.09\frac{dollars}{month} 0.230137\frac{month}{week} 1/65 \frac{week}{gallon} 0.264172\frac{gallon}{L} 1/0.425\frac{L}{kg}1000\frac{kg}{ton}=108\frac{kg}{ton}$
 - $D = 13000$ $tons/day$
 - $P$: Calculated profit
 - $Cost$: Calculated cost
-- $p = 150\frac{dollars}{yard^3}\cdot 1/1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 42.86\frac{dollars}{ton_{food waste}}$
+- $p = 150\frac{dollars}{yard^3}\cdot 1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 84\frac{dollars}{ton_{food waste}}$
 	- 1ton of food waste $\rightarrow$ 360~544kg of compost
 		- [How Many Compost Make From 1 Ton of Organic Waste](https://fertilizerequipmentmanufacturer.com/how-many-compost-make-from-1-ton-of-organic-waste/)
 	- Average $150$ $dollars/yard^3$
@@ -119,4 +124,13 @@ __Parameters__
 - $d$: Contract information - at least larger than the interest rate
 	- Interest rate in US: 4.75%
 	- I do think 10~20% is the reasonable discount percentage
-- $$
+
+Parameters
+- $\alpha$: Parameter that needs to be optimized
+- $\rho\sim N(0.8,?)$
+- $w$ = 100 $/ton
+- $D = 1000$ $tons/day$
+- $p = 80\frac{dollars}{ton_{food waste}}$
+- $c$ = $90/ton
+- $l$ = $50/ton
+- $d$ = 0.1
