@@ -137,8 +137,6 @@ Li Chen, A. Gürhan Kök, Jordan D. Tong
 
 ## 3.5 Summary
 
-## Summary of Behavioral Models for Newsvendor Problem
-
 **Model Predictions:**
 
 | Model                      | Predicted Order Pattern |

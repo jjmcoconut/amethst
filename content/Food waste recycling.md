@@ -108,8 +108,15 @@ __Parameters__
 		- [Curside Compost](https://www.curbcompost.org/compost-delivery.html)
 	- Average $1.4ton/yard^3$
 		- [# Soil Calculator](https://www.inchcalculator.com/soil-calculator/)
+	- Percentage compost sold: ?
+		- 어디서 보긴 했는데
 - $c$: cost per capacity
 	- At least $c<p$?
+	- $93.8/ton
+	- [Triple Bottom-Line Evaluation of the Production of Animal Feed from Food Waste: A Life Cycle Assessment](https://link.springer.com/article/10.1007/s12649-022-01914-7).
+- $l$(landfill cost):  $56.8/ton
+	- [ANALYZING MUNICIPAL SOLID WASTE LANDFILL TIPPING FEES](https://erefdn.org/analyzing-municipal-solid-waste-landfill-tipping-fees/)
 - $d$: Contract information - at least larger than the interest rate
 	- Interest rate in US: 4.75%
 	- I do think 10~20% is the reasonable discount percentage
+- $$
