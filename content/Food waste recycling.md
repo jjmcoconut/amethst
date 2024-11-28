@@ -128,7 +128,7 @@ __Parameters__
 Parameters
 - $\alpha$: Parameter that needs to be optimized
 - $\rho\sim N(0.8,?)$
-- $w$ = 100 $/ton
+- $w$ = 110 $/ton
 - $D = 1000$ $tons/day$
 - $p = 80\frac{dollars}{ton_{food waste}}$
 - $c$ = $90/ton
