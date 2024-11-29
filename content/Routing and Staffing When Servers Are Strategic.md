@@ -236,7 +236,7 @@ __Staffing Levels:__
 	- Solution of $a(μ - a) = μ³c'(μ)$ implies $a>\mu$
 - If $c(\mu)=c_E\mu^p$
 	- $N^{ao,λ} - N^{BMR,λ}_{\mu^*} = λ/α^*(p+2) + o(λ)$
-- As cost function becomes more convex($p$), difference decreases to 0
+- Difference decreases as cost function becomes more convex($p$)
 - Convexity is helpful to the system manager
 
 Nonstrategic Server Staffing Policy:
@@ -253,7 +253,7 @@ Nonstrategic Server Staffing Policy:
 
 Observations:
 - Jagged curves due to discrete staffing levels
-- Quick convergence of N^ao_λ to N^opt_λ
+- Quick convergence of $N^{ao,λ}$ to $N^{opt,λ}$
 - Complex prelimit behavior necessitates asymptotic analysis
 - Asymptotic results predictive for realistically sized systems
 

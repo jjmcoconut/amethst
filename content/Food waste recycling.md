@@ -106,7 +106,7 @@ __Parameters__
 - $D = 13000$ $tons/day$
 - $P$: Calculated profit
 - $Cost$: Calculated cost
-- $p = 150\frac{dollars}{yard^3}\cdot 1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 84\frac{dollars}{ton_{food waste}}$
+- $p = 150\frac{dollars}{yard^3}\cdot 1/1.4 \frac{yard^3}{ton_{compost}} \cdot 0.4 \frac{ton_{compost}}{ton_{food waste}} = 42.86\frac{dollars}{ton_{food waste}}$
 	- 1ton of food waste $\rightarrow$ 360~544kg of compost
 		- [How Many Compost Make From 1 Ton of Organic Waste](https://fertilizerequipmentmanufacturer.com/how-many-compost-make-from-1-ton-of-organic-waste/)
 	- Average $150$ $dollars/yard^3$
@@ -130,7 +130,7 @@ Parameters
 - $\rho\sim N(0.8,?)$
 - $w$ = 110 $/ton
 - $D = 1000$ $tons/day$
-- $p = 80\frac{dollars}{ton_{food waste}}$
+- $p = 40\frac{dollars}{ton_{food waste}}$
 - $c$ = $90/ton
 - $l$ = $50/ton
 - $d$ = 0.1
