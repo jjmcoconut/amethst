@@ -240,21 +240,20 @@ __Operational Mechanisms__
 __Consolidation strategy__
 - All diagnostic capacity consolidated in Nampula lab
 
+__Comparison with Optimal Lab Assignment (OLA)__
+- OCA more drastic, requires more system changes
+- OCA benefits nearly twice those of OLA across all metrics
+
 __Performance improvements__
 - 22% decrease in average TATs
 - 50% increase in results available within one month
 - 7% increase in infected infants starting treatment
 
-Comparison with Optimal Lab Assignment (OLA)
-- OCA more drastic, requires more system changes
-- OCA benefits nearly twice those of OLA across all metrics
-
-Operational Mechanisms
+__Operational Mechanisms__
 1. Consolidation trade-off:
 	- Longer transport times are outweighed by shorter LCTs.
 		- Increase in transportation times (6 to 11 days)
 		- Dramatic reduction in LCTs (21 to 8 days)
-
 2. Congestion and batch pooling:
 	- Capacity pooling cuts congestion; batching cuts preprocessing.
 		- Batching delays: 2 days to 0.5 days
