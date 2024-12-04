@@ -36,4 +36,7 @@ Service Operations(Queue)
 Behavioral Operations Management
 - [[The Effect of Payment Schemes on Inventory Decisions, The Role of Mental Accounting]]
 
+Practice Platform
+- [[Improving HIV Early Infant Diagnosis Supply Chains in Sub-Saharan Africa, Models and Application to Mozambique]]
+
 [[Paper Translated]]
