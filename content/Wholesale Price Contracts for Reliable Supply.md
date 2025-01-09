@@ -79,7 +79,7 @@ __Assumptions__
 1. Profitable to produce positive amount even without supplier effort
 2. Buyer chooses largest quantity when indifferent among order quantities
 
-[[Excalidraw/Topic Research.md#^0uzl04VmjnkInYyMEsYxr]]
+[[Topic Research - Excalidraw#^0uzl04VmjnkInYyMEsYxr]]
 # 4. Random Capacity
 
 __Key Components__

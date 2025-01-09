@@ -5,4 +5,4 @@
 
 2. [[Undergraduate]]
 
-3. [[Master]]
+3. [[Master Course]]

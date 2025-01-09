@@ -42,5 +42,3 @@ Practice Platform
 - [[Improving HIV Early Infant Diagnosis Supply Chains in Sub-Saharan Africa, Models and Application to Mozambique]]
 
 [[Temp]]
-
-[[Paper Translated]]

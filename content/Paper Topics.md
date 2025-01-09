@@ -1,1 +1,1 @@
-1. [[Greenwashing]]
+![[Topic Research - Excalidraw.png]]
