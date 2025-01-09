@@ -19,14 +19,10 @@ __Early Infant Diagnosis (EID) Network for HIV__
 	- Increases likelihood of result collection by caretakers
 	- Improves subsequent health outcomes
 
-__Study Contribution__
-1. Quantitative framework for EID network design in sub-Saharan Africa
-2. Application to Mozambique's EID network
-
 __Research Questions__
-1. How can the operational design of EID networks be optimized to improve health outcomes for HIV-exposed infants?
-2. What is the potential impact of improved clinic-to-lab assignments and lab capacity allocations on turnaround times (TATs) and treatment initiation rates?
-3. How do different network configurations affect the number of infected infants receiving treatment?
+1. How can we design of EID networks to predict health outcome?
+2. How can we optimize the EID network to improve TAT and treatment initiation rates?
+3. How do different network configurations affect treatment initiation rates?
 
 # 3. Early Infant Diagnosis Systems and the Mozambique Data
 

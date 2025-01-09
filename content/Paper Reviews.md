@@ -6,6 +6,7 @@ Social Responsibility
 - [[Supplier Evasion of a Buyer’s Audit, Implications for Motivating Supplier Social and Environmental Responsibility]]
 - [[Managing Supplier Social and Environmental Impacts with Voluntary Versus Mandatory Disclosure to Investors]]
 - [[Managing Social Responsibility in Multitier Supply Chains]]
+- [[Cover-Up of Vehicle Defects, The Role of Regulator Investigation Announcements]]
 
 Healthcare
 - [[Incentive Programs for Reducing Readmissions when Patient Care is Co-Produced]]
@@ -16,6 +17,7 @@ Healthcare
 Contracts
 - [[Selling to the Newsvendor, An Analysis of Price-Only Contracts]]
 - [[Supply Chain Coordination with Revenue-Sharing Contracts, Strengths and Limitations]]
+- [[Wholesale Price Contracts for Reliable Supply]]
 
 Supply Chain Competition
 - [[Supplier Capacity and Intermediary Profits, Can Less Be More?]]
@@ -38,5 +40,7 @@ Behavioral Operations Management
 
 Practice Platform
 - [[Improving HIV Early Infant Diagnosis Supply Chains in Sub-Saharan Africa, Models and Application to Mozambique]]
+
+[[Temp]]
 
 [[Paper Translated]]
