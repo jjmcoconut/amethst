@@ -7,6 +7,7 @@ Social Responsibility
 - [[Managing Supplier Social and Environmental Impacts with Voluntary Versus Mandatory Disclosure to Investors]]
 - [[Managing Social Responsibility in Multitier Supply Chains]]
 - [[Cover-Up of Vehicle Defects, The Role of Regulator Investigation Announcements]]
+- [[Combating Child Labor, Incentives and Information Disclosure in Global Supply Chains]]
 
 Healthcare
 - [[Incentive Programs for Reducing Readmissions when Patient Care is Co-Produced]]
