@@ -1,6 +1,5 @@
 # US (SEC)
 
-
 __Disclosure Categories__
 - **GHG Emissions:**
 	- Disclose financially material Scope 1 (direct) & Scope 2 (indirect) emissions in quarterly/annual reports (10-Q/10-K).
@@ -25,7 +24,6 @@ __Disclosure Categories__
 # UK (CSRD)
 [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022L2464)
 
-**EU CSRD (Short Notes)**
 
 1. **GHG Emissions**
 	- Scope 1, 2, and often 3.
