@@ -59,9 +59,6 @@ __Social First-Best Solution__
 	- $f_i(e)$: Total footprint of process $i$
 		- $B: N \times I$ matrix mapping firms to processes they influence
 
-- $e^*$: Optimal effort levels
-- $f^*$: First-best emissions
-
 __Carbon-Based Payments__
 - $p$: Carbon price (may differ from $p^S$)
 - $h_n(f)$: Carbon-based payment by firm $n$
@@ -176,155 +173,155 @@ __By using double accounting we can fairly assign responsibility__
 ---
 
 
-Script:
+# Script:
 
-Solo Conference Presentation: The Complexity of Carbon Footprinting in Supply Chains
+### Deep Dive: The Complexity of Carbon Footprinting in Supply Chains
 
-__Opening Slide: “Deep Dive: The Complexity of Carbon Footprinting in Supply Chains”__
-
-Speaker:
-
-Welcome back, everyone, to Deep Dive! Today, we’re tackling one of the trickiest parts of carbon footprinting—how multiple companies share responsibility for the same emissions.
-
+Today, we’re tackling one of the trickiest parts of carbon footprinting—how multiple companies share responsibility for the same emissions.
 How do we measure that fairly? And how do we actually encourage everyone to reduce their impact when the responsibility isn’t just one company’s burden?
-
 This is a big deal. Companies are under increasing pressure to be sustainable. Think about major retailers like Walmart and Tesco. Walmart set a goal to cut 20 million metric tons of greenhouse gases across their entire supply chain. Tesco, on the other hand, aims to be completely carbon neutral by 2050.
-
 Ambitious goals. But achieving them is not as simple as just measuring emissions and cutting them. That’s where today’s discussion comes in.
-
 The Problem: Shared Responsibility and Double Counting
-
-To guide our discussion, we’re looking at a fascinating paper called Double Counting in Supply Chain Carbon Footprinting. The researchers built a mathematical model to explore this issue. And it all comes down to a fundamental question:
-
-How do we fairly assign responsibility for shared emissions?
+To guide our discussion, we’re looking at a fascinating paper called Double Counting in Supply Chain Carbon Footprinting. The researchers built a mathematical model to explore this issue. And it all comes down to a fundamental question: How do we fairly assign responsibility for shared emissions?
 
 And once we figure that out, how do we motivate companies to actually take action, instead of just pointing fingers?
-
 Let’s break it down.
 
-__Slide: “Joint Production of Emissions – What Does That Mean?”__
+### Joint Production of Emissions – What Does That Mean?
 
 Think about this: multiple companies influence the emissions from a single process—even if they’re not directly involved. This happens all the time in modern supply chains.
-
 Let me give you a real-world example.
 
 Example 1: Construction Industry
 
 Imagine a company that manufactures prefabricated roof trusses. They use advanced engineering to minimize wood waste, which helps the builder save money on materials and labor.
-
 But here’s the catch:
-	•	The supplier has to invest in higher upfront costs for better engineering.
-	•	The builder benefits from lower waste and faster construction.
-
+- The supplier has to invest in higher upfront costs for better engineering.
+- The builder benefits from lower waste and faster construction.
 Both the supplier and the builder influence the emissions from the same process—building the roof. So, who’s responsible for those emissions?
 
 Example 2: Paint Manufacturers
 
 Let’s switch industries—paint manufacturing.
-
 Many companies are moving from solvent-based paints to water-based paints to reduce emissions. Sounds great, right?
-
 But there’s a trade-off.
-	•	The paint supplier reduces emissions.
-	•	The customer—the person using the paint—might have to buy all new equipment because water-based paints can be more corrosive.
-
+- The paint supplier reduces emissions.
+- The customer—the person using the paint—might have to buy all new equipment because water-based paints can be more corrosive.
 Again, multiple companies are involved in the same emissions shift.
 
-__Slide: “The Scale of the Problem”__
+### The Scale of the Problem
 
 Research shows that companies spend up to 68% of their budget on indirect goods and services—things like logistics, travel, and facility management. These are areas where joint production of emissions happens all the time.
-
-How We Currently Measure Carbon Emissions
-
 We categorize emissions using three “scopes” from the Greenhouse Gas Protocol:
-	•	Scope 1: Direct emissions from owned operations (like a factory burning fuel).
-	•	Scope 2: Indirect emissions from purchased energy.
-	•	Scope 3: All other indirect emissions (supply chain, travel, etc.).
-
+- Scope 1: Direct emissions from owned operations (like a factory burning fuel).
+- Scope 2: Indirect emissions from purchased energy.
+- Scope 3: All other indirect emissions (supply chain, travel, etc.).
 Sounds simple, right? But these scopes get messy when companies are jointly responsible for emissions.
 
 Take employee travel:
-	•	A business trip is a Scope 3 emission for the employer.
-	•	But for the airline? It’s Scope 1.
-
+- A business trip is a Scope 3 emission for the employer.
+- But for the airline? It’s Scope 1.
 Same emissions, different labels.
 
-The Scope 3 Problem
-
 Here’s a staggering fact:
-	•	On average, only 14% of an industry’s emissions fall under Scope 1.
-	•	Even when we add Scope 2, we’ve only covered 26%.
-	•	That means 74% of emissions fall under Scope 3—where emissions responsibility is shared and complicated.
-
-Double Counting: Problem or Opportunity?
-
+- On average, only 14% of an industry’s emissions fall under Scope 1.
+- Even when we add Scope 2, we’ve only covered 26%.
+- That means 74% of emissions fall under Scope 3—where emissions responsibility is shared and complicated.
 Right now, most companies avoid double counting at all costs. It makes reporting messy.
-
-But here’s the radical idea:
-
-What if double counting could actually help us reduce emissions?
-
+But here’s the radical idea: What if double counting could actually help us reduce emissions?
 Sounds counterintuitive, right? Stick with me.
 
-__Slide: “Double Counting as a Motivational Tool”__
+### Double Counting as a Motivational Tool”
 
 One of the key principles in economics is that people are more likely to act when they feel the full weight of their choices.
-
 So what if, instead of dividing responsibility, we actually over-allocate responsibility in supply chains?
 
 Think of it like a group project.
-	•	If you and your partner know the other person will slack off, you might not put in full effort either.
-	•	But if both of you are held fully responsible, you’re more likely to step up.
+- If you and your partner know the other person will slack off, you might not put in full effort either.
+- But if both of you are held fully responsible, you’re more likely to step up.
 
-That’s the core idea behind strategic double counting.
+That’s the core idea behind strategic double counting. To tackle this issue, we need a structured approach. That’s where the Joint Production Model comes in. The total carbon footprint is broken down into individual components for separate processes. Each process can be influenced by multiple firms, making responsibility more complex.
 
-__Slide: “Case Study: Eastman Chemical”__
+To address this, researchers suggest two perspectives:
+1. **Social Planner Approach**
+    - The social planner assigns emissions responsibility and charges firms accordingly.
+    - Firms then adjust their abatement efforts based on these allocations.
+2. **Carbon Leader Approach**
+    - A single firm—called the carbon leader—takes responsibility for the entire supply chain’s emissions.
+    - The carbon leader offsets all emissions but recoups costs from supply chain partners.
 
-Let’s look at a real-world example.
+**Key Assumptions in the Model:**
+- The supply chain is already operational, meaning there’s a baseline scenario.
+- Emission reduction efforts do not interfere with core business revenues.
+- Companies have already implemented the most profitable abatement measures.
 
-Eastman Chemical produces industrial materials. In 2009, they introduced a more sustainable delivery option called Molten Bulk.
+Now, let’s look at how we define the problem mathematically.
+- We have $n$ firms and **i** processes.
+- The emissions come from **joint production**, meaning multiple firms contribute to the same footprint.
+Moving forward, we will analyze the **Social First-Best Solution**, which determines the **optimal effort** for emissions reduction.
 
-It reduces emissions, but requires both Eastman and its customers to coordinate efforts. So how do they get customers on board?
+The goal is to maximize total firm profit while accounting for the societal cost of carbon emissions. This is represented by the maximization problem:
+$$z^S = \max_{e_1,\dots,e_N}\sum_{n=1}^N V_n(e_n) - p^S  \sum_{i=1}^I f_i(e)$$
+where $e_n$ represents the carbon abatement efforts of firm $n$, and $V_n(e_n)$ is their profit function, which is concave and decreasing. The term $p^S$ represents the societal cost of carbon, and $f_i(e)$ captures the total carbon footprint from different processes. The matrix $B$ maps firms to the processes they influence.
 
-They can use strategic double counting in their payment scheme:
-	•	Each customer pays the full cost difference between traditional delivery and Molten Bulk.
-	•	Even though Eastman still offsets emissions, customers feel the full financial impact of their choice.
+Now, let’s move to Carbon-Based Payments. In practice, the carbon price, $p$, may differ from the social cost of carbon, $p^S$. Firms make carbon-based payments, denoted as $h_n(f)$. Two key concepts are important here: footprint balance and double counting. Footprint balance ensures that the sum of marginal payments over all firms equals the carbon price, while double counting occurs when payments exceed the correct level.
 
-The result? More customers choose the sustainable option.
+Finally, we introduce two key constraints. The first is Individual Rationality, which ensures that firms participate voluntarily:
+$$V_n(e_n) - h_n(f(e)) ≥ \bar{\pi}_n$$
+where $\bar{\pi}_n$ is the firm's reservation profit. The second constraint is Incentive Compatibility, which ensures that firms choose abatement levels that maximize their net profit:
+$$e_n \in \arg\max\{ V_n(e_n) - h_n(f(e))\}$$
+These principles help align firm incentives with societal goals in reducing carbon emissions.
 
-The research model shows that with a carbon price of €30 per ton, emissions reductions could reach 10%.
-	•	If companies further optimize their logistics, reductions could hit 15%.
+### 4. The Social Planner Perspective
 
-What About Governments?
+Now, let's shift our focus to the **Social Planner**—a central authority that allocates emissions and imposes costs while allowing voluntary internal payments between firms.
+$$h_n(f) = p\hat{f}_n(f) + g_n(f)$$
+Here, $p$ is the carbon price, $\hat{f}_n(f)$ is the firm’s allocated emissions, and $g_n(f)$ represents voluntary compensation.
 
-Could policymakers use double counting to drive sustainability? Maybe.
+**Key Takeaways**
+1. If firms cannot **double count** emissions, achieving the optimal equilibrium is impossible.
+2. **Linear payment rules** ensure that each firm internalizes the **full societal cost**.
+3. If double counting is prohibited, a **higher carbon price** than $p^S$ may be necessary.
 
-But governments don’t have the same control as a company over its supply chain.
-	•	If they push too hard, it could cause economic problems.
-	•	If they don’t push hard enough, nothing changes.
+### 5. Decentralized Supply Chains and the Role of a Carbon Leader
 
-It’s a balancing act.
+Now, what happens when we don't have a central planner? This brings us to the concept of a **Carbon Leader**—a single firm that takes responsibility for all supply chain emissions and uses **internal payments** to incentivize other firms.
 
-What This Means for Businesses
+**Two Scenarios:**
+-  **Contracting on Efforts (PE):** The carbon leader directly **observes and contracts** firms’ abatement efforts.
+-  **Contracting on Emissions (PF):** Payments are based on **total emissions** rather than effort levels.
 
-So what’s the big takeaway?
+**Key Insights:**
+- When **double counting** is permitted, the **Carbon Leader** can reach the first-best outcome.
+- The leader must **lead by example**, showing commitment to emissions reduction.
+- The carbon price $p$ set by the leader may differ from the societal cost $p^S$, leading to deviations in total effort levels.
 
-Companies need to recognize that joint production of emissions is everywhere. It’s no longer just about your company’s direct emissions—it’s about the whole system.
+### 6. Practical Illustration: Eastman Chemical
 
-That means:
-✅ Talking to suppliers.
-✅ Talking to customers.
-✅ Finding ways to work together instead of just tracking individual footprints.
+Let’s bring this theory into the real world with a case study of **Eastman Chemical**.
+In 2009, Eastman’s **European division** introduced a new product transportation method, shipping products in molten instead of solid form.
+**The Trade-off:**
+- **Molten bulk shipping increases transport emissions.**
+- **But it decreases total emissions across the supply chain.**
+- Coordination was required between Eastman and customers to optimize the impact.
 
-Shifting from a transactional mindset to a collaborative one is key to reducing emissions effectively.
+**Results as a Carbon Leader**
+- Initial changes led to a **10% emissions reduction**.
+- With better demand-sharing, reductions improved to **15%**.
+- By assuming a carbon price of **€30/ton**, Eastman acted as a carbon leader, proving that leadership can drive significant impact.
 
-__Slide: “Final Thought”__
+**Social Planner vs. Carbon Leader**
+- Without double accounting, the required price must be **higher than p^S** to correct underinvestment.
+- Delegating **double counting** to a leader ensures better alignment with first-best solutions.
 
-So here’s a question to leave you with:
+### Conclusion
 
-If you were a carbon leader,
-💡 How would you design a payment system to encourage your suppliers to reduce emissions—without being able to directly observe their effort?
+**To wrap things up, here are our key takeaways:
+2. **Carbon neutrality alone is insufficient**—it does not necessarily lead to optimal emissions abatement.
+3. **Double counting is necessary** to achieve the best effort levels across firms.
+4. **Optimizing the carbon price isn’t enough**—firms need to internalize their true impact.
+5. **A credible Carbon Leader can bridge the gap** by assuming responsibility and delegating double counting.
 
-It’s a tough problem, but solving it is essential for a more sustainable future.
+Ultimately, **double accounting allows us to fairly assign responsibility and drive meaningful emissions reductions.**
 
-Thank you!
+Thank you for your attention. I now welcome any questions you may have.
