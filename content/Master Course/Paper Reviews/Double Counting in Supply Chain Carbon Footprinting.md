@@ -235,8 +235,6 @@ Think of it like a group project.
 That’s the core idea behind strategic double counting. 
 To tackle this issue, we need a structured approach. 
 That’s where the Joint Production Model comes in. 
-The total carbon footprint is broken down into individual components for separate processes.
-Each process can be influenced by multiple firms, making responsibility more complex.
 
 ### Carbon Allocation
 
