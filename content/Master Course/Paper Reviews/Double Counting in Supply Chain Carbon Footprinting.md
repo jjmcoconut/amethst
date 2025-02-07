@@ -231,7 +231,7 @@ Right now, most companies avoid double counting at all costs. It makes reporting
 But here’s the radical idea: What if double counting could actually help us reduce emissions?
 Sounds counterintuitive, right? Stick with me.
 
-### Double Counting as a Motivational Tool”
+### Double Counting as a Motivational Tool
 
 One of the key principles in economics is that people are more likely to act when they feel the full weight of their choices.
 So what if, instead of dividing responsibility, we actually over-allocate responsibility in supply chains?
