@@ -189,20 +189,8 @@ Think about this: multiple companies influence the emissions from a single proce
 This happens all the time in modern supply chains.
 Let me give you a real-world example.
 
-### Construction Industry
-
-Imagine a company that manufactures roof trusses. 
-They use advanced engineering to minimize wood waste, which helps the builder save money on materials and labor.
-But here’s the catch:
-- The supplier has to invest in higher upfront costs for better engineering.
-- The builder benefits from lower waste and faster construction.
-
-Both the supplier and the builder influence the emissions from the same process—building the roof. 
-So, who’s responsible for those emissions?
-
 ### Paint Manufacturers
 
-Let’s switch industries—paint manufacturing.
 Many companies are moving from solvent-based paints to water-based paints to reduce emissions. 
 Sounds great, right?
 But there’s a trade-off.
@@ -235,7 +223,6 @@ Here’s a staggering fact:
 Right now, most companies avoid double counting at all costs. 
 It makes reporting messy.
 But here’s the radical idea: What if double counting could actually help us reduce emissions?
-Sounds counterintuitive, right? Stick with me.
 
 ### Double Counting as a Motivational Tool
 
