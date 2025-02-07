@@ -228,7 +228,6 @@ But here’s the radical idea: What if double counting could actually help us re
 
 One of the key principles in economics is that people are more likely to act when they feel the full weight of their choices.
 So what if, instead of dividing responsibility, we actually over-allocate responsibility in supply chains?
-
 Think of it like a group project.
 - If you and your partner know the other person will slack off, you might not put in full effort either.
 - But if both of you are held fully responsible, you’re more likely to step up.
@@ -257,6 +256,7 @@ To address this, researchers suggest two perspectives:
 Now, let’s look at how we define the problem mathematically.
 - We have $n$ firms and **i** processes.
 - The emissions come from **joint production**, meaning multiple firms contribute to the same footprint.
+
 Moving forward, we will analyze the **Social First-Best Solution**, which determines the **optimal effort** for emissions reduction.
 
 ### Social First-Best Solution
