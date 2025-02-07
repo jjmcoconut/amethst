@@ -178,32 +178,32 @@ __By using double accounting we can fairly assign responsibility__
 ### Deep Dive: The Complexity of Carbon Footprinting in Supply Chains
 
 Today, we’re tackling one of the trickiest parts of carbon footprinting—how multiple companies share responsibility for the same emissions.
-How do we measure that fairly? And how do we actually encourage everyone to reduce their impact when the responsibility isn’t just one company’s burden?
-This is a big deal. Companies are under increasing pressure to be sustainable. Think about major retailers like Walmart and Tesco. Walmart set a goal to cut 20 million metric tons of greenhouse gases across their entire supply chain. Tesco, on the other hand, aims to be completely carbon neutral by 2050.
-Ambitious goals. But achieving them is not as simple as just measuring emissions and cutting them. That’s where today’s discussion comes in.
-The Problem: Shared Responsibility and Double Counting
-To guide our discussion, we’re looking at a fascinating paper called Double Counting in Supply Chain Carbon Footprinting. The researchers built a mathematical model to explore this issue. And it all comes down to a fundamental question: How do we fairly assign responsibility for shared emissions?
-
-And once we figure that out, how do we motivate companies to actually take action, instead of just pointing fingers?
+To guide our discussion, we’re looking at a paper called Double Counting in Supply Chain Carbon Footprinting. 
+The researchers built a mathematical model to explore this issue. 
+And it all comes down to a fundamental question: How do we fairly assign responsibility for shared emissions?
 Let’s break it down.
 
 ### Joint Production of Emissions – What Does That Mean?
 
-Think about this: multiple companies influence the emissions from a single process—even if they’re not directly involved. This happens all the time in modern supply chains.
+Think about this: multiple companies influence the emissions from a single process—even if they’re not directly involved. 
+This happens all the time in modern supply chains.
 Let me give you a real-world example.
 
-Example 1: Construction Industry
+### Construction Industry
 
-Imagine a company that manufactures prefabricated roof trusses. They use advanced engineering to minimize wood waste, which helps the builder save money on materials and labor.
+Imagine a company that manufactures roof trusses. 
+They use advanced engineering to minimize wood waste, which helps the builder save money on materials and labor.
 But here’s the catch:
 - The supplier has to invest in higher upfront costs for better engineering.
 - The builder benefits from lower waste and faster construction.
-Both the supplier and the builder influence the emissions from the same process—building the roof. So, who’s responsible for those emissions?
+Both the supplier and the builder influence the emissions from the same process—building the roof. 
+So, who’s responsible for those emissions?
 
-Example 2: Paint Manufacturers
+### Paint Manufacturers
 
 Let’s switch industries—paint manufacturing.
-Many companies are moving from solvent-based paints to water-based paints to reduce emissions. Sounds great, right?
+Many companies are moving from solvent-based paints to water-based paints to reduce emissions. 
+Sounds great, right?
 But there’s a trade-off.
 - The paint supplier reduces emissions.
 - The customer—the person using the paint—might have to buy all new equipment because water-based paints can be more corrosive.
@@ -211,12 +211,14 @@ Again, multiple companies are involved in the same emissions shift.
 
 ### The Scale of the Problem
 
-Research shows that companies spend up to 68% of their budget on indirect goods and services—things like logistics, travel, and facility management. These are areas where joint production of emissions happens all the time.
+Research shows that companies spend up to 68% of their budget on indirect goods and services—things like logistics, travel, and facility management. 
+These are areas where joint production of emissions happens all the time.
 We categorize emissions using three “scopes” from the Greenhouse Gas Protocol:
 - Scope 1: Direct emissions from owned operations (like a factory burning fuel).
 - Scope 2: Indirect emissions from purchased energy.
 - Scope 3: All other indirect emissions (supply chain, travel, etc.).
-Sounds simple, right? But these scopes get messy when companies are jointly responsible for emissions.
+Sounds simple, right? 
+But these scopes get messy when companies are jointly responsible for emissions.
 
 Take employee travel:
 - A business trip is a Scope 3 emission for the employer.
@@ -227,7 +229,8 @@ Here’s a staggering fact:
 - On average, only 14% of an industry’s emissions fall under Scope 1.
 - Even when we add Scope 2, we’ve only covered 26%.
 - That means 74% of emissions fall under Scope 3—where emissions responsibility is shared and complicated.
-Right now, most companies avoid double counting at all costs. It makes reporting messy.
+Right now, most companies avoid double counting at all costs. 
+It makes reporting messy.
 But here’s the radical idea: What if double counting could actually help us reduce emissions?
 Sounds counterintuitive, right? Stick with me.
 
@@ -240,7 +243,13 @@ Think of it like a group project.
 - If you and your partner know the other person will slack off, you might not put in full effort either.
 - But if both of you are held fully responsible, you’re more likely to step up.
 
-That’s the core idea behind strategic double counting. To tackle this issue, we need a structured approach. That’s where the Joint Production Model comes in. The total carbon footprint is broken down into individual components for separate processes. Each process can be influenced by multiple firms, making responsibility more complex.
+That’s the core idea behind strategic double counting. 
+To tackle this issue, we need a structured approach. 
+That’s where the Joint Production Model comes in. 
+The total carbon footprint is broken down into individual components for separate processes.
+Each process can be influenced by multiple firms, making responsibility more complex.
+
+### Carbon Allocation
 
 To address this, researchers suggest two perspectives:
 1. **Social Planner Approach**
@@ -260,15 +269,29 @@ Now, let’s look at how we define the problem mathematically.
 - The emissions come from **joint production**, meaning multiple firms contribute to the same footprint.
 Moving forward, we will analyze the **Social First-Best Solution**, which determines the **optimal effort** for emissions reduction.
 
-The goal is to maximize total firm profit while accounting for the societal cost of carbon emissions. This is represented by the maximization problem:
+### Social First-Best Solution
+
+The goal is to maximize total firm profit while accounting for the societal cost of carbon emissions.
+This is represented by the maximization problem:
 $$z^S = \max_{e_1,\dots,e_N}\sum_{n=1}^N V_n(e_n) - p^S  \sum_{i=1}^I f_i(e)$$
-where $e_n$ represents the carbon abatement efforts of firm $n$, and $V_n(e_n)$ is their profit function, which is concave and decreasing. The term $p^S$ represents the societal cost of carbon, and $f_i(e)$ captures the total carbon footprint from different processes. The matrix $B$ maps firms to the processes they influence.
+where $e_n$ represents the carbon abatement efforts of firm $n$, and $V_n(e_n)$ is their profit function, which is concave and decreasing. 
+The term $p^S$ represents the societal cost of carbon, and $f_i(e)$ captures the total carbon footprint from different processes. 
 
-Now, let’s move to Carbon-Based Payments. In practice, the carbon price, $p$, may differ from the social cost of carbon, $p^S$. Firms make carbon-based payments, denoted as $h_n(f)$. Two key concepts are important here: footprint balance and double counting. Footprint balance ensures that the sum of marginal payments over all firms equals the carbon price, while double counting occurs when payments exceed the correct level.
+### Carbon-Based Payments
 
-Finally, we introduce two key constraints. The first is Individual Rationality, which ensures that firms participate voluntarily:
+Now, let’s move to Carbon-Based Payments. 
+In practice, the carbon price, $p$, may differ from the social cost of carbon, $p^S$. 
+Firms make carbon-based payments, denoted as $h_n(f)$. 
+Two key concepts are important here: footprint balance and double counting. 
+Footprint balance ensures that the sum of marginal payments over all firms equals the carbon price, while double counting occurs when payments exceed the correct level.
+
+### Constraints
+
+Finally, we introduce two key constraints. 
+The first is Individual Rationality, which ensures that firms participate voluntarily:
 $$V_n(e_n) - h_n(f(e)) ≥ \bar{\pi}_n$$
-where $\bar{\pi}_n$ is the firm's reservation profit. The second constraint is Incentive Compatibility, which ensures that firms choose abatement levels that maximize their net profit:
+where $\bar{\pi}_n$ is the firm's reservation profit. 
+The second constraint is Incentive Compatibility, which ensures that firms choose abatement levels that maximize their net profit:
 $$e_n \in \arg\max\{ V_n(e_n) - h_n(f(e))\}$$
 These principles help align firm incentives with societal goals in reducing carbon emissions.
 
@@ -285,7 +308,8 @@ Here, $p$ is the carbon price, $\hat{f}_n(f)$ is the firm’s allocated emis
 
 ### 5. Decentralized Supply Chains and the Role of a Carbon Leader
 
-Now, what happens when we don't have a central planner? This brings us to the concept of a **Carbon Leader**—a single firm that takes responsibility for all supply chain emissions and uses **internal payments** to incentivize other firms.
+Now, what happens when we don't have a central planner? 
+This brings us to the concept of a **Carbon Leader**—a single firm that takes responsibility for all supply chain emissions and uses **internal payments** to incentivize other firms.
 
 **Two Scenarios:**
 -  **Contracting on Efforts (PE):** The carbon leader directly **observes and contracts** firms’ abatement efforts.
