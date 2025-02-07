@@ -196,6 +196,7 @@ They use advanced engineering to minimize wood waste, which helps the builder sa
 But here’s the catch:
 - The supplier has to invest in higher upfront costs for better engineering.
 - The builder benefits from lower waste and faster construction.
+
 Both the supplier and the builder influence the emissions from the same process—building the roof. 
 So, who’s responsible for those emissions?
 
@@ -207,6 +208,7 @@ Sounds great, right?
 But there’s a trade-off.
 - The paint supplier reduces emissions.
 - The customer—the person using the paint—might have to buy all new equipment because water-based paints can be more corrosive.
+
 Again, multiple companies are involved in the same emissions shift.
 
 ### The Scale of the Problem
@@ -217,18 +219,19 @@ We categorize emissions using three “scopes” from the Greenhouse Gas Protoco
 - Scope 1: Direct emissions from owned operations (like a factory burning fuel).
 - Scope 2: Indirect emissions from purchased energy.
 - Scope 3: All other indirect emissions (supply chain, travel, etc.).
+
 Sounds simple, right? 
 But these scopes get messy when companies are jointly responsible for emissions.
-
 Take employee travel:
 - A business trip is a Scope 3 emission for the employer.
 - But for the airline? It’s Scope 1.
-Same emissions, different labels.
 
+Same emissions, different labels.
 Here’s a staggering fact:
 - On average, only 14% of an industry’s emissions fall under Scope 1.
 - Even when we add Scope 2, we’ve only covered 26%.
 - That means 74% of emissions fall under Scope 3—where emissions responsibility is shared and complicated.
+
 Right now, most companies avoid double counting at all costs. 
 It makes reporting messy.
 But here’s the radical idea: What if double counting could actually help us reduce emissions?
