@@ -1,6 +1,7 @@
 
 - [[Paper Reviews]]
 - [[Paper Topics]]
+- [[Meetings]]
 
 __Pre-study__
 - [[Game Theory - Coursera]]
