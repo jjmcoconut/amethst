@@ -11,6 +11,7 @@ Social Responsibility
 - [[Quality Improvement Incentives and Product Recall Cost Sharing Contracts]]
 - ESG
 	- [[Double Counting in Supply Chain Carbon Footprinting]]
+	- [[The Eﬀects of Ecolabels and Environmental Regulation on Green Product Development]]
 
 Healthcare
 - [[Incentive Programs for Reducing Readmissions when Patient Care is Co-Produced]]
