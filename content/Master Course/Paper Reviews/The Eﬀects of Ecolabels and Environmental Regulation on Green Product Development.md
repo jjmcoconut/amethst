@@ -4,10 +4,6 @@ __정부의 개입은 기업의 신뢰도가 충분히 높고 소비자가 환�
 
 # 1. Introduction
 
-**Key Drivers**  
-- Rising consumer environmental awareness → demand for sustainable products  
-- Environmental quality competition among firms  
-
 **Ecolabel Strategies**  
 - Self-Labels (Type 2)
 	- Examples: Whole Foods' "Responsibly Grown," Walmart's "Natural" line  
@@ -42,34 +38,6 @@ __정부의 개입은 기업의 신뢰도가 충분히 높고 소비자가 환�
 
 # 3. Base Model
 
-## Green Product Development: Ecolabels & Regulation  
-**Key Drivers**  
-- Rising consumer environmental awareness → demand for sustainable products  
-- Environmental quality competition among firms  
-
-**Ecolabel Strategies**  
-- Self-Labels (Type 2)
-	- Examples: Whole Foods' "Responsibly Grown," Walmart's "Natural" line  
-	- Challenges: Consumer skepticism without third-party verification  
-- External Certifications (Type 1)
-	- Trusted authorities: USDA Organic, Marine Stewardship Council  
-	- Advantages: Higher consumer willingness to pay  
-
-**Credibility Dynamics**  
-- Reputation dictates label effectiveness (e.g., Whole Foods vs. Walmart perception gap)  
-- Low-credibility firms benefit more from external certifications  
-- High-credibility firms may avoid certification costs  
-
-**Policy Landscape**  
-- Voluntary Approaches
-	- Self-labeling vs certification decisions tied to brand credibility  
-- Government Regulation
-	- Examples: California's Green Chemistry Law (chemical restrictions)  
-	- Pros: Standardizes environmental baselines  
-	- Cons: May limit innovation and market differentiation  
-
-
-## Base Competition Model (Two-Firm System)  
 **Key Components**  
 - **Firms**: High-credibility (H: $\mu_H$) vs low-credibility (L: $\mu_L$)  
 - **Environmental Quality ($g_i$)**: Chosen from (0,1) interval  
@@ -208,12 +176,6 @@ __정부의 개입은 기업의 신뢰도가 충분히 높고 소비자가 환�
 
 Good morning, everyone. Thank you for joining me today as we explore the fascinating world of green product development and the strategic role of ecolabels and environmental regulation. Today’s presentation is based on insights from the paper **“The Effects of Ecolabels and Environmental Regulation on Green Product Development,”** published in the _Manufacturing and Service Operations Management_ journal by INFORMS.
 
-#### Setting the Stage: Consumer Awareness and Market Opportunity
-
-We’re witnessing a remarkable shift in consumer behavior. The growing number of environmentally conscious consumers isn’t just a trend—it’s a powerful market force. Numerous studies (for example, those by Straughan and Roberts in 1999 and Moon et al. in 2002) have documented that as people become more aware of the environmental consequences of industrial practices, they increasingly demand products that align with their values. This surge in environmental awareness has opened significant opportunities in the green product industry.
-
-To tap into this opportunity, firms are engaging in what we call **environmental quality competition.** Essentially, companies are not only striving to improve their environmental performance but are also actively using voluntary tools to signal their green credentials to consumers. One of the most popular tools in this arsenal is the ecolabel.
-
 #### Ecolabels: Communicating the Unobservable
 
 Unlike many product attributes—such as taste, texture, or design—that consumers can directly experience, environmental quality is inherently unobservable. This is where ecolabels come in. They serve as a critical communication tool that allows companies to convey their environmental efforts to the marketplace.
@@ -223,10 +185,8 @@ There are two main types of ecolabels:
     - Many retailers use self-labels to brand their products. For example, Whole Foods Market labels its 365 line as “Responsibly Grown,” while Walmart uses “Natural” on its Great Value cleaning products.
     - However, a drawback of self-labels is that they are sometimes met with skepticism. Without third-party verification, consumers may undervalue these claims, leading to a decreased willingness to pay.
 5. **External Certifications (Type 1 Ecolabels):**
-    - External certifications come from recognized bodies such as the U.S. Department of Agriculture (USDA) for organically grown produce or the Marine Stewardship Council (MSC) for responsibly sourced seafood.
+    - External certifications come from recognized bodies such as the U.S. Department of Agriculture for organically grown produce or the Marine Stewardship Council for responsibly sourced seafood.
     - These certifications tend to be more trusted by consumers, thereby enhancing a firm’s credibility and enabling them to command higher prices.
-
-The crux of this discussion is **credibility**—a firm’s environmental reputation. Consumers’ purchasing decisions are significantly influenced by whether they believe a company truly “walks the walk” when it comes to environmental stewardship. For instance, consider the contrasting cases of Whole Foods Market and Walmart. Whole Foods, with its long-standing reputation for ethical sourcing, enjoys a higher consumer willingness to pay compared to Walmart, which faces skepticism despite its eco-friendly product introductions.
 
 #### The Bigger Picture: Voluntary and Mandatory Approaches
 
@@ -235,20 +195,12 @@ The paper we’re discussing doesn’t stop at just exploring ecolabels. It also
 - **Voluntary Initiatives:**  
     Firms can choose between self-labeling and obtaining external certifications. The decision often hinges on their existing credibility. Generally, firms with lower credibility find it beneficial to pursue external certifications to build consumer trust. In contrast, highly credible firms might rely on their reputation and sometimes even avoid the extra cost of certification.
 - **Government Regulation:**  
-    Beyond voluntary measures, government agencies are actively involved in pushing firms toward better environmental performance. Regulations—like California’s Green Chemistry Law, which mandates the use of environmentally benign chemicals—set minimum standards that all firms must meet. Such regulations help address credibility concerns that arise from self-labeling. However, they also introduce challenges by imposing uniform standards that might stifle competition or overlook the nuanced value consumers place on environmental improvements.
-    
-
-This dual approach raises important questions: How do we balance the benefits of voluntary ecolabeling with the need for government intervention? When is it more effective for the government to step in, and how can it do so without undermining market incentives for green innovation?
+    Beyond voluntary measures, government agencies are actively involved in pushing firms toward better environmental performance. Regulations—like California’s Green Chemistry Law, which mandates the use of environmentally benign chemicals—set minimum standards that all firms must meet. Such regulations help address credibility concerns that arise from self-labeling. However, they also introduce challenges by imposing uniform standards that might stifle competition or overlook the nuanced value consumers place on environmental impro
 
 #### Objectives and Roadmap
-
-Our discussion today revolves around several key objectives drawn from the paper:
-1. **Examining the Role of Credibility and Competition:**  
-    How does a firm’s environmental reputation drive its strategic decisions in green product development? What happens when competing firms differ in credibility?
-2. **Evaluating Voluntary Versus Mandatory Approaches:**  
-    What are the implications of firms adopting self-labels or external certifications on their market performance, consumer perceptions, and ultimately, environmental quality? And how does government regulation fit into this mix?
-3. **Policy Insights:**  
-    Based on the interactions between these factors, what policy insights can we derive to nurture green product development effectively while balancing the needs of firms, consumers, and the environment?
+1. What is the impact of firm credibility and competition?
+2. What is the impact of external certification?
+3. When and how should the government intervene?
 
 ---
 
@@ -283,6 +235,9 @@ Consumers make purchasing decisions based on two factors:
 - **Preference for Environmental Quality:**  
     Consumers also care about environmental performance. However, since they can’t directly observe the true quality, they base their decisions on the **perceived quality**, $\mu_i\cdot g_i$. A higher perceived quality translates into higher demand, all else being equal.
 
+Each firm’s profit is then given by:  
+$\Pi_i=q_i⋅p_i−g_i^2$​, where $q_i$ is the demand for Firm i’s product and $p_i$ is its price. Notice that the cost component, $g_i^2$, represents the fixed cost associated with achieving a higher environmental standard.
+
 **4. The Two-Stage Game**
 The competition unfolds in two stages:
 - **Stage 1: Quality Choice (Self-Labeling)**  
@@ -290,16 +245,13 @@ The competition unfolds in two stages:
 - **Stage 2: Pricing Decision**  
     After announcing their quality levels, the firms set their prices simultaneously to maximize profits.
 
-Each firm’s profit is then given by:  
-$\Pi_i=q_i⋅p_i−g_i^2$​, where $q_i$ is the demand for Firm i’s product and $p_i$ is its price. Notice that the cost component, $g_i^2$, represents the fixed cost associated with achieving a higher environmental standard.
-
 #### Evaluating Broader Implications: The 3BL Metrics
 To assess the broader impact of these competitive choices, we adopt three key metrics:
-1. **Social Implications (Consumer Surplus):**  
+4. **Social Implications (Consumer Surplus):**  
     Consumer surplus is used to measure the social benefits that accrue from the competition. It reflects how much value consumers derive from both lower prices and the environmental quality differentiation between the products.
-2. **Environmental Implications (Environmental Damage):**  $E^j=\sum q_i^j(1-g_i^j)$
+5. **Environmental Implications (Environmental Damage):**  $E^j=\sum q_i^j(1-g_i^j)$
     We define environmental damage as the total amount of pollutants released into the environment. For each unit of product, the amount of pollution is ($1 - g_i$), so higher environmental quality (a higher $g_i$) directly translates into lower environmental damage.
-3. **Economic Implications (Firm Profits):**  
+6. **Economic Implications (Firm Profits):**  
     Finally, each firm’s profit is considered as the economic outcome. Changes in credibility and the ensuing quality choices affect not only the competitive positioning but also the profitability of the firms.
 
 This framework provides a clear picture of how firm credibility and self-labeling drive green product development in the absence of external checks. In the next part of our discussion, we will build on this foundation to explore how voluntary external certification and government regulation further influence these dynamics.
@@ -314,11 +266,11 @@ In this section, we consider a scenario where an external party—specifically, 
 
 **How Does the Certification Work?**  
 The process unfolds in a few steps:
-1. **Certification Announcement:**  
+7. **Certification Announcement:**  
     The NGO first announces its certification scheme. It sets an environmental quality target, which we call $g^G$ (with $g^G \geq 0$), and it also specifies a fixed certification fee, denoted by $\tau^G$.
-2. **Firm Decision—Adopt or Not?**  
+8. **Firm Decision—Adopt or Not?**  
     With the certification scheme in place, each of the two firms (H and L) then decides simultaneously whether to adopt this external certification (G) or stick with their self-label (S).
-3. **Quality Choice and Pricing:**  
+9. **Quality Choice and Pricing:**  
     After choosing their certification path, both firms then decide on the environmental quality level for their products and set their prices in a similar two-stage process as before.
 
 An important insight from the analysis is that **the NGO ends up not charging any certification fee**—that is, $\tau^{G*}=0$. This zero fee allows the NGO to demand the highest possible environmental quality improvement from any firm that chooses to be certified, essentially using credibility as its currency.
@@ -326,11 +278,11 @@ An important insight from the analysis is that **the NGO ends up not charging a
 #### How Do Firms Respond?
 
 The introduction of external certification leads to a fascinating strategic twist, which the paper details in **Proposition 3**. The outcome depends critically on a threshold value of Firm H’s credibility relative to Firm L, denoted as $\bar{\mu}^G(\mu_L)$. Two distinct scenarios emerge:
-1. **Full Certification Adoption:**
+10. **Full Certification Adoption:**
     - **When $\mu_H$ is relatively low**, the NGO sets an environmental quality standard $g^G_I$.
     - In this case, both firms find it beneficial to adopt the external certification.
     - As a result, both Firm H and Firm L offer the same certified environmental quality  and end up earning the same profit.
-2. **Partial Certification Adoption:**
+11. **Partial Certification Adoption:**
     - **When $\mu_H$ is high**, the NGO responds by setting a higher environmental quality target, $g^G_{II}$, where $g^G_{II} > g^G_I$.
     - Here, Firm L—suffering more from credibility discounting—chooses to adopt the certification to boost its perceived quality.
     - In contrast, Firm H, enjoying higher inherent credibility, opts to self-label. Consequently, Firm H sets a lower environmental quality so that it can differentiate its product and maintain profitability.
@@ -378,11 +330,11 @@ This objective function ensures that the regulator values not only the profits a
 Once the regulator sets the mandatory standard $g^R$​, both firms are required to label their products accordingly—they must at least meet this minimum environmental quality. However, the twist lies in consumer perception. Under regulation, consumers only discount environmental quality claims by the extent that a product exceeds the minimum standard. In other words, the demand functions adjust so that any quality above $g^R$​ is what drives consumer choice.
 
 **Sequence of Events Under Regulation:**
-1. **Regulatory Decision:**  
+12. **Regulatory Decision:**  
     The regulator chooses $g^R$​ to maximize societal welfare.
-2. **Firm Responses:**  
+13. **Firm Responses:**  
     given $g^R$​, each firm must self-label its product with an environmental quality $g_i^R$​ that is at least $g^R$.
-3. **Pricing Stage:**  
+14. **Pricing Stage:**  
     Firms then set their prices, and consumer demand is influenced by the extent to which their products’ environmental qualities—beyond $g^R$​—differ.
 
 #### Equilibrium Outcomes Under Regulation
@@ -417,9 +369,9 @@ Now that we’ve examined how both voluntary external certification and mandator
 In this next section, we ask: **How should the government act when external certification is already in play?** With rising voluntary environmental initiatives, governments are now operating in an ecosystem where firms not only improve their environmental performance but also actively communicate these improvements. This raises an important question: **To intervene or not to intervene?**
 
 The framework we consider now involves a two-stage process:
-1. **Regulatory Decision:**  
+15. **Regulatory Decision:**  
     First, a societal welfare–maximizing regulator sets a **mandatory minimum environmental standard**. We denote this standard with a $\tilde{g}^R$​, to indicate that we’re now looking at outcomes when both regulation and external certification coexist.
-2. **Certification Response:**  
+16. **Certification Response:**  
     After the regulator makes its move, an NGO—whose objective is to minimize environmental damage—announces an external certification scheme. Importantly, this NGO has the flexibility to adjust its certification in response to the government’s imposed standard.
 
 
