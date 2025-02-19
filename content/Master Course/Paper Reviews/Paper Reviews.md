@@ -42,6 +42,7 @@ Service Operations(Queue)
 
 Behavioral Operations Management
 - [[The Effect of Payment Schemes on Inventory Decisions, The Role of Mental Accounting]]
+- [[The Value of Fast Fashion, Quick Response, Enhanced Design, and Strategic Consumer Behavior]]
 
 Practice Platform
 - [[Improving HIV Early Infant Diagnosis Supply Chains in Sub-Saharan Africa, Models and Application to Mozambique]]
