@@ -34,6 +34,12 @@ Gérard P. Cachon, Robert Swinney
     - Creates urgency (“buy now” effect).
 
 **Overview of the Four Operational Systems**
+
+|                     | **Normal Design**  | **Enhanced Design** |
+| ------------------- | ------------------ | ------------------- |
+| **Slow Production** | Traditional (T)    | Enhanced Design (D) |
+| **Quick Response**  | Quick Response (R) | Fast Fashion (F)    |
+
 - **Traditional System (T):**
     - Long production lead times, standard design.
     - Resembles a classic newsvendor model.
@@ -44,7 +50,7 @@ Gérard P. Cachon, Robert Swinney
 - **Fast Fashion System (F):**
     - Combines quick response and enhanced design (like Zara/H&M).
 
-### **Detailed Model: The Traditional System**
+# Traditional System
 - **Model Setting:**
     - **Firm:** Sells one product over a finite season.
     - **Demand:** Uncertain, modeled as a continuous random variable $N$ with distribution $F$ and mean $\mu$.
@@ -79,7 +85,7 @@ Gérard P. Cachon, Robert Swinney
 | **Fast Fashion (F)**    | Combines $Q$ and $D$              | $\pi_F=(p−c−c_D)\mu−c_QL(q)−(c+cD−s)I(q)$ | $p_D^*>c+c_D+c_Q$$\Rightarrow p_F^*>max⁡(p_D^*,p_Q^*,p_T^*)$ |
 
 
-# Complementarity of Quick Response and Enhanced Design
+# The Interaction of Enhanced Design and Quick Response
 
 __Key Question__
 Are enhanced design and quick response complements  or substitutes?
@@ -132,7 +138,7 @@ $$\pi_F − \pi_T ≥ (\pi_Q − \pi_T) + (\pi_D − \pi_T) \iff \pi_F − \pi_
 ---
 
 Good morning. 
-My presentation is based on a seminal paper that explores how fast fashion systems-like those employed by brands such as Zara, H&M, and Benetton-are not only transforming production but also influencing the way consumers make purchasing decisions.
+This paper explains how fast fashion systems-like those employed by brands such as Zara and H&M-are not only transforming production but also influencing the way consumers make purchasing decisions.
 
 In the traditional retail environment, companies planned months in advance. 
 However, the fast fashion model has upended this approach. 
@@ -169,12 +175,12 @@ The higher perceived value essentially creates an “incentive to buy now.”
 **Overview of the Four Operational Systems**
 
 To analyze fast fashion’s benefits, the paper considers four different operational systems:
-- **Traditional System (T):**  
-    This is a typical setup where a firm operates with long production lead times and standard design practices. It resembles the classic newsvendor model.
+- **Traditional System (T):** 
+	It resembles the classic newsvendor model.
 - **Quick Response System (Q):**  
-    Here, the firm still uses standard designs but significantly reduces production lead times, allowing it to adjust inventory based on real-time demand.
+    Here, the firm still uses standard designs but significantly reduces production lead times.
 - **Enhanced Design System (D):**  
-    In this system, the firm invests in superior design capabilities that boost consumer willingness to pay, yet it maintains long lead times.
+    In this system, the firm invests in superior design capabilities.
 - **Fast Fashion System (F):**  
     This combines both quick response and enhanced design capabilities, mimicking the strategies used by retailers like Zara, Benetton, and H&M.
 
