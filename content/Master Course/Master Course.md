@@ -1,4 +1,4 @@
-
+__Research__
 - [[Paper Reviews]]
 - [[Analysis of Papers]]
 - [[Meetings]]
@@ -12,3 +12,8 @@ __2024 Fall__
 - [[Game Theory]]
 - [[Supply Chain Management]]
 - [[McKinsey]]
+
+__2025 Spring__
+- [[Regression Analysis]]
+- Dynamic Programming & Reinforcement Learning
+- Integer Programming
