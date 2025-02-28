@@ -9,6 +9,7 @@ Social Responsibility
 - [[Cover-Up of Vehicle Defects, The Role of Regulator Investigation Announcements]]
 - [[Combating Child Labor, Incentives and Information Disclosure in Global Supply Chains]]
 - [[Quality Improvement Incentives and Product Recall Cost Sharing Contracts]]
+- [[Curbing Emissions, Environmental Regulations and Product Offerings Across Markets]]
 - ESG
 	- [[Double Counting in Supply Chain Carbon Footprinting]]
 	- [[The Eﬀects of Ecolabels and Environmental Regulation on Green Product Development]]
